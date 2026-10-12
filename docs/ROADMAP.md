@@ -120,7 +120,7 @@ For a first-time developer working part-time: **12–24 months** to a polished r
 
 ## Current status
 **Phase:** 0 (setup and design)
-**Done:** core concept in `DESIGN.md` (2D, single player, one playthrough); full story and reveal order in `STORY.md`; project moved to `C:\Dev\GodGame`; Git repo initialized.
+**Done:** core concept in `DESIGN.md` (2D, single player, one playthrough); full story and reveal order in `STORY.md`; project at `C:\Dev\GodGame` (`docs/`, `game/`, and `game/content/` for story text); Godot project created; pushed to GitHub (`Byrnez1/GodGame`, private).
 **Prototype format (default unless changed):** generation-by-generation turns + prayer cards + decision web + journal words unlocked by discoveries.
 **Next steps:** user opens the project in Godot (desktop shortcut) for a first look → finalize the content text format → start the Phase 1 prototype.
-**Story in progress:** what the harvested power is for and the consequences of defying Time and Memory (brainstorm in `STORY.md`, story logic #3).
+**Story decided:** the harvested power makes mortals love the gods; the finale is a choice (break or keep the cycle) followed by a short epilogue. Open story questions are listed at the bottom of `STORY.md`.
