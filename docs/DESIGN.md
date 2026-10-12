@@ -169,3 +169,12 @@ Text and boxes only, no art:
 **Questions to answer:**
 1. Do the choices feel meaningful and tense, and does the player want to play "just one more generation"?
 2. Is it **satisfying** when a new word appears in the journal? Does it make the player want to discover the next concept?
+
+---
+
+## Art style & interface (❓ in progress)
+Look book, round one: https://claude.ai/artifact/EKpLub7YHY7z4d2sHFhSLu (copy saved at `docs/art/look-book.html`)
+- Five directions mocked up: Ink & Parchment, Ochre & Charcoal, Celestial Pantheon, Silhouette & Sky, Flat Cards
+- Three layouts: A. Heaven and Earth, B. The Open Book, C. The Altar
+- 💡 Claude's pick: **Heaven and Earth.** The Pantheon is drawn in the Celestial style, the mortal world in Silhouette & Sky, and the journal in Ink & Parchment, using layout A
+- Waiting on the user's reactions
