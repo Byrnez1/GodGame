@@ -270,4 +270,5 @@ User idea: the god sends a shooting star across the night sky, and the harder th
 - **The Reading:** draw the rune the prayer needs; nearby stars bend the shape and the priest may read a different rune.
 - Shared rules: difficulty sets how many stars there are; love, fear, and faith change the star itself; faith poured in buys foresight, light, breaths, or trail; interference toggles for a full moon, Memory's fog, and Time's skip.
 - New idea from the mock-ups: a third outcome, **Misread**, between success and failure, where the people act on the wrong message.
-- ❓ For the user: which version (or mix) should replace the bones?
+- ✅ **Decided (user, 2026-10-12):** **The Throw** replaces casting the bones for prayers. **The Reading** is used for revelations (granting a discovery: draw its rune, and the priest must read it).
+- User note: it must be very clear when a person understands. The mock-up now shows three stages for each person: nothing yet; glimpsed (pointing, with a "?"); understood (arms raised in a column of light, calling out the meaning, e.g. "Fire!"). A counter shows how many understood against how many are needed. In The Reading, the result shows the rune you meant beside the rune the priest read.

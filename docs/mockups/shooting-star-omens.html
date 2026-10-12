@@ -272,31 +272,31 @@ const GUIDES = {
 const BONDS = ['Faint', 'Steady', 'Strong'];
 const SCENARIOS = {
   first_words: {
-    title: 'First words', choice: 'Let her find them herself', guide: 'love', diff: 0, rune: 'speak',
+    title: 'First words', choice: 'Let her find them herself', guide: 'love', diff: 0, rune: 'speak', sign: 'Speak!',
     ok: 'She finds them. It takes her a whole year, but she does it, and the words she makes are hers. Everyone agrees the sky helped.',
     misread: 'She finds words, but the first one she makes for you means “storm”. The children grow up afraid to look at the sky.',
     fail: 'She gives up. She points at the sky one last time, and goes back to the fire.',
   },
   cold_nights: {
-    title: 'Cold nights', choice: "Guide Sana's hands to strike sparks from stone", guide: 'faith', diff: 1, rune: 'fire',
+    title: 'Cold nights', choice: "Guide Sana's hands to strike sparks from stone", guide: 'faith', diff: 1, rune: 'fire', sign: 'Fire!',
     ok: 'It takes her all night. Then a spark catches, and she is laughing, and everyone is laughing, and they have fire.',
     misread: 'Sana takes the star as a sign to move on. They walk all night through the cold and find a dead tree burning where it fell. They have fire, but two of the old ones did not survive the walk.',
     fail: 'She strikes the stones until her hands bleed. Nothing catches. Two of the old ones do not wake.',
   },
   drought: {
-    title: 'The drought', choice: 'Refuse Oren, and send rain anyway', guide: 'love', diff: 2, rune: 'rain',
+    title: 'The drought', choice: 'Refuse Oren, and send rain anyway', guide: 'love', diff: 2, rune: 'rain', sign: 'Rain!',
     ok: 'Lightning splits the sky before they can raise the knife. Then rain, hard and warm. Oren comes down from the rocks laughing.',
     misread: 'They see the star fall toward the high rocks and take it for a yes. You stop the knife at the last moment and the rain comes, but your people will always say you wanted him.',
     fail: 'You stop the knife. You cannot bring the rain. The drought drags on, and they wonder whether refusing the gift was the mistake.',
   },
   girl: {
-    title: 'The girl on the rocks', choice: 'Stop her', guide: 'fear', diff: 2, rune: 'shelter',
+    title: 'The girl on the rocks', choice: 'Stop her', guide: 'fear', diff: 2, rune: 'shelter', sign: 'Stop!',
     ok: "The knife flies from Ina's hand as if struck. The girl runs. Ina falls on her face before you, and does not get up for a long time.",
     misread: 'Ina sees the star and drops the knife, but she reads your anger as anger at the girl. The girl is driven out of the camp at dawn.',
     fail: 'The knife falls. You were not strong enough to stop it. Ina raises her bloody hands to the sky and calls it a gift.',
   },
   final: {
-    title: 'The final choice', choice: "Stand against them with your people's love", guide: 'love', diff: 3, rune: 'her',
+    title: 'The final choice', choice: "Stand against them with your people's love", guide: 'love', diff: 3, rune: 'her', sign: 'Love!',
     ok: "Your people's love rises up through you like a tide, and for the first time, it is yours. The Voices cannot hold you.",
     misread: 'Your people see the star and sing, but they sing it to the Voices. The love rises, and Time gathers it, as it always has.',
     fail: 'The love in you is not enough, or not yours. The Voices close around you, gently, the way they always have.',
@@ -316,7 +316,7 @@ const RUNES = {
 };
 const VINFO = {
   throw: {
-    name: 'The Throw', chip: 'Skill · gravity',
+    name: 'The Throw', chip: 'Your pick for casts · skill · gravity',
     pitch: 'Pull back and let go. The star flies on its own, bent by the gravity of the brightest stars. Fly too close to one and it swallows your star. Skim past and your star borrows some of its light.',
     rows: [
       ['Harder', 'More stars to get lost among, and more bright stars pulling it off course.'],
@@ -325,6 +325,7 @@ const VINFO = {
       ['Faith', 'A steady white star. The stronger your rank, the more of its path you see.'],
       ['Faith poured', 'Shows more of the path before you throw. With all three, you see the whole flight.'],
       ['The twist', 'Slingshots. The dotted gold ring around a bright star is where it lends you light. The red ring is where it swallows you.'],
+      ['Who understood', 'The ring over each person fills while your star crosses their patch of sky. Half-filled, they point and wonder (“?”). Full, they raise their arms, light up, and call out what it means. The counter at the top right shows how many understood and how many you need.'],
     ],
   },
   turning: {
@@ -364,7 +365,7 @@ const VINFO = {
     ],
   },
   reading: {
-    name: 'The Reading', chip: 'Drawing',
+    name: 'The Reading', chip: 'Your pick for revelations · drawing',
     pitch: 'Here your people have to read the sign as well as see it. Draw the rune the prayer needs; the star follows your hand with a little lag. Stars near your trail pull the shape out of true, because your people join them into it, and parts lost in bright clusters drop out. The priest reads what is left, and may read a different rune than the one you meant.',
     rows: [
       ['Harder', 'More stars to snag the shape and hide parts of it.'],
@@ -374,6 +375,8 @@ const VINFO = {
       ['Faith poured', 'A longer trail.'],
       ['Runes', 'Speak, Take, Fire, Storm, Rain, Blood, Shelter, Her. Mirror images and near shapes are easy to confuse.'],
       ['The twist', 'Misreadings. Your people act on a message you never sent.'],
+      ['In the game', 'Used when you grant a discovery: you draw its rune across the sky, and the priest has to read it for your people to learn it.'],
+      ['Who understood', 'When the priest reads it, the result is laid out on the ground: the rune you meant beside the rune they read. If they match, the priest and elders raise their arms and call it out.'],
     ],
   },
 };
@@ -602,15 +605,51 @@ function contrastAt(x, y, L) { const eff = L * (1 - fogAt(x, y)); return eff / (
 function inCone(w, x, y) { const dx = x - w.x, dy = y - w.hy; if (dy > -8) return false; return Math.abs(Math.atan2(dx, -dy) - w.a) <= w.hw; }
 const RATE = 4.5, SEEN = 0.16, CLEAR = 0.4;
 // Each watcher builds up a memory of the sign while it's inside their cone, faster when it stands out.
+// Three stages you can see: nothing yet, glimpsed (points and wonders), understood (arms up, calls out the meaning).
 function witness(x, y, L, dt) {
   const c = contrastAt(x, y, L);
   for (const w of world.watchers) {
     if (!inCone(w, x, y)) continue;
+    const before = w.w;
     w.w += dt * RATE * c * c;
     w.seeing = Math.max(w.seeing, c);
     if (S.guide === 'fear') w.flinch = Math.min(1, w.flinch + dt * 4 * c);
+    if (before < SEEN && w.w >= SEEN && w.w < CLEAR) floater(w.x, w.y - 58, '?', 'rgba(205,214,240,1)', 18, 1.2);
+    if (before < CLEAR && w.w >= CLEAR) understood(w, SCENARIOS[S.scenario].sign, '255,217,138');
   }
   return c;
+}
+function floater(x, y, text, color, size, life) { world.floaters.push({ x, y, text, color, size, life, max: life }); }
+function understood(w, text, rgb) {
+  w.got = T;
+  if (text) floater(w.x, w.y - 64, text, `rgba(${rgb},1)`, 22, 2.6);
+  for (let k = 0; k < 18; k++) { const a = k * TAU / 18; spawn(w.x, w.y - 30, Math.cos(a) * 110, Math.sin(a) * 110, 0.7, 5, [255, 222, 150], 0.9); }
+}
+function drawFloaters() {
+  for (const f of world.floaters) {
+    const k = f.life / f.max, a = Math.min(1, k * 2.5);
+    ctx.font = `400 ${f.size}px ${DISPLAY}`;
+    ctx.textAlign = 'center';
+    ctx.lineWidth = 4; ctx.strokeStyle = `rgba(4,6,16,${0.75 * a})`;
+    ctx.globalAlpha = a;
+    ctx.strokeText(f.text, f.x, f.y);
+    ctx.fillStyle = f.color; ctx.fillText(f.text, f.x, f.y);
+    ctx.globalAlpha = 1; ctx.textAlign = 'left';
+  }
+}
+// A count of who has understood, shown as little figures, for the top-right corner.
+function drawTally(x, y) {
+  const ws = world.watchers, need = Math.max(2, Math.round(ws.length * 0.34));
+  const got = ws.filter(w => w.w >= CLEAR).length;
+  const order = ws.slice().sort((a, b) => b.w - a.w);
+  panel(x, y, 214, 72);
+  label(`Understood: ${got} of ${need} needed`, x + 14, y + 24, 15, got >= need ? '#ffd98a' : 'rgba(233,238,251,0.88)', { weight: got >= need ? 700 : 500 });
+  order.forEach((w, i) => {
+    const fx = x + 22 + i * 21, fy = y + 62;
+    const st = w.w >= CLEAR ? 2 : w.w >= SEEN ? 1 : 0;
+    if (st === 2) glow(fx, fy - 9, 14, [255, 217, 138], 0.55);
+    figure(fx, fy, 23, st === 2 ? '#ffd98a' : st === 1 ? 'rgba(170,182,220,0.8)' : 'rgba(255,255,255,0.18)', false, st === 2 ? 'raised' : st === 1 ? 'point' : '');
+  });
 }
 function judge(extra) {
   const ws = world.watchers;
@@ -622,7 +661,7 @@ function judge(extra) {
   const tier = clear >= need ? 'understood' : (seen > 0 || clear > 0) ? 'misread' : 'unseen';
   return { tier, clear, glimpsed, need, n: ws.length };
 }
-function watchLine(j) { let t = `${j.clear} of ${j.n} saw it clearly (${j.need} needed)`; if (j.glimpsed > 0) t += `, and ${j.glimpsed} only glimpsed it`; return t + '.'; }
+function watchLine(j) { let t = `${j.clear} of ${j.n} understood it (${j.need} needed)`; if (j.glimpsed > 0) t += `, and ${j.glimpsed} only glimpsed it`; return t + '.'; }
 function burnNear(x, y, R, maxN, heavyToo) {
   let n = 0;
   for (const s of world.stars) {
@@ -693,11 +732,21 @@ function drawMoon() {
   for (const [dx, dy, r] of [[-8, -6, 7], [9, 5, 5], [-2, 11, 4]]) { ctx.beginPath(); ctx.arc(m.x + dx, m.y + dy, r, 0, TAU); ctx.fill(); }
 }
 function drawFog(rgb) { for (const f of world.fogs) for (const [px, py, s] of f.puffs) glow(f.x + px * f.rx, f.y + py * f.ry, f.rx * s, rgb || [205, 214, 230], 0.34); }
-function figure(x, y, h, fill, priest) {
+// pose: '' standing, 'point' one arm toward the sky (glimpsed), 'raised' both arms up (understood).
+function figure(x, y, h, fill, priest, pose, aim) {
   ctx.fillStyle = fill;
   ctx.beginPath(); ctx.moveTo(x - h * 0.22, y + 2); ctx.lineTo(x - h * 0.09, y - h * 0.7); ctx.lineTo(x + h * 0.09, y - h * 0.7); ctx.lineTo(x + h * 0.22, y + 2); ctx.closePath(); ctx.fill();
   ctx.beginPath(); ctx.arc(x, y - h * 0.83, h * 0.135, 0, TAU); ctx.fill();
-  if (priest) { ctx.strokeStyle = fill; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x + h * 0.3, y + 2); ctx.lineTo(x + h * 0.36, y - h * 1.1); ctx.stroke(); }
+  ctx.strokeStyle = fill; ctx.lineCap = 'round'; ctx.lineWidth = Math.max(1.5, h * 0.09);
+  const sy = y - h * 0.64;
+  if (pose === 'raised') {
+    ctx.beginPath(); ctx.moveTo(x - h * 0.07, sy); ctx.lineTo(x - h * 0.34, sy - h * 0.48); ctx.moveTo(x + h * 0.07, sy); ctx.lineTo(x + h * 0.34, sy - h * 0.48); ctx.stroke();
+  } else if (pose === 'point') {
+    const a = aim || 0;
+    ctx.beginPath(); ctx.moveTo(x + h * 0.06, sy); ctx.lineTo(x + h * 0.06 + Math.sin(a) * h * 0.55, sy - Math.cos(a) * h * 0.55); ctx.stroke();
+  }
+  ctx.lineCap = 'butt';
+  if (priest) { ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x + h * 0.3, y + 2); ctx.lineTo(x + h * 0.36, y - h * 1.1); ctx.stroke(); }
 }
 function drawWatchers(fill, coneRGB) {
   for (const w of world.watchers) {
@@ -713,16 +762,33 @@ function drawWatchers(fill, coneRGB) {
     ctx.closePath(); ctx.fill();
   }
   for (const w of world.watchers) {
-    const h = 26 * w.h * (1 - 0.35 * w.flinch);
-    figure(w.x, w.y, h, fill, w.priest);
-    const k = Math.min(1, w.w / CLEAR), ey = w.y - h - 12;
-    ctx.strokeStyle = 'rgba(233,238,251,0.5)'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.arc(w.x, ey, 4.5, 0, TAU); ctx.stroke();
-    if (k > 0) {
-      ctx.fillStyle = k >= 1 ? '#ffe7a6' : `rgba(255,214,140,${0.3 + 0.6 * k})`;
-      ctx.beginPath(); ctx.moveTo(w.x, ey); ctx.arc(w.x, ey, 4.5, -Math.PI / 2, -Math.PI / 2 + TAU * k); ctx.closePath(); ctx.fill();
+    const st = w.w >= CLEAR ? 2 : w.w >= SEEN ? 1 : 0;
+    const h = 33 * w.h * (1 - 0.35 * w.flinch);
+    if (st === 2) {
+      // Understood: a column of light rises from them, and they glow.
+      const since = T - (w.got ?? T), pulse = REDUCED ? 0.5 : 0.5 + 0.5 * Math.sin(T * 3 + w.x);
+      const g = ctx.createLinearGradient(0, w.y - h, 0, w.y - h - 220);
+      g.addColorStop(0, `rgba(255,217,138,${0.28 + 0.12 * pulse})`); g.addColorStop(1, 'rgba(255,217,138,0)');
+      ctx.fillStyle = g; ctx.fillRect(w.x - 7, w.y - h - 220, 14, 220);
+      glow(w.x, w.y - h * 0.6, 34 + Math.max(0, 30 - since * 40), [255, 217, 138], 0.65);
     }
-    if (k >= 1) glow(w.x, ey, 15, [255, 220, 150], 0.6);
+    figure(w.x, w.y, h, fill, w.priest, st === 2 ? 'raised' : st === 1 ? 'point' : '', w.a);
+    // The badge over their head: an empty ring, a ring filling up, then a gold star once they understand.
+    const k = Math.min(1, w.w / CLEAR), ey = w.y - h - (st === 2 ? 26 : 12);
+    if (st === 2) {
+      ctx.fillStyle = '#ffd98a';
+      ctx.beginPath();
+      for (let i = 0; i < 8; i++) { const r = i % 2 ? 2.6 : 8, a = -Math.PI / 2 + i * Math.PI / 4; ctx.lineTo(w.x + Math.cos(a) * r, ey + Math.sin(a) * r); }
+      ctx.closePath(); ctx.fill();
+      glow(w.x, ey, 20, [255, 220, 150], 0.7);
+    } else {
+      ctx.strokeStyle = 'rgba(233,238,251,0.55)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(w.x, ey, 4.5, 0, TAU); ctx.stroke();
+      if (k > 0) {
+        ctx.fillStyle = `rgba(255,214,140,${0.3 + 0.6 * k})`;
+        ctx.beginPath(); ctx.moveTo(w.x, ey); ctx.arc(w.x, ey, 4.5, -Math.PI / 2, -Math.PI / 2 + TAU * k); ctx.closePath(); ctx.fill();
+      }
+    }
   }
 }
 function drawSkip() {
@@ -890,10 +956,11 @@ class ThrowGame extends Base {
     if (this.c && this.phase === 'flying') drawComet(this.c.x, this.c.y, this.c.L);
   }
   hud() {
+    drawTally(W - 232, 16);
     if (!this.c || this.phase !== 'flying') return;
-    panel(W - 232, 16, 214, 50);
-    label('Light', W - 218, 36, 13);
-    bar(W - 218, 44, 186, 8, this.c.L / 1.35, GUIDES[S.guide].rgb);
+    panel(W - 232, 96, 214, 50);
+    label("Light", W - 218, 116, 13);
+    bar(W - 218, 124, 186, 8, this.c.L / 1.35, GUIDES[S.guide].rgb);
   }
 }
 
@@ -1031,6 +1098,7 @@ class TurningGame extends Base {
     else if (this.phase === 'ready') drawComet(this.P0.x, this.P0.y, 0.75);
   }
   hud() {
+    drawTally(W - 232, 16);
     const x = 28, y = 604, w = 440, h = 36, span = this.span();
     panel(x - 12, y - 26, w + 24, h + 46);
     label(`The sky ahead · the next ${span} seconds`, x, y - 9, 13);
@@ -1157,9 +1225,10 @@ class FallGame extends Base {
     if (this.phase !== 'done') drawComet(this.s.x, this.s.y, Math.max(0.2, this.s.L));
   }
   hud() {
-    panel(W - 232, 16, 214, 50);
-    label('Light', W - 218, 36, 13);
-    bar(W - 218, 44, 186, 8, this.s.L / this.maxL, GUIDES[S.guide].rgb);
+    drawTally(W - 232, 16);
+    panel(W - 232, 96, 214, 50);
+    label("Light", W - 218, 116, 13);
+    bar(W - 218, 124, 186, 8, this.s.L / this.maxL, GUIDES[S.guide].rgb);
   }
 }
 
@@ -1309,6 +1378,7 @@ class ClearGame extends Base {
       if (i < this.breaths) { ctx.fillStyle = 'rgba(214,236,244,0.95)'; ctx.fill(); }
     }
     label(`The odds feel: ${(this.fall ? this.fall.oddsWord : this.oddsWord())}`, x + 14, y + 56, 19, '#f2d79a', { display: true });
+    drawTally(W - 232, 98);
   }
 }
 
@@ -1362,8 +1432,17 @@ class ReadingGame extends Base {
       if (this.fuel <= 0) { this.fuel = 0; this.doRead(); }
     }
     if (this.phase === 'reading') {
+      const before = this.readT;
       this.readT += dt;
-      if (this.readT > 1.9) finish(this.read.j, this.read.why);
+      // The moment of reading: the priest and elders show what they took from it.
+      if (before < 1.0 && this.readT >= 1.0) {
+        const t = this.read.j.tier, id = this.read.readId, priest = world.watchers.find(w => w.priest);
+        for (const w of world.watchers) w.w = t === 'understood' ? CLEAR : t === 'misread' ? SEEN : 0;
+        if (t === 'understood') { for (const w of world.watchers) understood(w, w.priest ? `${this.rune.name}!` : '', '255,217,138'); }
+        else if (t === 'misread') floater(priest.x, priest.y - 64, id ? `${RUNES[id].name}!` : '?', 'rgba(242,199,111,1)', 22, 2.6);
+        else floater(priest.x, priest.y - 64, '…', 'rgba(205,214,240,1)', 22, 2.0);
+      }
+      if (this.readT > 2.2) finish(this.read.j, this.read.why);
     }
   }
   doRead() {
@@ -1456,13 +1535,18 @@ class ReadingGame extends Base {
       ctx.stroke(); ctx.setLineDash([]);
     }
     if (this.readT > 1.0 && this.read) {
-      const px = this.win.x;
-      panel(px - 120, 590, 240, 70);
-      if (this.read.readId) {
-        drawRune(RUNES[this.read.readId], px - 104, 600, 50, '#f3e2b8', 2.6);
-        label(`“${RUNES[this.read.readId].name}”`, px - 40, 626, 22, '#f3e2b8', { display: true });
-      } else label('“…?”', px - 40, 626, 22, '#f3e2b8', { display: true });
-      label('the priest reads', px - 40, 648, 12, 'rgba(233,238,251,0.6)');
+      // You meant / they read, side by side, so a match or a mismatch is plain.
+      const px = this.win.x, tier = this.read.j.tier, id = this.read.readId;
+      const col = tier === 'understood' ? '#97dbb0' : tier === 'misread' ? '#f2c76f' : '#f19393';
+      panel(px - 230, 588, 460, 76);
+      label('You meant', px - 214, 608, 12, 'rgba(233,238,251,0.6)');
+      drawRune(this.rune, px - 214, 616, 38, '#f3e2b8', 2.4);
+      label(this.rune.name, px - 166, 644, 20, '#f3e2b8', { display: true });
+      label(tier === 'understood' ? '=' : '≠', px - 8, 640, 28, col, { display: true, align: 'center' });
+      label('The priest read', px + 22, 608, 12, 'rgba(233,238,251,0.6)');
+      if (id) { drawRune(RUNES[id], px + 22, 616, 38, col, 2.4); label(RUNES[id].name, px + 70, 644, 20, col, { display: true }); }
+      else label(tier === 'unseen' ? 'nothing' : 'no one agrees', px + 22, 644, 20, col, { display: true });
+      label(tier === 'understood' ? 'Understood' : tier === 'misread' ? 'Misread' : 'Unseen', px + 214, 644, 15, col, { weight: 700, align: 'right' });
     }
   }
   hud() {
@@ -1482,7 +1566,7 @@ const VERSIONS = { throw: ThrowGame, turning: TurningGame, fall: FallGame, clear
 function build() {
   const vi = VERSION_IDS.indexOf(S.version);
   parts.length = 0;
-  world = { stars: [], watchers: [], moon: null, fogs: [], skipT: 3, skipFlash: 0, ghosts: [] };
+  world = { stars: [], watchers: [], moon: null, fogs: [], skipT: 3, skipFlash: 0, ghosts: [], floaters: [] };
   game = new VERSIONS[S.version]();
   withSeed(seed * 7919 + S.diff * 131 + vi * 17 + 3, () => game.build());
   withSeed(seed * 104729 + 11, makeInterference);
@@ -1503,6 +1587,11 @@ function update(dt) {
   for (const w of world.watchers) { w.seeing = Math.max(0, w.seeing - dt * 1.6); if (S.guide !== 'fear') w.flinch = Math.max(0, w.flinch - dt); }
   for (let i = world.ghosts.length - 1; i >= 0; i--) { world.ghosts[i].life -= dt; if (world.ghosts[i].life <= 0) world.ghosts.splice(i, 1); }
   world.skipFlash = Math.max(0, world.skipFlash - dt * 1.6);
+  for (let i = world.floaters.length - 1; i >= 0; i--) {
+    const f = world.floaters[i];
+    f.life -= dt; f.y -= 16 * dt;
+    if (f.life <= 0) world.floaters.splice(i, 1);
+  }
   updateSkip(dt);
   game.update(dt);
   updateParts(dt);
@@ -1513,6 +1602,7 @@ function draw() {
   if (!game) return;
   game.draw();
   drawParts();
+  drawFloaters();
   drawSkip();
   game.hud();
 }
