@@ -1,4 +1,5 @@
 # Godot 4
+game/.godot/
 .godot/
 /android/
 *.translation

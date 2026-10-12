@@ -39,7 +39,7 @@ Start each work session with something like *"read the roadmap and changelog, th
 
 ### Phase 0: Setup and Design Foundations (Week 1–2) · $0
 - [x] Git installed (already on this PC); local repo created in `C:\Dev\GodGame`
-- [ ] Install Godot 4 (stable)
+- [x] Install Godot 4 (4.7.2, installed via winget to `%LOCALAPPDATA%\Microsoft\WinGet\Packages\GodotEngine.GodotEngine_Microsoft.Winget.Source_8wekyb3d8bbwe\`)
 - [ ] Create a GitHub account and a private repo for the project, then make the first commit and push
 - [ ] Write the one-page pitch in `DESIGN.md`:
   - The game in one sentence
