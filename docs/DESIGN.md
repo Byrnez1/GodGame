@@ -177,4 +177,14 @@ Look book, round one: https://claude.ai/artifact/EKpLub7YHY7z4d2sHFhSLu (copy sa
 - Five directions mocked up: Ink & Parchment, Ochre & Charcoal, Celestial Pantheon, Silhouette & Sky, Flat Cards
 - Three layouts: A. Heaven and Earth, B. The Open Book, C. The Altar
 - 💡 Claude's pick: **Heaven and Earth.** The Pantheon is drawn in the Celestial style, the mortal world in Silhouette & Sky, and the journal in Ink & Parchment, using layout A
-- Waiting on the user's reactions
+
+### ✅ Decided (user feedback on round one)
+- **Two main views, not one:**
+  - **The Pantheon view** (Celestial style): a record of decisions made so far, their effects, and **paths that were missed**
+  - **The World view** (Silhouette & Sky as a starting point): the actual people of the civilization, **moving and interacting**. It should feel **alive** and like a real civilization with real consequences, not something abstract. It doesn't need much detail, but it needs movement, and the society should visibly develop over time
+- **New mechanic idea (user):** as faith grows, the god can **glimpse possible future outcomes** in the Pantheon view
+- **❌ No card-game feel.** Flat Cards rejected. Prayers should **not** look like physical cards (*Slay the Spire* or *Reigns* style). The game should feel as in-depth as possible. 💡 Prayers could appear inside the world itself, e.g. the camera moves toward the person praying and their words appear in the scene
+- **Prototype note:** the "prayer cards" in the first prototype are just a placeholder name for prayer events
+
+### Living world scenes, round two
+Animated scene sketches: https://claude.ai/artifact/CUWWhm4T3xu1gSvL94MzYN (copy at `docs/art/living-world.html`). Scenes: The Flood (silhouette side view), Fire & Song (night close-up), The Long Walk (overhead map), Generations (pixel time-lapse), Memory's Fog (villain interference). Waiting on user reactions.
