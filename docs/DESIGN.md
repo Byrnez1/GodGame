@@ -250,3 +250,13 @@ Animated scene sketches: https://claude.ai/artifact/CUWWhm4T3xu1gSvL94MzYN (copy
 - **Visuals are good.**
 - Wants a **separate tab for known entities and people**, so the journal entries being transcribed aren't cluttered. Done: the **Known** tab (gods, people, places and things). The **Journal** tab is now only the old book.
 - The **Pantheon screen should look like the blue-and-white astral view** from the look book. Done: the Pantheon is now a full view, with discoveries drawn as constellations on a blue-white starfield.
+
+### ✅ v0.2.1 playtest feedback (user, 2026-10-12) → v0.3
+- "It still feels like I can get anything I want. It's not clear I'm losing out on anything when I choose the good options." → discoveries appear through the story and some expire; prayers have options locked behind discoveries, shown greyed out; the Chronicle lists what was lost. Purely kind play now pays a price (see danger zones).
+- "The woman needs to be introduced sooner, but not obviously as a love interest." → *the woman in the reeds*, generation 3.
+- "More interference from Time and Memory, and slowly reveal their identities. Calling the time god a clock in the beginning is bad." → 8 interference events; names revealed in stages (see `STORY.md`).
+- "Language in the first interaction felt modern." → the opening is rewritten.
+- "The Pantheon should be where we have information on the gods, with pictures and data. The side panels are far too much to read." → the Pantheon now has three parts: the Heavens (sky plus a small card), the Hall (god portraits), and the Chronicle.
+- "More visually pleasing meters for love, fear, and faith." → animated vessels with danger zones.
+- "There should be ramifications for fear too high or too low, and love too low." → danger zones: terrified, fearless, forsaken.
+- "Less obvious paths past what you're currently picking: a fog of war, and more options. Most should unlock during the story, and I should feel the impact of not choosing certain techs." → fog of war, 25 discoveries, story unlocks, expiring windows, missed options.

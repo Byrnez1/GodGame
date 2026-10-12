@@ -16,7 +16,7 @@
 === page_one
 order: 1
 title: The first page
-sketch: reeds bending in moving water, and beside them, a small fire
+sketch: reeds bending in moving water, a small fire, and a figure standing far out among the reeds, its face rubbed away
 
 Her mother sang the old songs by the fire, weaving reeds from the river. I sat where the light could not reach me and listened until the stars went out.
 
@@ -26,7 +26,7 @@ title: A page with a pressed flower
 sketch: a mound of earth on a hillside, with the sun rising behind it
 when: 5+
 
-She laughed at me for watching. She told me her people buried their dead facing the sunrise, so they would always wake to something warm. I asked what I would wake to. She did not answer. She only took my hand.
+She laughed at me for watching, and brought me fish in a clay bowl, as if gods were hungry. She told me her people buried their dead facing the sunrise, so they would always wake to something warm. I asked what I would wake to. She did not answer. She only took my hand.
 
 === page_three
 order: 3

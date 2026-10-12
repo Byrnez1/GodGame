@@ -8,17 +8,18 @@ to rewrite.
 
 Each file starts with notes explaining exactly what you can write in it.
 
-  settings.txt                   game numbers: love, fear, faith, casting, ranks
+  settings.txt                   game numbers: love, fear, faith, danger zones, casting, ranks
   cutscenes/story.txt            full-screen story moments with pictures
   prayers/act_one.txt            prayers for the early game (with the full list of settings)
   prayers/act_two.txt            the middle
   prayers/act_three.txt          the end, including the final choice
-  prayers/everyday.txt           repeatable prayers and unrest
+  prayers/everyday.txt           repeatable prayers, unrest, and the danger zones
   prayers/time_and_memory.txt    the villains' interference
-  revelations/discoveries.txt    the decision web: Fire, Song, River Dwelling...
+  revelations/discoveries.txt    the decision web (stars in the Pantheon): when each appears, when its chance passes
   journal/pages.txt              the old book's pages and margin sketches
   journal/words.txt              which words become readable, and when
-  characters/people.txt          gods and people in the Known tab
+  characters/people.txt          people in the Known tab
+  characters/gods.txt            gods in the Hall (Pantheon view), with portraits and names that change
   characters/places_and_things.txt   places and things in the Known tab
   endings/endings.txt            endings and epilogue lines
 

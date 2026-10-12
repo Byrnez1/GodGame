@@ -5,16 +5,16 @@ extends RefCounted
 
 const ROOT := "res://content"
 const RANKS := ["whisper", "spirit", "deity", "god"]
-const MOODS := ["loved", "feared", "restless", "calm"]
+const MOODS := ["loved", "feared", "restless", "calm", "terrified", "fearless", "forsaken"]
 ## Settings that decide WHEN something can happen. Prayers, cutscenes,
 ## journal pages, and endings all understand these.
 const CONDITION_FIELDS := ["when", "requires", "blocks", "after", "rank", "mood", "journal", "people", "silence"]
-const REVELATION_FIELDS := ["name", "rank", "cost", "requires", "excludes", "income", "growth", "love", "fear", "glimpse"]
-const PRAYER_FIELDS := ["speaker", "once", "weight", "kind", "picture"]
+const REVELATION_FIELDS := ["name", "rank", "cost", "requires", "excludes", "income", "growth", "love", "fear", "glimpse", "appears", "from", "until", "lost", "sight"]
+const PRAYER_FIELDS := ["speaker", "once", "weight", "kind", "picture", "by"]
 const CHOICE_FIELDS := ["cost", "faith", "people", "love", "fear", "unrest", "sets", "grants", "forgets", "closes", "silent", "needs", "result", "ends",
 	"test", "fail_result", "fail_faith", "fail_people", "fail_love", "fail_fear", "fail_unrest", "fail_sets", "fail_forgets"]
 const CUTSCENE_FIELDS := ["picture", "sets", "once"]
-const CHARACTER_FIELDS := ["name", "title", "group"]
+const CHARACTER_FIELDS := ["name", "title", "group", "portrait", "renamed"]
 const TEST_STATS := ["love", "fear", "faith"]
 const PAGE_FIELDS := ["order", "title", "sketch", "ink"]
 const ENDING_FIELDS := ["title", "kind", "condition"]
@@ -42,6 +42,15 @@ const SETTING_DEFAULTS := {
 	"rank_spirit": 20,
 	"rank_deity": 60,
 	"rank_god": 130,
+	"terror_at": 40,
+	"terror_flee": 8,
+	"fearless_below": 4,
+	"fearless_from": 4,
+	"fearless_faith_loss": 3,
+	"forsaken_below": 6,
+	"forsaken_from": 4,
+	"forsaken_growth": 3,
+	"forsaken_unrest": 2,
 	"common_words": "speech",
 }
 
@@ -271,7 +280,7 @@ func _conditions(f: Dictionary, path: String, line: int) -> Dictionary:
 		_err(path, line, "'rank' must be one of: whisper, spirit, deity, god.")
 		cond["rank"] = ""
 	if cond["mood"] != "" and not cond["mood"] in MOODS:
-		_err(path, line, "'mood' must be one of: loved, feared, restless, calm.")
+		_err(path, line, "'mood' must be one of: loved, feared, restless, calm, terrified, fearless, forsaken.")
 		cond["mood"] = ""
 	if cond["people"] != "" and cond["people"] != "none":
 		_err(path, line, "'people' can only be 'none' (everyone has died).")
@@ -362,6 +371,11 @@ func _add_revelation(b: Dictionary) -> void:
 		"love": _num(str(f.get("love", "0")), path, line, "love"),
 		"fear": _num(str(f.get("fear", "0")), path, line, "fear"),
 		"glimpse": str(f.get("glimpse", "")),
+		"appears": _list(str(f.get("appears", ""))),
+		"from": _num(str(f.get("from", "1")), path, line, "from"),
+		"until": _num(str(f.get("until", "0")), path, line, "until"),
+		"lost": str(f.get("lost", "")),
+		"sight": _num(str(f.get("sight", "0")), path, line, "sight"),
 		"text": b["text"],
 		"file": path,
 		"line": line,
@@ -386,6 +400,7 @@ func _add_prayer(b: Dictionary) -> void:
 		"weight": _num(str(f.get("weight", "10")), path, line, "weight"),
 		"kind": str(f.get("kind", "")).strip_edges().to_lower(),
 		"picture": str(f.get("picture", "")).strip_edges().to_lower(),
+		"by": str(f.get("by", "")).strip_edges().to_lower(),
 		"text": b["text"],
 		"choices": [],
 		"file": path,
@@ -410,9 +425,8 @@ func _add_prayer(b: Dictionary) -> void:
 			"ok": _effects(cf, "", path, cl),
 			"fail": _effects(cf, "fail_", path, cl),
 		}
-		if c["needs"] != "" and not c["needs"] in RANKS:
-			_err(path, cl, "'needs' must be a rank: whisper, spirit, deity, or god.")
-			c["needs"] = ""
+		# 'needs' is either a rank or a discovery; discoveries are checked in _check_links.
+		c["needs"] = c["needs"].replace(" ", "_")
 		if not c["test"].is_empty() and str(cf.get("fail_result", "")) == "":
 			_err(path, cl, "This choice casts the bones, so it needs a 'fail_result' saying what happens when the cast fails.")
 		for fl in c["ok"]["sets"] + c["fail"]["sets"]:
@@ -562,10 +576,21 @@ func _add_character(b: Dictionary) -> void:
 		"cond": _conditions(f, path, line),
 		"intro": b["text"],
 		"group": str(f.get("group", "people")).strip_edges().to_lower(),
+		"portrait": str(f.get("portrait", "")).strip_edges().to_lower(),
+		"renamed": [],
 		"notes": [],
 		"file": path,
 		"line": line,
 	}
+	# "renamed: names_known = Time" means: once names_known is true, show the name "Time".
+	for part in str(f.get("renamed", "")).split(","):
+		if part.strip_edges() == "":
+			continue
+		var bits := part.split("=")
+		if bits.size() != 2 or bits[0].strip_edges() == "" or bits[1].strip_edges() == "":
+			_err(path, line, "'renamed' should look like 'renamed: names_known = Time' (a flag, '=', then the new name).")
+			continue
+		person["renamed"].append([bits[0].strip_edges().to_lower().replace(" ", "_"), bits[1].strip_edges()])
 	for i in b["choices"].size():
 		var ch: Dictionary = b["choices"][i]
 		_check_fields(ch["fields"], CONDITION_FIELDS, path, ch["line"], "a note about a person")
@@ -596,9 +621,19 @@ func _check_links() -> void:
 			for other in r[key]:
 				if not revelations.has(other):
 					_err(r["file"], r["line"], "'%s' in '%s' isn't a discovery name. Check the spelling." % [other, key])
+		for x in r["appears"]:
+			if not _known(x):
+				_err(r["file"], r["line"], "'%s' in 'appears' isn't a discovery or a flag that anything sets. Check the spelling." % x)
+	var people_ids := {}
+	for person in characters:
+		people_ids[person["id"]] = true
 	for p in prayers:
 		_check_cond(p["cond"], p["file"], p["line"])
+		if p["by"] != "" and not people_ids.has(p["by"]):
+			_err(p["file"], p["line"], "'by: %s' should be the name of someone in the characters folder (like 'time' or 'memory')." % p["by"])
 		for c in p["choices"]:
+			if c["needs"] != "" and not c["needs"] in RANKS and not revelations.has(c["needs"]):
+				_err(p["file"], c["line"], "'needs' must be a rank (spirit, deity, god) or a discovery name. '%s' is neither." % c["needs"])
 			for key in ["grants", "forgets", "fail_forgets", "closes"]:
 				for x in c[key]:
 					if not revelations.has(x):
@@ -611,6 +646,9 @@ func _check_links() -> void:
 		_check_cond(e["cond"], ROOT + "/endings", 0)
 	for person in characters:
 		_check_cond(person["cond"], person["file"], person["line"])
+		for rn in person["renamed"]:
+			if not _known(rn[0]):
+				_err(person["file"], person["line"], "'%s' in 'renamed' isn't a discovery or a flag that anything sets." % rn[0])
 		for n in person["notes"]:
 			_check_cond(n["cond"], person["file"], n["line"])
 	for concept in _word_lines.keys():

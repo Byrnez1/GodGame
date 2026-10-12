@@ -7,13 +7,18 @@
 #   once:      "no" if it can happen more than once (default: yes)
 #   weight:    how likely it is to be picked compared to others (default 10)
 #   kind:      "villain" for Time and Memory, "final" for the last choice
+#   by:        who is really behind it (time or memory). Counted in the Hall of the Pantheon.
 #   Conditions: when, requires, blocks, after, rank, mood, journal, silence
 #               (see cutscenes/story.txt for what each one means)
+#               mood can also be a danger zone: terrified, fearless, or forsaken.
+#               Those prayers jump to the front of the line while it lasts.
 #
 # Then a blank line, the story text, and the choices.
 # Each choice starts with ">" and is followed by indented settings:
 #   cost:      faith it costs up front (shown to the player)
-#   needs:     a rank needed to pick it: spirit, deity, or god
+#   needs:     a rank needed to pick it (spirit, deity, or god), OR a discovery
+#              the people must have, like "needs: herbs". The player still sees
+#              the choice, greyed out, so they feel what they're missing.
 #   faith, people, love, fear, unrest:   change by this amount, like "+2" or "-3"
 #   sets:      a flag to remember (used by conditions elsewhere)
 #   grants:    give a discovery for free
@@ -79,6 +84,30 @@ She does not know what you want. She is trying everything.
 > Leave the rock untouched
   silent: yes
   result: The blanket sits on the rock for three days. Then Sana quietly takes it back. She keeps coming to the rock anyway.
+
+
+=== the_woman_in_the_reeds
+when: 3
+speaker: The women who cut reeds
+picture: reeds
+
+At dusk, the women cutting reeds saw someone standing in the river. Further out than anyone should stand, in water that should have taken her off her feet. A woman, quite still, watching the camp.
+
+When they called out, there was no one there. They have come to the flat rock to ask what she was.
+
+> Tell them she is a spirit to be feared
+  fear: +3
+  faith: +1
+  sets: reed_woman_seen, reed_woman_feared
+  result: They keep the children away from the deep water after that. When the reeds move at dusk, the women look away. Something in you is relieved, and you could not say why.
+> Tell them she is a good omen
+  love: +2
+  sets: reed_woman_seen, reed_woman_omen
+  result: They leave a few river stones on the bank for her. Every so often, the stones are moved. Nobody admits to moving them.
+> Say nothing
+  silent: yes
+  sets: reed_woman_seen
+  result: They argue about it for a season. Some say she was a drowned girl. Some say she was a trick of the light. Nobody says she was nothing.
 
 
 === cold_nights
@@ -191,15 +220,17 @@ Sana asks you which one to choose.
 > The girl who sings
   grants: song
   love: +2
+  sets: singer_found, healer_found
   result: Sana teaches her everything. Within a generation, the whole people sings. The boy learns what he can on his own. Some winters, it is not enough.
 > The boy who knows the plants
   grants: herbs
   love: +2
+  sets: singer_found, healer_found
   result: Sana teaches him everything. Within a generation, fevers are something people survive. The girl keeps humming, but nobody else learns her songs.
 > Say nothing
   silent: yes
   result: Sana tries to teach both. She dies before she finishes with either.
-  sets: sana_gone, sana_silent
+  sets: sana_gone, sana_silent, singer_found, healer_found
 
 
 === sana_dies
@@ -237,7 +268,9 @@ A hunter has found that a stick left in the fire comes out hard and sharp. The o
 
 > Tell them it is
   grants: spear
+  sets: spear_found
   result: Every hunter carries a fire-hardened spear by the next season. The hunting is better. The arguments are worse.
 > Tell them it is not
   love: +1
+  sets: spear_found
   result: They put the sharpened stick aside, a little afraid of it. It will be found again. These things always are.

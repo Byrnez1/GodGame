@@ -1,6 +1,7 @@
 # EVERYDAY PRAYERS AND UNREST
 # These can come up more than once, to fill quiet generations.
 # Prayers with "mood: restless" jump to the front when your people are restless.
+# The same goes for the danger zones at the bottom: terrified, fearless, forsaken.
 # See act_one.txt for every setting you can use.
 # DRAFT TEXT: rewrite freely.
 
@@ -22,6 +23,16 @@ A lean season. Not a disaster, only hunger, the ordinary kind. They ask for noth
   fear: +3
   faith: +3
   result: They burn a share of their thin stores for you. They are hungrier, and more certain you are real.
+> Drive the fish into the weirs
+  needs: weirs
+  people: +2
+  love: +1
+  result: The weirs fill so fast the children can scoop fish out with their hands. Nobody goes hungry.
+> Lead the herds close to camp
+  needs: herding
+  people: +2
+  love: +1
+  result: The tame herds wander in close, fat and slow. Nobody goes hungry.
 > Let it pass
   silent: yes
   result: The lean season passes, as lean seasons do.
@@ -118,3 +129,183 @@ A whole family has packed their furs and left in the night, heading for the hill
   people: -5
   unrest: -3
   result: Five of them walk away into the hills, and you let them. The ones who stay are the ones who want to.
+
+
+=== the_fever
+when: 5+
+weight: 5
+speaker: The healers
+
+A fever has come with the warm rains. It is the kind that takes the very young and the very old. The healers have tried everything they know.
+
+> Brew the fever-leaf
+  needs: herbs
+  love: +1
+  result: The bitter tea goes round every hut. A few nights of sweating, and the fever breaks. Nobody is buried.
+> Burn the huts of the sick
+  fear: +4
+  people: -3
+  result: The fever stops spreading. Three families sleep under the sky for the rest of the season, and three of their old ones never come in from it.
+> Sit with them, and hope
+  test: love 10
+  love: +2
+  people: -1
+  result: The fever burns itself out. Only one is lost.
+  fail_result: The fever takes its time, and takes six.
+  fail_people: -6
+
+
+# ------------------------------------------------------------ DANGER ZONES
+# These only come when your people are in a danger zone (see settings.txt),
+# and jump to the front of the line while it lasts.
+
+=== the_climb
+when: 5+
+weight: 6
+mood: fearless
+speaker: The elders
+picture: storm
+
+Some of the young men have decided to climb the high rocks, all the way to the top, to see if anything is really up there.
+
+The elders don't stop them. The elders want to know too.
+
+> Strike the rocks with lightning
+  fear: +8
+  people: -2
+  result: The lightning finds the two at the top. The others climb down without being told. Nobody goes up the high rocks again for a hundred years.
+> Show them something they cannot explain
+  cost: 3
+  fear: +4
+  love: +1
+  result: At the top, they find a light with no source, warm on their faces. They come down very quiet, and do not climb again.
+> Let them climb
+  silent: yes
+  faith: -2
+  unrest: +2
+  result: They reach the top and find nothing but wind. They come down and tell everyone. Some people stop leaving gifts on the flat rock.
+
+
+=== the_man_who_would_be_god
+when: 6+
+weight: 5
+mood: fearless
+speaker: The priests
+
+A man named Haro has started taking the offerings from the flat rock for himself. He says the sky never touches them anyway, so why shouldn't he? He says that if there is a god, it is him: he is the one who feeds them, judges them, keeps them safe.
+
+People are listening.
+
+> Humble him before everyone
+  test: fear 9
+  fear: +6
+  unrest: -2
+  result: Haro wakes up unable to speak. He lives a long life, and never says another word. Nobody takes from the flat rock again.
+  fail_result: Nothing happens to Haro. He laughs, and takes the next offering too.
+  fail_unrest: +3
+  fail_faith: -3
+> Let the people judge him
+  love: +2
+  unrest: +1
+  result: The people argue for three days. In the end, they send Haro away, but not because of you. Because he was a thief. You are not sure that's better.
+> Let him take what he likes
+  silent: yes
+  faith: -4
+  result: Haro grows fat on the offerings. Some people start bringing their gifts to Haro instead of the rock. It's quicker.
+
+
+=== the_hidden_children
+when: 4+
+once: no
+weight: 6
+mood: terrified
+speaker: The mothers
+picture: storm
+
+The mothers have begun hiding their newborns from the sky. They keep them wrapped in the dark of the huts, and paint their faces with mud, so you will not notice them and take them.
+
+> Let them hide
+  fear: -4
+  love: +1
+  result: You look away from the huts. After a while, the mothers stop painting the babies' faces. It is not trust. But it is less fear.
+> Show them you see everything
+  fear: +5
+  faith: +3
+  people: -2
+  result: A storm lifts the roof off a hut, and a mother finds her child gone in the morning. Nobody hides anything from you again.
+> Send a sign of gentleness
+  cost: 3
+  fear: -8
+  love: +4
+  result: Every newborn wakes the next morning with a little white flower on its blanket. The mothers do not know what to make of it. Some of them cry.
+
+
+=== the_unasked_offering
+when: 6+
+weight: 5
+mood: terrified
+speaker: The priests
+picture: fire
+
+They have started giving you things you never asked for. This morning, they brought a child to the high rocks, and they are waiting for you to take her.
+
+> Take what is offered
+  fear: +6
+  faith: +6
+  people: -1
+  sets: child_offered
+  result: You take her. The people are terrified and relieved. You feel larger, and you hate it.
+> Refuse, terribly
+  fear: +2
+  love: +1
+  result: Lightning scatters the priests from the rocks. The child runs home. The priests understand that you did not want her. They do not understand why.
+> Refuse, gently
+  cost: 4
+  fear: -10
+  love: +5
+  result: When the priests turn back to the rock, the child is asleep, and a dead stag lies beside her: a better gift than they gave you. The people begin, slowly, to breathe again.
+
+
+=== the_other_altar
+when: 4+
+weight: 6
+mood: forsaken
+speaker: The elders
+
+Your people have built a second altar on the hill, to a spirit of the hill. They say that at least the hill is always there.
+
+> Tear it down
+  fear: +6
+  love: -2
+  result: You split the altar with lightning. They come back to the flat rock. They do not come back happy.
+> Win them back
+  cost: 4
+  love: +6
+  result: The hill spirit's altar is left alone. But for a whole season, every prayer said at your flat rock is answered with something small and kind. By the end of it, the hill altar is overgrown.
+> Let them pray where they like
+  silent: yes
+  faith: -3
+  sets: other_altar
+  result: Half your people pray to the hill now. The hill does not answer them either, but they don't seem to mind.
+
+
+=== the_empty_rock
+when: 4+
+once: no
+weight: 4
+mood: forsaken
+speaker: The flat rock
+
+Nobody has left anything on the flat rock for a whole season. Moss is growing on it.
+
+> Leave a gift for them, unasked
+  cost: 3
+  love: +5
+  result: In the morning there is honey on the flat rock, and nobody knows where it came from. The children find it first. They keep coming back to check.
+> Demand an offering
+  fear: +4
+  faith: +2
+  result: A cold wind blows through the camp for a week, until someone thinks to leave something on the rock. Then it stops.
+> Wait
+  silent: yes
+  result: The moss spreads.

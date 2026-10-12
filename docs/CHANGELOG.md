@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.3: Things you can lose (2026-10-12)
+
+Rebuilt after the v0.2.1 playtest ("I can kind of get anything I want", "the side panel is far too much to read").
+
+**Choosing one thing costs you another**
+- **25 discoveries** (up from 14). Most appear **through the story**: Spear Hunting when a hunter finds a fire-hardened stick, Song and Healing Herbs when Sana chooses a student, Stone Shaping when Teo starts stacking stones.
+- **Chances pass.** Some discoveries have a window. Miss it and the moment is gone for good ("The reed beds silted up. The art of weaving was never found.").
+- **Prayers show what you're missing.** Many prayers have an option that only works if your people have the right discovery: reed boats in the flood, fever-leaf in the sickness, the wall against raiders, the keepers of stories against Memory's fog. Without the discovery, the option is greyed out with the reason ("Your people would need Reed Boats").
+- New exclusive paths: Reed Weaving or Fish Weirs. New dark paths: Carved Faces, the Priesthood, Blood Rites.
+
+**Danger zones for love and fear**
+- **Terrified** (too much fear): every generation some of your people flee into the hills.
+- **Fearless** (too little fear, from generation 5): the offerings dry up and you lose faith. Young men climb the high rocks to see if anything's there, and a man named Haro says he's the god now.
+- **Forsaken** (too little love): fewer children, more bitterness, and your people build an altar to a different spirit.
+- Each zone brings its own prayers. You're warned the moment your people slip into one.
+
+**New meters**
+- Faith is a glowing orb, and love and fear are animated vessels. Each vessel marks its danger zones and glows red when you're in one. The hatched end of the love vessel shows how much love fear has crowded out. Hover over a vessel to read what it does.
+
+**The Pantheon, in three parts**
+- **The Heavens:** the star map, now hidden in **fog of war**. You only see what your people have, what they could have next, and a "?" for anything right beside what you know. Reading the Stars lets you see further. Clicking a star shows a small card, not a wall of text.
+- **The Hall:** portraits of the gods you've met (you, the two Voices, the god with golden eyes), with what you know about them, when you first saw them, and how often you've felt their hand in your world.
+- **The Chronicle:** your choices, and *what was lost*: chances that passed, paths you closed, and options that were out of reach.
+
+**Story**
+- **The woman in the reeds:** she appears in generation 3, as an eerie figure standing in the river at dusk, not as a love interest.
+- **More interference from Time and Memory** (8 events, up from 3), aimed at what you remember. Their identities are revealed slowly: *the tall Voice* becomes *the Voice that Counts*, then **Time**.
+- **The opening is rewritten** in an older voice. The clock and the modern phrasing are gone.
+- Gods moved from the Known tab to the Hall. The Known tab is now people and places.
+
+**Behind the scenes**
+- Four test players now (random, kind, wise, cruel). Balance at the time of writing: a purely kind ruler is "fearless" all game and breaks the cycle with love 19% of the time; a "wise" ruler who keeps a little fear does it 63% of the time; a cruel ruler reaches God rank but terror empties the land.
+- `tests/trace.gd` prints one whole game step by step, for balancing.
+
+
 ## v0.2.1: Fixes from the first v0.2 playtest (2026-10-12)
 - **Fixed:** long cutscene panels pushed the Continue button off-screen (the player got stuck after "So that we cannot hurt each other"). Cutscene text now has more room and scrolls if needed, and the button always stays visible. **Enter** or **Space** also advances cutscenes.
 - **New "Known" tab** for people and entities, grouped into Gods and Powers, People, and Places and Things (the Pantheon, your pool, the small room, the flat rock, the old book). The **Journal** tab now holds only the old book, and it appears once the book is found.

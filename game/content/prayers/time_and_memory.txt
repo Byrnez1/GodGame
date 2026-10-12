@@ -1,16 +1,176 @@
 # TIME AND MEMORY
-# Interference from the villains. To your people, it just looks like bad luck.
+# Interference from the two who woke you. To your people, it just looks like
+# bad luck. To you, at first, it looks like nothing at all.
+#
+# "by: time" or "by: memory" says who is really behind it. The player never
+# sees that here, but the Hall in the Pantheon counts how often each of them
+# has touched your world, once you know who they are.
+#
+# Their goal: NOT to stop her being born (they need that), but to stop YOU
+# remembering. So they go after what you know: words, stories, the old book.
+#
 # See act_one.txt for every setting you can use.
 # DRAFT TEXT: rewrite freely.
 
+
+# ------------------------------------------------------------ EARLY (gens 3-7)
+
+=== the_lost_spring
+when: 3-5
+kind: villain
+by: time
+picture: time
+
+Spring does not come.
+
+One morning it is deep winter, and the next it is high summer, and the seeds are still in their baskets. The old ones count on their fingers and argue. Nobody can say where the weeks went.
+
+> Warm the late earth so the seeds take
+  cost: 3
+  love: +2
+  sets: lost_spring
+  result: The seeds go into the ground far too late, and come up anyway. Your people thank you. You are not sure what you saved them from.
+> Your star-readers saw it coming
+  needs: stargazing
+  sets: lost_spring, time_noticed
+  result: The ones who read the stars knew before anyone that the sky had skipped. They planted by the stars, not the weather, and nothing was lost. They say the sky "jumped." You wonder who could make a sky jump.
+> Let them go hungry
+  people: -3
+  sets: lost_spring
+  result: It is a hungry year. Three of the oldest do not see the next one. Nobody blames you. Nobody blames anything. Seasons are seasons.
+
+
+=== the_question
+when: 4
+requires: journal_found
+kind: villain
+by: memory
+picture: voices
+speaker: The quiet Voice
+
+The quiet Voice finds you beside your pool. It does not look at your people. It looks at you.
+
+"Tell me," it says. "Do you remember anything? From before you woke?"
+
+You think of the small room, and the book, and the pressed flower.
+
+> "Nothing."
+  sets: question_asked, lied_to_them
+  result: It watches you for a long moment. "Good," it says, and is gone. Your hands are shaking. You do not know why you lied.
+> Tell it about the small room
+  sets: question_asked, voices_watchful
+  result: "A room," it says softly. "How strange." It leaves without another word. From then on, you feel watched.
+> Ask it what came before
+  sets: question_asked, memory_noticed
+  result: "Nothing came before," it says. Then you are alone, and you cannot remember what you asked. Only that you asked something, and that the answer was a lie.
+
+
+=== the_forgotten_name
+when: 4-7
+requires: speech
+kind: villain
+by: memory
+picture: fog
+
+One morning, nobody can remember the name they gave you.
+
+They remember that there was one. They remember saying it at the flat rock, and at every fire. But when they open their mouths, nothing comes.
+
+> Give them a new name in a dream
+  cost: 2
+  love: +1
+  sets: name_forgotten
+  result: The new name is shorter, and the children like it. The old ones keep feeling for the other one, like a missing tooth.
+> Burn the old name back into them
+  fear: +5
+  faith: +2
+  sets: name_forgotten
+  result: Every one of them wakes screaming your name. They will not forget it again. They will not sleep easily either.
+> Let it go
+  love: -3
+  sets: name_forgotten
+  result: They call you "the sky" for a while, and then "the one above," and then nothing in particular.
+
+
+=== the_reeds_forgotten
+after: reed_woman_seen 2
+kind: villain
+by: memory
+picture: fog
+
+The children used to play a game called the woman in the reeds. One was the woman. The others had to cross the stream without looking at her.
+
+This season, nobody remembers how it goes. When the old fishers are asked about the woman, they don't know what anyone means.
+
+> Send the story back to them in a dream
+  test: love 9
+  sets: reed_story_kept
+  result: A girl wakes up and tells the story at breakfast as if she made it up. By evening, the children are playing the game again.
+  fail_result: The dream comes out wrong. Your people wake remembering a river and a woman, but not which river, or which woman, or why it mattered.
+  fail_sets: reed_story_lost
+> The keepers of stories still sing of her
+  needs: story_keepers
+  sets: reed_story_kept
+  result: The keepers know the song with every verse. They teach it again to anyone who will listen. Nobody can make them forget something they sing every night.
+> Let it go
+  sets: reed_story_lost
+  result: The woman in the reeds is gone from your people's memory as if she had never stood there. Something in you is relieved, and you do not know why. That frightens you more than the forgetting.
+
+
+=== the_old_child
+when: 5-10
+kind: villain
+by: time
+picture: time
+speaker: A mother
+
+A boy went to sleep at ten years old and woke up an old man. His mother does not know him. He does not know himself. He sits by the fire and stares at his spotted hands.
+
+> Give him back his years
+  cost: 5
+  love: +3
+  sets: old_child
+  result: It takes everything you have. In the morning he is a boy again, and remembers nothing, and runs off to play. His mother does not let him out of her sight for a year.
+> Let him live out the years he has
+  love: +1
+  sets: old_child
+  result: He lives one season as an old man, and his mother cares for him as if he were her father. He dies in the spring. Nobody understands it.
+> Let them believe it was your doing
+  fear: +4
+  faith: +2
+  sets: old_child
+  result: Your people decide the sky took the boy's years as punishment for something. They become very careful about what they say near children.
+
+
+=== the_closed_door
+when: 6+
+requires: voices_watchful
+kind: villain
+by: memory
+picture: pantheon
+
+You go back to the small room, and the door is not there.
+
+Where it stood, there is a pillar like all the others. You put your hand against it. Cold stone. The old book is in there, and the chair, and the window with the river.
+
+> Tear at the stone until it opens
+  cost: 4
+  result: It takes you a whole generation of searching, but you find the edge of the door again, and pull it open. Nobody is inside. The book is where you left it. Someone has moved the flower.
+> Wait, and hope it returns
+  sets: door_lost
+  result: You wait. Eventually the door comes back, as if it had never left. But you have lost time with the book that you will not get back. You should never have told them about the room.
+
+
+# ------------------------------------------------------------ MIDDLE (gens 6-10)
 
 === the_fog
 when: 6+
 requires: song
 kind: villain
+by: memory
 picture: fog
 
-A fog rolls in from nowhere and sits on the camp for three days. It smells, very faintly, like the hall where the Voices first spoke to you.
+A fog rolls in from nowhere and sits on the camp for three days. It smells, very faintly, like the hall where you first woke.
 
 When it lifts, your people gather to sing, and find they cannot remember how the song goes.
 
@@ -22,6 +182,10 @@ When it lifts, your people gather to sing, and find they cannot remember how the
   fail_forgets: song
   fail_sets: fog_came
   fail_love: -2
+> The keepers sing it back to everyone
+  needs: story_keepers
+  sets: fog_came
+  result: The keepers sit in the middle of the camp and sing every verse, over and over, until the rest of your people find the words again. The fog can take a song from one mind. Not from fifty.
 > Pour your strength into them
   cost: 6
   needs: spirit
@@ -33,15 +197,43 @@ When it lifts, your people gather to sing, and find they cannot remember how the
   result: The song is gone. In the old book, words you had only just learned to read go dark again.
 
 
+=== the_gift
+when: 7-9
+kind: villain
+by: time
+picture: voices
+speaker: The tall Voice
+
+The tall Voice sits beside you at your pool, close enough that you feel the age of it.
+
+"You carry so much," it says. "Every prayer. Every death. I could take a little of the weight. You would be stronger for it."
+
+It does not say what it would take.
+
+> Accept the gift
+  faith: +10
+  sets: took_the_gift
+  result: Strength pours into you, cold and clean. You feel lighter. Later, alone, you try to remember the dream of the river, and find you can only remember that you had one.
+> Refuse it
+  sets: refused_the_gift
+  result: "As you wish," it says. It does not seem surprised. It does not seem anything. When it is gone, you notice the flowers on your people's flat rock have all wilted.
+
+
 === the_lost_generation
 when: 9+
 kind: villain
+by: time
 picture: time
 
 You blink.
 
 When you look down again, a whole generation has passed without you. Children you watched being born are old. Prayers piled up unanswered, and the people decided you had abandoned them.
 
+> Your day-counters kept the tally
+  needs: calendar
+  love: -1
+  sets: lost_generation, time_noticed
+  result: The ones who count the days have every notch. They show your people exactly how long it was, and that it was not your doing: the sky itself skipped. Your people forgive you. You do not forgive whoever did this.
 > Reach for them gently
   love: -4
   faith: -4
@@ -53,13 +245,19 @@ When you look down again, a whole generation has passed without you. Children yo
   result: Thunder for seven days. They know you are back. They are not sure that is good news.
 
 
+# ------------------------------------------------------------ LATE (after the book is yours)
+
 === memory_takes
 after: journal_is_mine 1
 kind: villain
+by: memory
 picture: fog
 
 The old book is open in front of you, and the words are going grey, one by one. Something is reaching into your people's minds, pulling out the things that made their world like hers.
 
+> The keepers hold on to the old ways
+  needs: story_keepers
+  result: The keepers sing the weaving songs, the river songs, the old stories, all night. The grey stops at the edge of the page.
 > Hold the words in your mind
   test: faith 13
   result: You hold on. The grey retreats. Whatever was reaching for them lets go, for now.
@@ -68,4 +266,5 @@ The old book is open in front of you, and the words are going grey, one by one. 
   fail_forgets: weaving
 > Let it take something small
   forgets: weaving
+  sets: memory_struck
   result: Your people forget how to weave reeds, as if they never knew. In the old book, the words go dark.

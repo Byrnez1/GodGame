@@ -120,6 +120,6 @@ For a first-time developer working part-time: **12–24 months** to a polished r
 
 ## Current status
 **Phase:** 1 (finding the fun)
-**Done:** design and story docs; tools set up; art directions explored (parked for now); v0.1 playtested by the user; **prototype v0.2 is playable** (see `CHANGELOG.md`).
-**Next steps:** user plays v0.2 → feedback on weight, mystery, and casting → review the draft story additions in `STORY.md` → iterate.
+**Done:** design and story docs; tools set up; art directions explored (parked for now); v0.1 and v0.2.1 playtested by the user; **prototype v0.3 is playable** (see `CHANGELOG.md`).
+**Next steps:** user plays v0.3 → feedback on whether choices now cost something, the danger zones, the fog, and the new Pantheon → review the draft story additions in `STORY.md` (v0.2 and v0.3 sections) → iterate.
 **Story decided:** the harvested power makes mortals love the gods; the finale is a choice (break or keep the cycle) followed by a short epilogue. Open story questions are listed at the bottom of `STORY.md`.

@@ -15,6 +15,8 @@ weaving: weaving
 sunrise_burial: buried, dead, sunrise, wake
 stone: stone, built
 temple: temple, roof
+stargazing: stars
+pottery: clay, bowl
 
 # --- The story (flags) ---
 # She is a mystery until the dream (around halfway).

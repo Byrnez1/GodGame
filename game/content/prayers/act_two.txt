@@ -24,6 +24,10 @@ Ama asks which.
   people: -6
   sets: flood_children
   result: They haul the stores to safety while the water takes the low huts. Six children. Ama's son is one of them. The people will eat this winter. They will not forget what it cost.
+> Carry the children out in the reed boats
+  needs: boats
+  love: +3
+  result: The boats go back and forth through the dark water all night. Every child is carried up the hill, and on the last trip, the dried fish too. Ama sits in the mud at dawn and laughs until she cries.
 > Hold back the river
   test: faith 13
   love: +5
@@ -54,6 +58,11 @@ The winter after the flood. There is not enough food for everyone. The elders ha
   fail_result: The hunters go out weak. Two do not come back. The children live, and grow up without fathers.
   fail_people: -2
   fail_love: +1
+> Open the sealed clay jars
+  needs: pottery
+  love: +1
+  sets: winter_passed
+  result: The jars from the high shelf are cracked open one by one. Dried fish, seeds, berries gone hard as stones. It is not a good winter. But everyone sees the spring.
 > Feed them all yourself
   cost: 6
   love: +3
@@ -74,9 +83,10 @@ The river can't give both this year. Either the reed beds are left to grow tall,
   people: -2
   result: The reeds grow taller than a man. Ama's hands are never still again. It is a lean year, and two of the old ones don't see the end of it, but every hut has a mat by the time the snow comes.
 > Cut them back for the fish
+  grants: weirs
   people: +4
   love: +2
-  result: The river is thick with fish. Everyone eats well. Ama watches the cut reeds float away and says nothing.
+  result: Ama's people drive stakes across the shallows. The river is thick with fish, and everyone eats well. Ama watches the cut reeds float away and says nothing.
 
 
 === the_wall_builder
@@ -92,14 +102,15 @@ The elders want a wall around the camp, to keep out raiders. Teo's mother wants 
 > A wall, to keep them safe
   grants: stone
   fear: +2
-  sets: walls_built
+  sets: walls_built, stones_split
   result: The wall grows a little every year. Behind it, your people sleep easier. They also start to feel that everything outside it is an enemy.
 > A house, for singing
   grants: stone
   love: +2
-  sets: song_house
+  sets: song_house, stones_split
   result: The house goes up slowly, stone by stone. It is not finished in Teo's lifetime. But on stormy nights, people go there, and sing.
 > Let it stay a game
+  sets: stones_split
   result: Teo builds his little walls. The children knock them down. Nobody else pays attention.
 
 
@@ -128,6 +139,11 @@ A rival band has been taking game from your people's valley. The hunters are sha
   fail_result: The rivals see empty hands and take them for weakness. Three of your hunters are killed before they can run.
   fail_people: -3
   fail_love: -2
+> Beat the war drum at the edge of the valley
+  needs: war_drum
+  fear: +5
+  faith: +3
+  result: The drum goes all night. In the morning, the rival band is gone, and so is every animal for a day's walk. Nobody on either side was touched.
 > Let the hunt decide it
   silent: yes
   people: -2
@@ -160,6 +176,12 @@ He has agreed. They are waiting for your sign.
   fail_people: -5
   fail_unrest: +3
   fail_sets: oren_spared
+> Refuse him, and lead the herds to the far springs
+  needs: herding
+  love: +4
+  people: -1
+  sets: oren_spared
+  result: Oren leads the herds himself, three days across the dust to springs only the oldest herders remember. The animals live. One old man doesn't make the walk back. Oren carries him home anyway.
 > Refuse him, and let the drought run its course
   love: +2
   people: -6
@@ -178,6 +200,10 @@ A coughing sickness, the kind the strangers had, is moving through the camp. The
   fear: +3
   people: -4
   result: The coughing stops. So do the people outside. Four of them. Their families sit at the edge of the firelight all winter, looking out.
+> Brew the fever-leaf
+  needs: herbs
+  love: +2
+  result: The healers boil the bitter leaves and pour the tea into every sick mouth. The coughing breaks within a week. Nobody dies.
 > Nurse them by the fire
   test: love 11
   love: +4
@@ -202,6 +228,10 @@ The painted strangers you drove away have come back, many more of them now, with
   fail_result: The raiders do not run. They take the stores, and five lives, and the camp burns.
   fail_people: -5
   fail_unrest: +3
+> Hold them at the wall
+  needs: walls
+  fear: +2
+  result: The raiders reach the wall and stop, the way water stops at a dam. They throw spears at it for a day. Then they go home.
 > Offer them a place at the fire
   cost: 4
   love: +3

@@ -23,6 +23,20 @@ love_calms: 6                # every 6 love removes 1 unrest each generation
 restless_at: 6               # unrest at which your people become restless
 base_growth: 3               # % more people each generation (love helps, fear hurts)
 
+# --- Danger zones (shown on the meters at the top of the screen) ---
+# Too much fear: TERRIFIED. People flee into the hills every generation.
+terror_at: 40                # fear at or above this is terror
+terror_flee: 8               # % of your people who flee each generation
+# Too little fear: FEARLESS. Your people stop taking you seriously.
+fearless_below: 4            # fear below this is fearless...
+fearless_from: 5             # ...from this generation on
+fearless_faith_loss: 2       # faith lost each generation (fewer offerings)
+# Too little love: FORSAKEN. Your people feel abandoned.
+forsaken_below: 6            # love below this is forsaken...
+forsaken_from: 4             # ...from this generation on
+forsaken_growth: 3           # % fewer children each generation
+forsaken_unrest: 2           # unrest added each generation
+
 # --- Casting the bones (three bones, 1-6 each) ---
 love_per_bonus: 8            # every 8 love adds +1 to a cast guided by love
 fear_per_bonus: 8            # every 8 fear adds +1 to a cast guided by fear

@@ -154,7 +154,7 @@ Written to support the wrong theories in Act 2, these reveal their real meaning 
 
 ## 💡 Draft additions in prototype v0.2 (Claude's, for the user to review)
 *Written to make the arc playable. All of it lives in `game/content/` and can be rewritten or cut.*
-- **The Voices** are introduced unnamed: **the Voice that Counts** (a ring of slow-turning light, Time) and **the Voice that Keeps** (hard to look at, like a word on the tip of your tongue, Memory). Their names are revealed with the harvest.
+- **The Voices** are introduced unnamed, as **the tall one** (very still; the air around it feels old; dust always falls near it) and **the quiet one** (hard to hold in your mind, like a dream after waking). See the v0.3 section below for how their names are revealed.
 - **The Pantheon:** an endless hall of pillars and thrones of light. Each god watches their world through a **pool**. One throne near the protagonist is dark. A **god with golden eyes** says "welcome back" (another god who knows more than she says).
 - **The old book** is found in **a small room behind a door he never noticed**, with a window looking onto a river at dusk that isn't in his world.
 - **Mortals of note:** Sana (the first to look up), **Ama** the river-keeper, **Teo** the quiet boy who stacks stones, **Oren** the hunter the elders offer as a sacrifice, **Ina** the priestess (Sana's great-granddaughter) who dreams the god's longing and interprets it, **Kesh** the doubter.
@@ -162,3 +162,16 @@ Written to support the wrong theories in Act 2, these reveal their real meaning 
 - **Dark path:** if Ina's prophecy turns toward sacrifice, she later tries to kill a girl born by the river. If the player lets it happen, **she can never be born** in this cycle.
 - **Final choice** (if she's born): stand against the Voices with your people's **love** or their **fear** (a cast of the bones), or let the cycle happen again. If she isn't born: let them begin again, or refuse them alone.
 - **The last page** of the old book: *"If I am reading this, they have taken everything again. Find the river. Find the songs. Find her. And when the voices tell me it was a punishment, I must not believe them."*
+
+## 💡 Draft additions in prototype v0.3 (Claude's, for the user to review)
+*Written from the v0.2.1 playtest feedback. All of it lives in `game/content/` and can be rewritten or cut.*
+- **The woman, introduced early (generation 3) without being a love interest:** *the woman in the reeds.* Reed-cutters see a woman standing far out in the river at dusk, in water that should knock her down; when they call out, she's gone. Your people decide she's a spirit to fear, a good omen, or argue about it. The children make a game of her. The first page of the old book has a margin sketch of a figure in the reeds with its face rubbed away. In the dream (generation 6+), the woman is standing in the water. Later the girl by the river stands exactly where the reed-cutters saw her. **Story idea behind it:** she's an echo of her from earlier loops that Memory never managed to scrub out of the world.
+- **What Time and Memory are after:** they don't try to stop her being born (they need the harvest). They try to stop *him remembering*. So they go after what he knows: his people's words and stories, the woman in the reeds, the old book.
+- **Their identities are revealed slowly:**
+  1. *The tall Voice* and *the quiet Voice* (generation 1).
+  2. *The Voice that Counts* once his people notice a missing season or missing years (needs the Reading the Stars or Counting the Days discoveries); *the Voice that Keeps* once he asks Memory what came before and it takes the question away.
+  3. **Time** and **Memory** once the god with golden eyes tells him (generation 8+): "Be careful what you remember near them."
+  4. *Why* they do it (the harvest) comes last, after the book is his.
+- **New interference:** a spring that never comes (Time), the quiet Voice asking "do you remember anything?" (Memory; lie, tell it about the small room, or ask what came before), his people forgetting his name (Memory), the woman in the reeds being forgotten (Memory), a boy who ages overnight (Time), the door to the small room vanishing if he told Memory about it, and **the gift**: Time offers to "carry some of the weight" for +10 faith, and quietly takes some of his memory of the dream (the three inks come later).
+- **Haro**, a man who takes the offerings for himself and says he is the god now (when your people stop fearing you).
+- **Opening rewritten** in an older voice: no clock, no "that is all you need to know".

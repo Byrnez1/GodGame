@@ -1,4 +1,4 @@
-# DISCOVERIES (the decision web)
+# DISCOVERIES (the decision web, shown as stars in the Pantheon)
 #
 # Each one starts with "=== name". The name is how other files refer to it.
 #
@@ -12,10 +12,24 @@
 #   growth:    extra % population growth every generation
 #   love:      love gained when granted
 #   fear:      fear gained when granted
+#   sight:     lets you see further through the fog in the heavens
 #   glimpse:   a hint about the future, shown once you're a Deity
+#
+# WHEN IT APPEARS (the fog of war):
+#   A star is hidden in fog until the story reveals it. Until then, the player
+#   only sees a faint "?" if it's next to something they already have.
+#   appears:   flags or discoveries; the star appears once ANY of them is true.
+#              Leave it out and the star appears as soon as its 'requires' are met.
+#   from:      the earliest generation it can appear
+#   until:     the last generation it can be granted. After that, its moment
+#              has passed and it's lost forever.
+#   lost:      what the player is told when its moment passes
 #
 # Then a blank line, then the description.
 # DRAFT TEXT: rewrite freely.
+
+
+# ---------------------------------------------------------------- WHISPER
 
 === speech
 name: First Words
@@ -38,9 +52,12 @@ Warmth through the long nights. More children live to see the spring.
 name: River Dwelling
 rank: whisper
 cost: 4
+from: 3
+until: 7
 excludes: wandering
 growth: 2
 glimpse: Reeds bending in the current, and someone's hands working them.
+lost: Nobody ever settled by the river. The reed beds grow tall with no one to cut them.
 
 The people settle where the water runs. Fish, reeds, and floods.
 
@@ -48,30 +65,50 @@ The people settle where the water runs. Fish, reeds, and floods.
 name: The Wandering Path
 rank: whisper
 cost: 4
+from: 3
+until: 7
 excludes: river
 income: 2
 glimpse: A people who never stay anywhere long enough to be remembered.
+lost: Nobody followed the herds south. The old ways of the long hunt are forgotten.
 
 The people follow the herds and never stay. They carry you with them, and they are hard to find.
+
+=== idols
+name: Carved Faces
+rank: whisper
+cost: 4
+appears: sana_heard
+income: 2
+fear: 3
+
+Faces cut into wood and bone, so your people can see you watching. They do not look kind.
 
 === spear
 name: Spear Hunting
 rank: whisper
 requires: fire
+appears: spear_found
 cost: 5
 growth: 1
 fear: 3
 
 Fire-hardened points. The hunters bring back more, and they are more dangerous.
 
+
+# ---------------------------------------------------------------- SPIRIT
+
 === song
 name: Song
 rank: spirit
 requires: speech
+appears: singer_found, sana_gone
+until: 10
 cost: 8
 income: 1
 love: 3
 glimpse: An old song, sung by a mother to a child who isn't born yet.
+lost: The girl who hummed grew old. Nobody learned her songs, and they died with her.
 
 The people sing to you. Faith comes easily to people who sing together.
 
@@ -79,26 +116,70 @@ The people sing to you. Faith comes easily to people who sing together.
 name: Healing Herbs
 rank: spirit
 requires: speech
+appears: healer_found, sana_gone
+until: 10
 cost: 6
 growth: 2
 love: 2
+lost: The boy who knew the plants is gone, and what he knew went into the ground with him. Fevers stay deadly.
 
 Bitter leaves that break fevers. The old live longer, and remember more.
+
+=== stargazing
+name: Reading the Stars
+rank: spirit
+requires: speech
+from: 4
+until: 9
+cost: 6
+income: 1
+sight: 1
+glimpse: Two people on a riverbank at night, naming the stars to each other.
+lost: Nobody looked up long enough to learn the stars. The sky stays a mystery to them, and the heavens stay foggy to you.
+
+Your people learn the slow turning of the sky. It helps you see further, too: more of the heavens come out of the fog.
 
 === weaving
 name: Reed Weaving
 rank: spirit
 requires: river
+until: 10
 cost: 7
 income: 1
 growth: 1
+excludes: weirs
+lost: The reed beds silted up. The art of weaving was never found.
 
 Mats to keep out the mud, baskets to carry fish. Every hut a little warmer.
+
+=== weirs
+name: Fish Weirs
+rank: spirit
+requires: river
+until: 10
+cost: 6
+growth: 3
+excludes: weaving
+
+Fences of stakes across the shallows. The river feeds everyone, and the reeds are cut back to make room.
+
+=== herding
+name: Taming the Herds
+rank: spirit
+requires: wandering
+until: 10
+cost: 7
+growth: 2
+income: 1
+lost: The herds were never tamed. Your people follow them still, and some winters, they lose them.
+
+The herds stop running from your people, and start following them.
 
 === sunrise_burial
 name: Burial Facing Sunrise
 rank: spirit
 requires: speech
+appears: sana_gone
 cost: 6
 excludes: sky_burial
 income: 1
@@ -111,6 +192,7 @@ The dead are laid facing east, so they will always wake to something warm.
 name: Sky Burial
 rank: spirit
 requires: speech
+appears: sana_gone
 cost: 5
 excludes: sunrise_burial
 income: 2
@@ -128,25 +210,78 @@ fear: 4
 
 A share of every hunt and harvest goes into the fire for you. Your people go a little hungrier, and believe a little harder.
 
+=== pottery
+name: Fired Clay
+rank: spirit
+requires: fire, river
+cost: 6
+growth: 2
+glimpse: A clay bowl, chipped at the rim, passed between two pairs of hands.
+
+River mud, shaped and baked hard. Jars that keep food through the winter.
+
+
+# ---------------------------------------------------------------- DEITY
+
 === stone
 name: Stone Shaping
 rank: deity
 requires: fire
-cost: 11
+appears: stones_split
+cost: 10
 growth: 2
 
 Stones that split clean, walls that do not fall. Your people build things meant to last.
+
+=== boats
+name: Reed Boats
+rank: deity
+requires: weaving
+cost: 8
+growth: 1
+income: 1
+
+Bundles of reeds, tied tight enough to float. The river becomes a road.
+
+=== story_keepers
+name: The Keepers of Stories
+rank: deity
+requires: song
+cost: 9
+love: 2
+glimpse: An old woman teaching a child a song with a hundred verses, and making her sing each one back.
+
+Some of your people learn every song and every story by heart, and teach them to someone younger before they die. Things are harder to forget.
+
+=== calendar
+name: Counting the Days
+rank: deity
+requires: stargazing
+cost: 9
+income: 1
+
+Notches in a long bone, one for every sunrise. Your people know exactly how long a season should be, and notice when one isn't.
 
 === temple
 name: The Stone Temple
 rank: deity
 requires: stone, song
-cost: 15
+cost: 14
 income: 4
 love: 3
 glimpse: Rain on a stone roof. Two people asleep inside, one of them not quite human.
 
 A house of stone, big enough for everyone to sing in when the storms come.
+
+=== walls
+name: The Great Wall
+rank: deity
+requires: stone
+cost: 10
+growth: 1
+fear: 3
+
+A wall around everything your people own. Behind it, they sleep. Beyond it, everyone is an enemy.
 
 === war_drum
 name: The War Drum
@@ -157,3 +292,26 @@ income: 3
 fear: 6
 
 A rhythm that makes young men brave and old men afraid. Your people become feared by their neighbors.
+
+=== priesthood
+name: The Priesthood
+rank: deity
+requires: offerings
+cost: 9
+income: 4
+fear: 4
+
+Men and women who speak for you, take the offerings for you, and punish in your name. Not always the way you would.
+
+
+# ---------------------------------------------------------------- GOD
+
+=== blood_rites
+name: Blood Rites
+rank: god
+requires: priesthood
+cost: 12
+income: 6
+fear: 10
+
+The offerings are no longer only food.

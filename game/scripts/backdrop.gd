@@ -45,6 +45,7 @@ func _draw() -> void:
 		"voices": _voices()
 		"other_god": _other_god()
 		"dream_river": _dusk(true, false)
+		"reeds": _reeds()
 		"village": _dusk(false, true)
 		"fire": _fire()
 		"fog": _fog()
@@ -226,14 +227,15 @@ func _voices() -> void:
 	for i in 6:
 		var fx := fmod(i * 0.21 + _t * 0.015, 1.2) - 0.1
 		_ellipse(P(fx, 0.75 + sin(i) * 0.08), size.x * 0.25, size.y * 0.12, Color(0.85, 0.88, 0.95, 0.06))
-	var time_c := Color(0.9, 0.85, 0.7, 0.55)
 	var mem_c := Color(0.8, 0.86, 0.95, 0.5)
-	draw_colored_polygon(PackedVector2Array([P(0.30, 0.98), P(0.36, 0.2), P(0.42, 0.98)]), Color(0.08, 0.08, 0.12, 0.8))
-	draw_circle(P(0.36, 0.16), size.y * 0.045, Color(0.08, 0.08, 0.12, 0.85))
-	draw_arc(P(0.36, 0.16), size.y * 0.1, 0.0, TAU, 64, time_c, 2.0)
-	for k in 12:
-		var a := k * TAU / 12.0 + _t * 0.2
-		draw_line(P(0.36, 0.16) + Vector2(cos(a), sin(a)) * size.y * 0.1, P(0.36, 0.16) + Vector2(cos(a), sin(a)) * size.y * 0.115, time_c, 2.0)
+	# The tall one: very still, with fine dust always falling around it.
+	draw_colored_polygon(PackedVector2Array([P(0.31, 0.98), P(0.36, 0.14), P(0.41, 0.98)]), Color(0.08, 0.08, 0.12, 0.85))
+	draw_circle(P(0.36, 0.11), size.y * 0.04, Color(0.08, 0.08, 0.12, 0.9))
+	for k in 40:
+		var dx := (fmod(k * 0.618, 1.0) - 0.5) * 0.14
+		var dy := fmod(k * 0.137 + _t * 0.025, 1.0)
+		draw_circle(P(0.36 + dx, 0.05 + dy * 0.9), 1.1, Color(0.92, 0.88, 0.75, 0.45 * (1.0 - dy)))
+	# The quiet one: its edges never quite hold still.
 	draw_colored_polygon(PackedVector2Array([P(0.58, 0.98), P(0.64, 0.22), P(0.70, 0.98)]), Color(0.08, 0.08, 0.12, 0.8))
 	draw_circle(P(0.64, 0.18), size.y * 0.045, Color(0.08, 0.08, 0.12, 0.85))
 	for k in 5:
@@ -270,6 +272,40 @@ func _dusk(lone_figure: bool, village: bool) -> void:
 			_figure(fx, 0.9, 0.07, ground)
 	if lone_figure:
 		_figure(0.66, 0.84, 0.13, ground, true)
+
+
+## Dusk on the river. Far out in the water, among the reeds, someone stands quite still.
+func _reeds() -> void:
+	_vgrad(_tinted(Color("26234a")), _tinted(Color("8a4a78")), 0.0, 0.55)
+	_vgrad(_tinted(Color("8a4a78")), _tinted(Color("d98c6e")), 0.55, 0.62)
+	_hills(0.6, 0.05, 2.0, _tinted(Color("4a2c50")))
+	var water_top := 0.62
+	_vgrad(Color("3c2f55"), Color("1c1830"), water_top, 1.0)
+	for i in 14:
+		var y := water_top + 0.02 + i * 0.027
+		var x := fmod(i * 0.37 + _t * 0.01 * (1 + i % 3), 1.0)
+		draw_line(P(x - 0.06, y), P(x + 0.06, y), Color(1.0, 0.75, 0.6, 0.10), 1.0)
+	# The figure, and her reflection breaking up in the current.
+	var fig := Color("120e1c")
+	_figure(0.7, 0.7, 0.16, fig, true)
+	for k in 6:
+		var wob := sin(_t * 1.3 + k) * 3.0
+		var y := P(0, 0.71 + k * 0.018).y
+		draw_line(Vector2(P(0.7, 0).x - 6 + wob, y), Vector2(P(0.7, 0).x + 6 + wob, y), Color(0.07, 0.05, 0.12, 0.5 - k * 0.07), 2.0)
+	# Reeds in the foreground, swaying.
+	var r := RandomNumberGenerator.new()
+	r.seed = 9
+	for i in 60:
+		var bx := r.randf()
+		if absf(bx - 0.7) < 0.05:
+			continue
+		var h := r.randf_range(0.12, 0.38)
+		var sway := sin(_t * 0.9 + bx * 9.0) * 0.012
+		var base := P(bx, 1.02)
+		var tip := P(bx + sway + r.randf_range(-0.02, 0.02), 1.02 - h)
+		draw_line(base, tip, Color(0.05, 0.04, 0.08, 0.95), r.randf_range(1.5, 3.0))
+		if r.randf() < 0.3:
+			_ellipse(tip, 2.5, 7.0, Color(0.05, 0.04, 0.08, 0.95))
 
 
 func _fire() -> void:

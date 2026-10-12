@@ -1,0 +1,118 @@
+# GODS (the Hall, in the Pantheon view)
+#
+# The gods you meet, shown with a portrait and what you've learned about them.
+# Same format as people.txt, plus:
+#   portrait:  which picture to draw: you, time, memory, golden_eyes
+#              (Put an image at game/assets/art/portraits/<name>.png to replace it.)
+#   renamed:   a new name once a flag is true, like:  renamed: names_known = Time
+#              You can have several; the last one that's true wins.
+#              (Names can't contain commas.)
+#
+# Identities are revealed slowly: "the tall Voice" becomes "the Voice that
+# Counts" when you notice what it does, and "Time" when someone tells you.
+# DRAFT TEXT: rewrite freely.
+
+
+=== you
+name: You
+group: gods
+portrait: you
+title: a god, apparently
+
+> You woke in a hall of light with no memory of anything before.
+> Two Voices told you these people are yours to watch over. They did not tell you why.
+  requires: voices_met
+> No god may touch another inside the Pantheon. It is the oldest rule.
+  requires: rule_learned
+> You found a book in a room you don't remember, in a hand you can't read.
+  requires: journal_found
+> When your people fear you, you feel larger. When they love you, you feel known.
+  when: 4+
+> You lied to the quiet Voice, and did not know why.
+  requires: lied_to_them
+> Another god welcomed you "back." You do not remember leaving.
+  requires: welcome_back
+> You dreamed, though gods do not dream. A river. A woman laughing.
+  requires: dreamed_of_her
+> You are looking for her. You don't know why.
+  requires: purpose
+> You took a gift from the tall Voice. You cannot remember what it cost.
+  requires: took_the_gift
+> The old book is in your handwriting. You wrote it, and you forgot.
+  requires: journal_is_mine
+> You have done all of this before. Many times.
+  requires: harvest_known
+
+
+=== time
+name: The tall Voice
+renamed: time_noticed = The Voice that Counts
+renamed: names_known = Time
+group: gods
+portrait: time
+title: one of the two who woke you
+requires: voices_met
+
+> Tall, and very still. The air around it feels old.
+> It said the rest would come "in its season."
+> Your people lost a spring. The weeks were simply gone.
+  requires: lost_spring
+> Your star-readers say the sky jumped, the way a heart skips.
+  requires: time_noticed
+> A boy grew old in a single night.
+  requires: old_child
+> It offered to carry some of your weight, and you let it. You feel stronger, and emptier.
+  requires: took_the_gift
+> It offered to carry some of your weight. You refused, and the flowers on the flat rock wilted.
+  requires: refused_the_gift
+> A whole generation passed in a blink.
+  requires: lost_generation
+> The god with golden eyes says its name is Time.
+  requires: names_known
+> It does not hate you. It needs you.
+  requires: harvest_known
+
+
+=== memory
+name: The quiet Voice
+renamed: memory_noticed = The Voice that Keeps
+renamed: names_known = Memory
+group: gods
+portrait: memory
+title: the other one who woke you
+requires: voices_met
+
+> Softer than the other. You can never quite remember what it said, only how it sounded.
+> It asked if you remembered anything from before you woke.
+  requires: question_asked
+> When you asked what came before, it said "nothing," and took your question away.
+  requires: memory_noticed
+> You told it about the small room. Then the door was gone.
+  requires: door_lost
+> Your people forgot the name they gave you, all in one night.
+  requires: name_forgotten
+> The children forgot the woman in the reeds.
+  requires: reed_story_lost
+> When the fog came, it smelled like the hall where you first woke.
+  requires: fog_came
+> The god with golden eyes says its name is Memory.
+  requires: names_known
+> Something reached into your people's minds and took what made their world like hers.
+  requires: memory_struck
+> It took everything from you. Not for the first time.
+  requires: harvest_known
+
+
+=== golden_eyes
+name: The god with golden eyes
+group: gods
+portrait: golden_eyes
+title: a stranger in the Pantheon
+requires: welcome_back
+
+> She said "welcome back," as if she knew you.
+> She said that nobody comes back. Not usually.
+> She told you the names of the two who woke you, and to be careful what you remember near them.
+  requires: names_known
+> She has stopped looking at you. You think it is pity.
+  requires: harvest_known

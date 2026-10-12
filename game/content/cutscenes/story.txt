@@ -6,7 +6,7 @@
 # Settings:
 #   picture:   the picture for the first panel. Available pictures:
 #              pantheon, pool, chamber, journal, inks, voices, other_god,
-#              dream_river, village, fire, fog, storm, harvest, birth, time, cycle, stars
+#              dream_river, reeds, village, fire, fog, storm, harvest, birth, time, cycle, stars
 #              (Put an image at game/assets/art/<name>.png to replace a drawn picture.)
 #   sets:      flags to set once the cutscene has been seen
 #   Conditions (same as prayers):
@@ -39,30 +39,34 @@ One of the thrones nearest you is dark.
 ---
 picture: voices
 
-Two shapes stand over you. One wears a ring of slow-turning light, like a wheel, or a clock. The other is harder to look at, like a word on the tip of your tongue.
+Two figures stand over you.
 
-"You are rested now," says the first.
+One is tall, and very still, and the air around it feels old. The other is harder to look upon, the way a dream is hard to hold once the dreamer wakes.
 
-"Good," says the second.
+"You have rested long enough," says the tall one.
+
+"Rise," says the other.
 
 ---
 
 "Who am I?" you ask.
 
-"You are what you have always been," says the one with the ring. "And you have work to do."
+"You are as you have ever been," says the tall one. "Rise, and take your throne."
 
 ---
 picture: pool
 
-At your feet is a pool, and in the pool, a world. A cold plain. A river. A few dozen people huddled around nothing at all.
+At your feet lies a pool, and in the pool, a world. A cold plain. A river. A few dozen people huddled around nothing at all.
 
-"These are yours," says the second voice. "Watch over them. That is all you need to know."
+"These are your people," says the quiet one. "Watch over them."
+
+"The rest will come," says the tall one, "in its season."
 
 ---
 
-When you look up, the Voices are gone.
+When you look up, they are gone.
 
-You are alone with your people, and you have no idea how to be a god.
+You are alone with your people, and you do not know how to be a god.
 
 
 === the_rule
@@ -141,7 +145,7 @@ Gods do not sleep. And yet.
 
 ---
 
-A river at dusk. Reeds. Someone laughing at something you said. You can't see her face, only the shape of her against the light.
+A river at dusk. Reeds. Someone standing in the water, laughing at something you said. You cannot see her face, only the shape of her against the light.
 
 You know that laugh. You have never heard it before, and you know it.
 
@@ -153,6 +157,27 @@ When it fades, you open the old book. For the first time, marks you have stared 
 Her. She.
 
 The book is about a woman.
+
+
+=== the_names
+when: 8+
+requires: welcome_back
+picture: other_god
+sets: names_known
+
+The god with golden eyes stops beside your throne. She does not look at you. She looks at your pool.
+
+"The two who woke you," she says. "Do you know their names?"
+
+You do not. You realize you never asked, and that you never thought to ask, and that this is strange.
+
+---
+
+"The tall one is Time," she says. "The quiet one is Memory."
+
+She is already turning away.
+
+"Be careful what you remember near them."
 
 
 === the_dream_faint
@@ -202,9 +227,9 @@ sets: voices_warned
 
 The Voices return.
 
-"You are spending a great deal of attention on one river," says the one with the ring.
+"Your gaze rests long upon one river," says the tall one.
 
-"Your people need you everywhere," says the other. "Not just there."
+"Your people have need of you in every place," says the quiet one. "Not there alone."
 
 ---
 
@@ -219,7 +244,7 @@ The Voices look at each other, and you do not like the look.
 when: 9+
 journal: 45+
 requires: dreamed_of_her
-blocks: three_inks
+blocks: three_inks, door_lost, took_the_gift
 picture: inks
 sets: three_inks
 
@@ -275,16 +300,17 @@ And you forgot. More than once.
 
 === the_harvest
 after: journal_is_mine 1
+requires: names_known
 picture: voices
 sets: harvest_known
 
-"You are remembering," says the Voice that Keeps. "You were not meant to remember. Not this time."
+"You are remembering," says Memory. "You were not meant to remember. Not this time."
 
 "This time?"
 
 ---
 
-The Voice that Counts sighs, a sound like a season ending.
+Time sighs, a sound like a season ending.
 
 "A god who loves a mortal, and a people who believe in that god. Together they make something none of us can make alone."
 
@@ -299,9 +325,9 @@ picture: harvest
 
 "So you let me find her," you say. "You let me love her. And then you take it. You take her. You take my memory. And you start again."
 
-"Yes," says the Voice that Counts. Its true name, you understand now, is Time.
+"Yes," says Time.
 
-"It was never a punishment," says the other, whose name is Memory. "It is a harvest."
+"It was never a punishment," says Memory. "It is a harvest."
 
 
 === her_birth
