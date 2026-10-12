@@ -1,0 +1,29 @@
+# TIME AND MEMORY
+# Interference from the villains. To your people, it just looks like bad luck.
+# See story.txt for every setting you can use.
+# DRAFT TEXT: rewrite freely.
+
+=== the_fog
+when: 7+
+requires: song
+kind: villain
+
+A fog rolls in from nowhere. It sits on the camp for three days. When it lifts, the people gather to sing and find they cannot remember how the song goes.
+
+> Send the song back to them in dreams
+  cost: 6
+  result: They wake humming. It takes a season, but the song comes back, almost the same as before.
+> Let the song go
+  forgets: song
+  result: The song is gone. On the journal's pages, words you had only just learned to read go dark again.
+
+=== the_lost_generation
+when: 9+
+kind: villain
+
+You blink. When you look down again, a whole generation has passed without you. Children you watched being born are old. The people say you abandoned them.
+
+> Reach for them
+  faith: -4
+  love: -1
+  result: They do not hear you at first. Then, slowly, some of them do.

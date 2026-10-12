@@ -1,5 +1,15 @@
 # God Game — Project Map
 
+## Play the prototype
+
+1. Double-click **God Game (Godot)** on your desktop. The Godot editor opens.
+2. Press **F5**, or click the ▶ button at the top right. The game starts in its own window.
+3. Close that window to stop playing.
+
+After changing any story file, press F5 again to see the change.
+
+## Folders
+
 ```
 GodGame/
 ├── README.md            ← you are here
@@ -8,29 +18,34 @@ GodGame/
 ├── docs/                📋 PLANNING
 │   ├── ROADMAP.md       the plan, phases, and current status
 │   ├── DESIGN.md        how the game plays
-│   └── STORY.md         the full story and every spoiler
+│   ├── STORY.md         the full story and every spoiler
+│   ├── CHANGELOG.md     what changed in each version
+│   └── art/             look books and scene sketches
 │
 └── game/                🎮 THE GAME (Godot project)
     ├── project.godot    open this file with Godot
     │
-    ├── content/         ✏️ STORY TEXT: edit freely
-    │   ├── journal/     the journal pages
-    │   ├── prayers/     prayers and events, and the player's choices
-    │   ├── revelations/ the decision web (fire, music, weaving…)
-    │   ├── characters/  shamans, chiefs, gods
-    │   └── endings/     the final choice and epilogues
+    ├── content/         ✏️ STORY TEXT: edit freely (see content/README.txt)
+    │   ├── settings.txt game numbers
+    │   ├── prayers/     prayers and the player's choices
+    │   ├── revelations/ the decision web (fire, song, weaving…)
+    │   ├── journal/     the journal pages and which words unlock when
+    │   ├── characters/  (not used yet)
+    │   └── endings/     how the game can end
     │
-    ├── scenes/          screens and UI (Claude's area)
+    ├── scenes/          screens (Claude's area)
     ├── scripts/         code (Claude's area)
-    └── assets/          art, fonts, sounds
+    ├── tests/           automated checks (Claude's area)
+    └── assets/          art, fonts, sounds (empty for now)
 ```
 
 ## Where to edit what
 
 | I want to… | Go to |
 |---|---|
-| Change story, dialogue, or journal text | `game/content/` |
+| Change story, prayer, or journal text | `game/content/` |
+| Change game numbers (length, costs, ranks) | `game/content/settings.txt` and `revelations/discoveries.txt` |
 | Change the plan or the story bible | `docs/` |
 | Change how something works | Ask Claude |
 
-Everything in `game/content/` is plain text. Open it in Notepad or VS Code, change the words, save, and run the game. If you make a mistake in a file, the game will tell you which file and line to fix.
+If you make a mistake in a story file, the game shows which file and line to fix instead of starting.

@@ -1,0 +1,33 @@
+# ENDINGS
+#
+# Checked from top to bottom. The first one whose condition is true is shown.
+# Conditions:
+#   condition: no people     everyone has died
+#   condition: readable 90   at least 90% of the key words (journal/words.txt) can be read
+#   condition: always        always true (keep one of these last)
+# Optional:  title: the heading shown above the ending
+# DRAFT TEXT: rewrite freely.
+
+=== gone
+condition: no people
+title: Silence
+
+There is no one left to pray to you. The flat rock where Sana once left berries is overgrown. Somewhere, a journal you cannot read will never be finished.
+
+=== whole
+condition: readable 90
+title: Her world, almost
+
+You can read almost every word now. The river, the songs, the reeds, the stone temple, the dead facing the sunrise: your people have built all of it, without ever knowing why. The last line of the last page ends with a name you do not recognize. It is written in your own hand.
+
+=== pieces
+condition: readable 50
+title: Half a story
+
+The journal is half a story. Some of her world is here, in the way your people live. Some of it is lost, or was never built. Whoever she was, she could almost be born here. Almost.
+
+=== stranger
+condition: always
+title: A stranger's world
+
+Most of the journal is still strange marks. The world below you is real and alive, but it is not hers. Wherever she was born, it was not here. Not yet.

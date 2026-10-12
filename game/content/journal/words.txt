@@ -1,0 +1,15 @@
+# WHICH DISCOVERY MAKES WHICH JOURNAL WORDS READABLE
+#
+# Format:   discovery: word, word, word
+#
+# Any word in the journal that is NOT listed here is an ordinary word.
+# Ordinary words become readable with the discovery named in settings.txt
+# (common_words), which is First Words (speech) right now.
+
+fire: fire, flame, flames, warm, warmth, light
+song: sang, song, songs, sing, singing, prayers
+river: river, water, reeds, banks, rain
+weaving: weaving, woven, wove
+sunrise_burial: buried, dead, sunrise, wake
+stone: stone, stones, built
+temple: temple, roof

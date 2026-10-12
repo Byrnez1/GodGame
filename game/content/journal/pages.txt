@@ -1,0 +1,28 @@
+# JOURNAL PAGES
+#
+# Each page starts with "=== name".
+# Settings (optional):
+#   order:  where the page sits in the journal (1 = first)
+#   title:  a heading shown above the page
+#
+# Write the page as normal prose. Important words are tied to discoveries
+# in words.txt. Everything else becomes readable with First Words.
+# DRAFT TEXT: rewrite freely.
+
+=== page_one
+order: 1
+title: A torn page
+
+Her mother sang the old songs by the fire, weaving reeds from the river. I sat where the light could not reach me and listened until the stars went out.
+
+=== page_two
+order: 2
+title: A page with a pressed flower
+
+She laughed at me for watching. She told me her people buried their dead facing the sunrise, so they would always wake to something warm. I asked what I would wake to. She did not answer. She only took my hand.
+
+=== page_three
+order: 3
+title: A water-stained page
+
+We hid from the storm in the stone temple her grandfather built. Rain on the roof like a thousand small hands. She fell asleep against my shoulder, and for the first time since I have existed, I was afraid of time.

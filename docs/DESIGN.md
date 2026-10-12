@@ -170,6 +170,17 @@ Text and boxes only, no art:
 1. Do the choices feel meaningful and tense, and does the player want to play "just one more generation"?
 2. Is it **satisfying** when a new word appears in the journal? Does it make the player want to discover the next concept?
 
+### ✅ Prototype v0.1 rules (as built, 2026-10-12)
+*All numbers live in `game/content/settings.txt` and the content files, so they can be tuned without code.*
+- **12 generations.** Each one: worship gives faith (1 per 15 people, plus discovery bonuses), the population grows (4% plus discovery bonuses), and 2 prayers arrive (prayers written for an exact generation always appear).
+- **Prayers** have 2–3 choices. Choices can cost faith, gain faith, change people/love/fear, set story flags, grant or forget discoveries, or need a minimum rank. Silence is always an option and is counted.
+- **Discoveries** (the decision web): one per generation, paid with faith, gated by prerequisites and rank. Some exclude others permanently ("paths not taken"). Prayers can also grant them, usually for less.
+- **Ranks** come from *lifetime* faith earned: Whisper 0, Spirit 20, Deity 60, God 120. At Deity, discoveries show **glimpses** of the future.
+- **Journal:** words are tied to discoveries in `journal/words.txt`. Unlisted words unlock with First Words. Unknown words show as stable rune glyphs (same word, same glyphs).
+- **Memory** can make the people forget a discovery (its words go dark again). Restoring it costs half.
+- **Endings** are based on the share of the journal's *key words* (words listed in words.txt) that are readable: ≥90% "Her world, almost", ≥50% "Half a story", otherwise "A stranger's world", or "Silence" if everyone dies.
+- The ending screen reports prayers answered, prayers left in silence, and love vs. fear, as groundwork for the personal epilogue.
+
 ---
 
 ## Art style & interface (❓ in progress)
@@ -187,4 +198,4 @@ Look book, round one: https://claude.ai/artifact/EKpLub7YHY7z4d2sHFhSLu (copy sa
 - **Prototype note:** the "prayer cards" in the first prototype are just a placeholder name for prayer events
 
 ### Living world scenes, round two
-Animated scene sketches: https://claude.ai/artifact/CUWWhm4T3xu1gSvL94MzYN (copy at `docs/art/living-world.html`). Scenes: The Flood (silhouette side view), Fire & Song (night close-up), The Long Walk (overhead map), Generations (pixel time-lapse), Memory's Fog (villain interference). Waiting on user reactions.
+Animated scene sketches: https://claude.ai/artifact/CUWWhm4T3xu1gSvL94MzYN (copy at `docs/art/living-world.html`). Scenes: The Flood (silhouette side view), Fire & Song (night close-up), The Long Walk (overhead map), Generations (pixel time-lapse), Memory's Fog (villain interference). **User feedback:** Memory's Fog, Fire & Song and The Flood are closest to the game in the user's head. ❌ Pixel art (Generations) rejected. ❌ Overhead map (The Long Walk) not working for them. Scenes mostly play out the player's choices with little interaction, so art is parked for now in favor of mechanics and a playable prototype.

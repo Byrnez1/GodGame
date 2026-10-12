@@ -1,0 +1,102 @@
+# EVERYDAY PRAYERS
+# These can come up more than once, to fill quiet generations.
+# See story.txt for every setting you can use.
+# DRAFT TEXT: rewrite freely.
+
+=== hungry_winter
+when: 3+
+once: no
+weight: 4
+speaker: The people
+
+The stores are thin and the winter is long. The children are hungry.
+
+> Lead the deer to the hunters
+  cost: 3
+  people: +2
+  love: 1
+  result: The deer walk into the hunters' camp as if they were called. Nobody goes hungry.
+> Demand an offering first
+  faith: +3
+  fear: 1
+  people: -1
+  result: They burn the last of the dried fish for you. You send the deer. One child does not survive the wait.
+> Stay silent
+  silent: yes
+  people: -2
+  result: They get through it. Most of them.
+
+=== good_year
+when: 2+
+once: no
+weight: 3
+speaker: The people
+
+A good year. The children are fat, the hunting is easy, and the people leave flowers on the flat rock for you.
+
+> Bless the year
+  cost: 2
+  faith: +4
+  love: 1
+  result: They will tell stories about this year for a long time.
+> Accept their gifts
+  faith: +2
+  result: You take what they give.
+
+=== the_sickness
+when: 4+
+once: no
+weight: 3
+speaker: The healers
+
+A coughing sickness is moving from hut to hut.
+
+> Burn it out of them with fever
+  cost: 3
+  fear: 1
+  people: -1
+  result: The fever is terrible, but it breaks the sickness. Only one dies.
+> Heal them gently
+  cost: 6
+  needs: spirit
+  love: 1
+  result: The sickness simply leaves, as if it had somewhere else to be.
+> Remain silent
+  silent: yes
+  people: -5
+  result: Five are buried before the coughing stops.
+
+=== strangers
+when: 4-9
+speaker: The scouts
+
+Strangers have been seen on the ridge: a handful of people with painted faces, watching the camp. They have not come closer.
+
+> Make them welcome
+  cost: 3
+  people: +6
+  love: 1
+  result: The strangers come down from the ridge with gifts. Within a generation, nobody remembers who was a stranger.
+> Drive them away with a storm
+  cost: 3
+  faith: +3
+  fear: 2
+  result: The storm breaks over the ridge and the strangers flee. Your people say you protect them. They also say not to anger you.
+> Let your people decide
+  silent: yes
+  result: Your people watch the strangers. The strangers watch your people. Eventually, they leave.
+
+=== the_spearmaker
+when: 3+
+requires: fire
+blocks: spear
+speaker: The hunters
+
+One of the hunters has found that a stick held in the fire comes out hard and sharp. The others want to know if this is a gift from you.
+
+> Tell them it is
+  cost: 3
+  grants: spear
+  result: Every hunter carries a fire-hardened spear by the next season.
+> Let them work it out themselves
+  result: Some of them do. Most of them don't bother.

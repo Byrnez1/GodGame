@@ -1,0 +1,138 @@
+# DISCOVERIES (the decision web)
+#
+# Each one starts with "=== name". The name is how other files refer to it.
+#
+# Settings (all optional):
+#   name:      what the player sees
+#   rank:      whisper, spirit, deity, or god (the rank you need to grant it)
+#   cost:      faith to grant it
+#   requires:  other discoveries needed first, separated by commas
+#   excludes:  discoveries this one closes off forever
+#   income:    extra faith every generation
+#   growth:    extra % population growth every generation
+#   love:      love gained when granted
+#   fear:      fear gained when granted
+#   glimpse:   a hint about the future, shown once you're a Deity
+#
+# Then a blank line, then the description.
+
+=== speech
+name: First Words
+rank: whisper
+cost: 3
+income: 1
+glimpse: Words carry prayers further than hands can.
+
+Sounds become names. Your people begin to speak to each other, and to you. Ordinary words in the journal become readable.
+
+=== fire
+name: Fire
+rank: whisper
+cost: 4
+growth: 2
+
+Warmth through the long nights. More children live to see the spring.
+
+=== river
+name: River Dwelling
+rank: whisper
+cost: 4
+excludes: wandering
+growth: 2
+glimpse: You see reeds bending in the current, and a woman's hands working them.
+
+The people settle where the water runs. Fish, reeds, and floods.
+
+=== wandering
+name: The Wandering Path
+rank: whisper
+cost: 4
+excludes: river
+income: 2
+glimpse: You see a people who never stay anywhere long enough to be remembered.
+
+The people follow the herds and never stay. They carry you with them wherever they go.
+
+=== song
+name: Song
+rank: spirit
+requires: speech
+cost: 7
+income: 1
+love: 1
+glimpse: You hear an old song, sung by a mother to a child who isn't born yet.
+
+The people sing to you. Faith comes more easily to people who sing together.
+
+=== weaving
+name: Reed Weaving
+rank: spirit
+requires: river
+cost: 6
+income: 1
+growth: 1
+
+Mats to keep out the mud, baskets to carry fish. Every hut a little warmer.
+
+=== spear
+name: Spear Hunting
+rank: spirit
+requires: fire
+cost: 6
+growth: 2
+fear: 1
+
+Fire-hardened points. The hunters bring back more, and they are more dangerous.
+
+=== sunrise_burial
+name: Burial Facing Sunrise
+rank: spirit
+requires: speech
+cost: 5
+excludes: sky_burial
+income: 1
+love: 1
+glimpse: You see a grave on a hillside, facing east. Someone has left flowers.
+
+The dead are laid facing east, so they will always wake to something warm.
+
+=== sky_burial
+name: Sky Burial
+rank: spirit
+requires: speech
+cost: 5
+excludes: sunrise_burial
+income: 1
+fear: 1
+
+The dead are given to the birds on the high rocks, and their spirits to the sky.
+
+=== stone
+name: Stone Shaping
+rank: deity
+requires: fire
+cost: 9
+growth: 2
+
+Stones that split clean, walls that do not fall. Your people begin to build things meant to last.
+
+=== temple
+name: The Stone Temple
+rank: deity
+requires: stone, song
+cost: 12
+income: 4
+love: 1
+glimpse: Rain on a stone roof. Two people asleep inside, one of them not quite human.
+
+A house of stone, big enough for everyone to sing in when the storms come.
+
+=== war_drum
+name: The War Drum
+rank: deity
+requires: spear, song
+cost: 8
+income: 3
+fear: 2
+
+A rhythm that makes young men brave and old men afraid. Your people become feared by their neighbors.

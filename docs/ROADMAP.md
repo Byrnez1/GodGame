@@ -41,7 +41,7 @@ Start each work session with something like *"read the roadmap and changelog, th
 - [x] Git installed (already on this PC); local repo created in `C:\Dev\GodGame`
 - [x] Install Godot 4 (4.7.2, installed via winget to `%LOCALAPPDATA%\Microsoft\WinGet\Packages\GodotEngine.GodotEngine_Microsoft.Winget.Source_8wekyb3d8bbwe\`)
 - [x] GitHub account (Byrnez1) + private repo `Byrnez1/GodGame`, first push done
-- [ ] Write the one-page pitch in `DESIGN.md`:
+- [x] Write the one-page pitch in `DESIGN.md`:
   - The game in one sentence
   - **Core loop:** what the player does every 30 seconds, every 10 minutes, and every session
   - 3–5 reference games ("X meets Y")
@@ -52,8 +52,8 @@ Start each work session with something like *"read the roadmap and changelog, th
 
 ### Phase 1: Learn-by-Doing Prototype (Weeks 2–8) · $0
 Goal: **find the fun.** Gray boxes, no story, no menus.
-- [ ] Get a "hello world" scene running in Godot (learn the editor basics)
-- [ ] Build the single most important mechanic, the one the whole game rests on
+- [x] Get a scene running in Godot (v0.1 prototype)
+- [x] Build the single most important mechanic, the one the whole game rests on (prayers + discoveries + journal words, v0.1)
 - [ ] Iterate in short loops: build → you play → tweak → repeat
 - [ ] Try 2–3 variations of the core mechanic, then keep the best one
 - **Gate:** is the core action satisfying with zero polish? If not, rethink the mechanic before adding anything.
@@ -119,8 +119,7 @@ For a first-time developer working part-time: **12–24 months** to a polished r
 ---
 
 ## Current status
-**Phase:** 0 (setup and design)
-**Done:** core concept in `DESIGN.md` (2D, single player, one playthrough); full story and reveal order in `STORY.md`; project at `C:\Dev\GodGame` (`docs/`, `game/`, and `game/content/` for story text); Godot project created; pushed to GitHub (`Byrnez1/GodGame`, private).
-**Prototype format (default unless changed):** generation-by-generation turns + prayer cards + decision web + journal words unlocked by discoveries.
-**Next steps:** user opens the project in Godot (desktop shortcut) for a first look → finalize the content text format → start the Phase 1 prototype.
+**Phase:** 1 (finding the fun)
+**Done:** design and story docs; tools set up; art directions explored (parked for now); **prototype v0.1 is playable** (see `CHANGELOG.md`).
+**Next steps:** user plays v0.1 and reports what feels fun or flat → iterate on mechanics → user starts rewriting the draft story text in `game/content/`.
 **Story decided:** the harvested power makes mortals love the gods; the finale is a choice (break or keep the cycle) followed by a short epilogue. Open story questions are listed at the bottom of `STORY.md`.
