@@ -1,15 +1,25 @@
-# WHICH DISCOVERY MAKES WHICH JOURNAL WORDS READABLE
+# WHICH WORDS IN THE OLD BOOK BECOME READABLE, AND WHEN
 #
-# Format:   discovery: word, word, word
+# Format:   discovery-or-flag: word, word, word
 #
-# Any word in the journal that is NOT listed here is an ordinary word.
-# Ordinary words become readable with the discovery named in settings.txt
-# (common_words), which is First Words (speech) right now.
+# Words tied to a DISCOVERY are "her world": they count toward how much of
+# her world you have rebuilt, which decides whether she can be born.
+# Words tied to a FLAG are story words: they unlock when the story gets there.
+# Any word NOT listed here becomes readable with First Words (speech).
 
-fire: fire, flame, flames, warm, warmth, light
-song: sang, song, songs, sing, singing, prayers
-river: river, water, reeds, banks, rain
-weaving: weaving, woven, wove
+# --- Her world (discoveries) ---
+fire: fire, warm, light
+song: sang, songs, singing
+river: river, reeds, rain, water
+weaving: weaving
 sunrise_burial: buried, dead, sunrise, wake
-stone: stone, stones, built
+stone: stone, built
 temple: temple, roof
+
+# --- The story (flags) ---
+# She is a mystery until the dream (around halfway).
+dreamed_of_her: her, she, laughed, hand, shoulder, mother, grandfather
+# "I" is a mystery until the god realizes the book is his own.
+journal_is_mine: i, me, my, myself
+# The deepest truths unlock last.
+harvest_known: time, voices, punishment, taken, again, met

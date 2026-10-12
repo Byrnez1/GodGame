@@ -1,0 +1,286 @@
+# PRAYERS: ACT TWO (generations 5-10)
+# See act_one.txt for every setting you can use.
+# DRAFT TEXT: rewrite freely.
+
+
+=== the_flood
+when: 5+
+requires: river
+speaker: Ama, the river-keeper
+picture: storm
+
+The river is rising faster than it ever has. By nightfall it will take the low ground.
+
+On the low ground: the huts where the children sleep. On the high ground: the winter stores, the dried fish, everything that will keep them alive until spring. There is only time to carry one of them to safety.
+
+Ama asks which.
+
+> Save the children
+  love: +4
+  sets: famine_coming
+  result: They carry the children up the hill through the black water. All of them live. In the morning, the stores are gone.
+> Save the stores
+  fear: +3
+  people: -6
+  sets: flood_children
+  result: They haul the stores to safety while the water takes the low huts. Six children. Ama's son is one of them. The people will eat this winter. They will not forget what it cost.
+> Hold back the river
+  test: faith 13
+  love: +5
+  result: The water stops at the edge of the low ground, as if it hit a wall. It stands there all night, trembling. In the morning, it goes home. Ama does not stop shaking for a week.
+  fail_result: You push against the river with everything you are, and it pushes back. It takes the low huts and the stores. Four children. Half the fish.
+  fail_people: -4
+  fail_sets: famine_coming
+
+
+=== hungry_winter
+after: famine_coming 1
+blocks: winter_passed
+speaker: The elders
+picture: storm
+
+The winter after the flood. There is not enough food for everyone. The elders have decided: either the hunters eat first, so they stay strong enough to hunt, or the children eat first, and the hunters go out weak.
+
+> The hunters eat first
+  fear: +2
+  people: -4
+  sets: winter_passed
+  result: The hunters stay strong. They bring back enough, in the end. Four of the smallest children do not see the spring.
+> The children eat first
+  love: +2
+  test: love 10
+  sets: winter_passed
+  result: The hunters go out half-starved and come back with a bull elk. Everyone eats. They say you walked beside them.
+  fail_result: The hunters go out weak. Two do not come back. The children live, and grow up without fathers.
+  fail_people: -2
+  fail_love: +1
+> Feed them all yourself
+  cost: 6
+  love: +3
+  sets: winter_passed
+  result: Fish leap from the frozen river onto the ice. Nobody can explain it. Nobody starves.
+
+
+=== reeds_or_fish
+when: 4+
+requires: river
+blocks: weaving
+speaker: Ama, the river-keeper
+
+The river can't give both this year. Either the reed beds are left to grow tall, and Ama's people learn to weave mats and baskets and boats, or the reeds are cut back so the fish can spawn, and nobody goes hungry.
+
+> Let the reeds grow
+  grants: weaving
+  people: -2
+  result: The reeds grow taller than a man. Ama's hands are never still again. It is a lean year, and two of the old ones don't see the end of it, but every hut has a mat by the time the snow comes.
+> Cut them back for the fish
+  people: +4
+  love: +2
+  result: The river is thick with fish. Everyone eats well. Ama watches the cut reeds float away and says nothing.
+
+
+=== the_wall_builder
+when: 6+
+requires: fire
+blocks: stone
+speaker: Teo, a quiet boy
+
+Teo has found that certain stones split clean when struck just so. He has been stacking them into walls that do not fall. He asks you what he should build.
+
+The elders want a wall around the camp, to keep out raiders. Teo's mother wants a house big enough for everyone to sing in when the storms come.
+
+> A wall, to keep them safe
+  grants: stone
+  fear: +2
+  sets: walls_built
+  result: The wall grows a little every year. Behind it, your people sleep easier. They also start to feel that everything outside it is an enemy.
+> A house, for singing
+  grants: stone
+  love: +2
+  sets: song_house
+  result: The house goes up slowly, stone by stone. It is not finished in Teo's lifetime. But on stormy nights, people go there, and sing.
+> Let it stay a game
+  result: Teo builds his little walls. The children knock them down. Nobody else pays attention.
+
+
+=== the_rivals
+when: 5+
+requires: spear
+speaker: The hunters
+
+A rival band has been taking game from your people's valley. The hunters are sharpening their spears and looking to you.
+
+> Bless the spears
+  test: fear 10
+  fear: +4
+  faith: +4
+  sets: blood_feud
+  result: They come back with blood on their spears and the valley to themselves. The rival band will remember this.
+  fail_result: The rivals were waiting. Five of your hunters do not come back.
+  fail_people: -5
+  fail_fear: +2
+  fail_sets: blood_feud
+> Send them to share a fire instead
+  test: love 10
+  love: +3
+  people: +5
+  result: Your hunters walk into the rival camp with empty hands. By morning, the two bands are telling each other stories. Some of the rivals stay.
+  fail_result: The rivals see empty hands and take them for weakness. Three of your hunters are killed before they can run.
+  fail_people: -3
+  fail_love: -2
+> Let the hunt decide it
+  silent: yes
+  people: -2
+  result: There is a skirmish over a kill. Two die. Nothing is settled.
+
+
+=== drought
+when: 5-11
+speaker: The elders
+picture: village
+
+No rain since spring. The river is a trickle, the plain is dust, and the elders have made a decision without asking you.
+
+They will give you the best of them: a young hunter named Oren, strong, kind, loved by everyone. They will give him to you on the high rocks, and you will send rain.
+
+He has agreed. They are waiting for your sign.
+
+> Accept Oren
+  fear: +8
+  faith: +6
+  people: -1
+  sets: oren_given
+  result: Oren climbs the high rocks. In the morning there are clouds. By evening, rain. Your people dance in it. Oren's mother does not.
+> Refuse him, and send rain anyway
+  test: love 12
+  love: +6
+  sets: oren_spared
+  result: Lightning splits the sky before they can raise the knife. Then rain, hard and warm. Oren comes down from the rocks laughing. Your people will tell this story for a thousand years: the god who would not take a life.
+  fail_result: You stop the knife. You cannot bring the rain. The drought drags on, and they wonder whether refusing the gift was the mistake.
+  fail_people: -5
+  fail_unrest: +3
+  fail_sets: oren_spared
+> Refuse him, and let the drought run its course
+  love: +2
+  people: -6
+  unrest: +2
+  sets: oren_spared
+  result: You stop the knife. The rain comes when it comes, a month too late. Six die of thirst. Oren lives. Some of them hate him for it.
+
+
+=== sickness
+after: strangers_welcomed 2
+speaker: The healers
+
+A coughing sickness, the kind the strangers had, is moving through the camp. The healers want to know: do they shut the sick out in the cold, so it spreads no further, or do they nurse them by the fire, and risk everyone?
+
+> Shut the sick out
+  fear: +3
+  people: -4
+  result: The coughing stops. So do the people outside. Four of them. Their families sit at the edge of the firelight all winter, looking out.
+> Nurse them by the fire
+  test: love 11
+  love: +4
+  people: -1
+  result: The healers sit up with the sick night after night. The sickness burns through and leaves. Only one dies.
+  fail_result: The sickness takes the camp. Nine are buried before it lets go.
+  fail_people: -9
+  fail_love: +1
+
+
+=== raiders
+after: strangers_driven 3
+speaker: The scouts
+picture: storm
+
+The painted strangers you drove away have come back, many more of them now, with spears. They remember the storm. They have come to see if your people are still worth fearing.
+
+> Meet them with terror
+  test: fear 11
+  fear: +4
+  result: Your people scream your name as they charge. The raiders break and run. They will not come back.
+  fail_result: The raiders do not run. They take the stores, and five lives, and the camp burns.
+  fail_people: -5
+  fail_unrest: +3
+> Offer them a place at the fire
+  cost: 4
+  love: +3
+  people: +4
+  result: The scouts walk out with food and open hands. It takes a long night of talking. By morning there are more of your people than there were.
+> Let them take what they came for
+  silent: yes
+  people: -2
+  unrest: +2
+  result: They take food and furs and two young women, and leave. Your people do not understand why you let it happen.
+
+
+=== the_feud
+after: blood_feud 3
+speaker: The hunters
+
+The rival band has come back for revenge, as rival bands do. They catch your hunters far from the fire.
+
+> Fight
+  test: fear 11
+  fear: +3
+  result: Your hunters fight like something possessed. The rivals scatter, and this time, it is over.
+  fail_result: The rivals win. Six of your hunters are left on the plain.
+  fail_people: -6
+> Pay them in blood-price
+  people: -1
+  faith: -3
+  result: Your people hand over their best furs, and one of the hunters who struck first. The feud ends. Nobody is happy about it.
+
+
+=== the_prophecy
+after: purpose 1
+speaker: Ina, the priestess, Sana's great-granddaughter
+picture: fire
+
+Ina says you have been speaking to her in dreams. She is not entirely wrong: something of your longing leaks into the minds of the faithful. She has dreamed of a river, and a woman.
+
+She has decided what it means, and is about to tell everyone.
+
+> "The god wants a sacrifice"
+  fear: +6
+  faith: +6
+  sets: prophecy_sacrifice
+  result: Ina announces that a woman from the river will be given to you, and through her, you will become the greatest of gods. The people are frightened, and thrilled.
+> "The god is searching for someone he lost"
+  love: +4
+  sets: prophecy_lost
+  result: Ina announces that you are searching for someone, and that the people must help you find her. They don't know what that means. They begin looking at every girl born by the river a little differently.
+> Silence her
+  fear: +2
+  unrest: +2
+  result: Ina wakes with no memory of the dream. She is confused and frightened. So are the people she had already started telling.
+
+
+=== the_girl_on_the_rocks
+after: prophecy_sacrifice 2
+speaker: Ina, the priestess
+picture: fog
+
+Ina has found a girl by the river, born facing the sunrise, who hums songs nobody taught her. Ina is certain: this is the one. She has the girl on the high rocks, and the knife in her hand.
+
+"Make us great," she says.
+
+> Stop her
+  test: fear 12
+  fear: +3
+  result: The knife flies from Ina's hand as if struck. The girl runs. Ina falls on her face before you, and does not get up for a long time.
+  fail_result: The knife falls. You were not strong enough to stop it. Ina raises her bloody hands to the sky and calls it a gift.
+  fail_fear: +6
+  fail_faith: +8
+  fail_people: -1
+  fail_sets: blood_on_the_river
+> Stop her, gently
+  cost: 5
+  love: +3
+  result: The girl simply isn't there when Ina turns back. She is down by the river, unharmed, humming.
+> Let it happen
+  fear: +10
+  faith: +12
+  people: -1
+  sets: blood_on_the_river
+  result: Ina gives you the girl. Power floods into you, more than you have ever felt. Somewhere in the old book, a page goes very still.

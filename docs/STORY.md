@@ -149,3 +149,16 @@ Written to support the wrong theories in Act 2, these reveal their real meaning 
 - ❓ If he breaks the cycle, does he become mortal and live one life with her?
 - ❓ What exactly happens if he keeps the cycle?
 - More story to come.
+
+---
+
+## 💡 Draft additions in prototype v0.2 (Claude's, for the user to review)
+*Written to make the arc playable. All of it lives in `game/content/` and can be rewritten or cut.*
+- **The Voices** are introduced unnamed: **the Voice that Counts** (a ring of slow-turning light, Time) and **the Voice that Keeps** (hard to look at, like a word on the tip of your tongue, Memory). Their names are revealed with the harvest.
+- **The Pantheon:** an endless hall of pillars and thrones of light. Each god watches their world through a **pool**. One throne near the protagonist is dark. A **god with golden eyes** says "welcome back" (another god who knows more than she says).
+- **The old book** is found in **a small room behind a door he never noticed**, with a window looking onto a river at dusk that isn't in his world.
+- **Mortals of note:** Sana (the first to look up), **Ama** the river-keeper, **Teo** the quiet boy who stacks stones, **Oren** the hunter the elders offer as a sacrifice, **Ina** the priestess (Sana's great-granddaughter) who dreams the god's longing and interprets it, **Kesh** the doubter.
+- **The harvest, as written:** a god's love for a mortal, combined with a people's faith, makes "love that rises". Time and Memory gather it and give it to every people in every world so they love their gods. Without it mortals would remember the gods as "distant, silent, often cruel."
+- **Dark path:** if Ina's prophecy turns toward sacrifice, she later tries to kill a girl born by the river. If the player lets it happen, **she can never be born** in this cycle.
+- **Final choice** (if she's born): stand against the Voices with your people's **love** or their **fear** (a cast of the bones), or let the cycle happen again. If she isn't born: let them begin again, or refuse them alone.
+- **The last page** of the old book: *"If I am reading this, they have taken everything again. Find the river. Find the songs. Find her. And when the voices tell me it was a punishment, I must not believe them."*

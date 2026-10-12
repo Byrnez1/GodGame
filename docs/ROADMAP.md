@@ -120,6 +120,6 @@ For a first-time developer working part-time: **12–24 months** to a polished r
 
 ## Current status
 **Phase:** 1 (finding the fun)
-**Done:** design and story docs; tools set up; art directions explored (parked for now); **prototype v0.1 is playable** (see `CHANGELOG.md`).
-**Next steps:** user plays v0.1 and reports what feels fun or flat → iterate on mechanics → user starts rewriting the draft story text in `game/content/`.
+**Done:** design and story docs; tools set up; art directions explored (parked for now); v0.1 playtested by the user; **prototype v0.2 is playable** (see `CHANGELOG.md`).
+**Next steps:** user plays v0.2 → feedback on weight, mystery, and casting → review the draft story additions in `STORY.md` → iterate.
 **Story decided:** the harvested power makes mortals love the gods; the finale is a choice (break or keep the cycle) followed by a short epilogue. Open story questions are listed at the bottom of `STORY.md`.

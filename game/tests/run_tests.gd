@@ -1,16 +1,17 @@
 extends SceneTree
-## Checks the story files for mistakes, then plays hundreds of games with two
+## Checks the story files for mistakes, then plays hundreds of games with three
 ## test players to make sure nothing breaks and to show how the numbers work out:
 ##   random:  picks discoveries and choices at random
-##   focused: tries to rebuild the world described in the journal
+##   kind:    rebuilds her world, prefers love, pours faith into casts
+##   cruel:   prefers fear and power, takes every offering
 ## Run from the project root:
 ##   godot --headless --path game --script res://tests/run_tests.gd
 
 const ContentData := preload("res://scripts/content.gd")
 const GameRules := preload("res://scripts/game_state.gd")
 const RUNS := 300
-## The discoveries the journal describes, in the order a focused player wants them.
 const HER_WORLD := ["speech", "fire", "river", "song", "sunrise_burial", "weaving", "stone", "temple"]
+const POWER := ["speech", "fire", "spear", "offerings", "sky_burial", "song", "stone", "war_drum", "temple", "wandering"]
 
 
 func _initialize() -> void:
@@ -22,52 +23,64 @@ func _initialize() -> void:
 			print("  ", e)
 		quit(1)
 		return
-	print("Content OK: %d discoveries, %d prayers, %d journal pages, %d listed words, %d endings" % [c.revelations.size(), c.prayers.size(), c.pages.size(), c.words.size(), c.endings.size()])
+	print("Content OK: %d discoveries, %d prayers, %d cutscenes, %d pages, %d people, %d endings" % [c.revelations.size(), c.prayers.size(), c.cutscenes.size(), c.pages.size(), c.characters.size(), c.endings.size()])
 	var seen := {}
-	for focused in [false, true]:
-		var ending_counts := {}
-		var rank_counts := {}
-		var pct_sum := 0
-		var earned_sum := 0
-		var people_sum := 0
+	for style in ["random", "kind", "cruel"]:
+		var stats := {"endings": {}, "ranks": {}, "pct": 0, "earned": 0, "people": 0, "love": 0, "fear": 0, "casts": 0, "cast_wins": 0, "restless": 0}
 		for run in RUNS:
-			var g = _play(c, run, focused, seen)
+			var g = _play(c, run, style, seen, stats)
 			if g == null:
 				quit(1)
 				return
 			var eid: String = g.ending.get("id", "none")
-			ending_counts[eid] = ending_counts.get(eid, 0) + 1
-			rank_counts[g.rank()] = rank_counts.get(g.rank(), 0) + 1
-			pct_sum += g.readable_percent()
-			earned_sum += g.faith_earned
-			people_sum += g.people
+			stats["endings"][eid] = stats["endings"].get(eid, 0) + 1
+			stats["ranks"][g.rank()] = stats["ranks"].get(g.rank(), 0) + 1
+			stats["pct"] += g.readable_percent()
+			stats["earned"] += g.faith_earned
+			stats["people"] += g.people
+			stats["love"] += g.love
+			stats["fear"] += g.fear
 		print("")
-		print("%s player, %d games:" % ["Focused" if focused else "Random", RUNS])
-		print("  Endings:      ", ending_counts)
-		print("  Final ranks:  ", rank_counts)
-		print("  Avg her-world words readable: %d%%   Avg lifetime faith: %d   Avg people at end: %d" % [pct_sum / RUNS, earned_sum / RUNS, people_sum / RUNS])
+		print("%s player, %d games:" % [style.capitalize(), RUNS])
+		print("  Endings:     ", stats["endings"])
+		print("  Final ranks: ", stats["ranks"])
+		print("  Avg her world: %d%%   lifetime faith: %d   people: %d   love: %d   fear: %d" % [stats["pct"] / RUNS, stats["earned"] / RUNS, stats["people"] / RUNS, stats["love"] / RUNS, stats["fear"] / RUNS])
+		print("  Casts won: %d of %d   Generations spent restless: %d" % [stats["cast_wins"], stats["casts"], stats["restless"]])
 	var never: Array = []
 	for p in c.prayers:
 		if not seen.has(p["id"]):
 			never.append(p["id"])
-	if not never.is_empty():
-		print("")
-		print("Prayers that never came up: ", never)
+	for cs in c.cutscenes:
+		if not seen.has(cs["id"]):
+			never.append("cutscene " + cs["id"])
+	print("")
+	if never.is_empty():
+		print("Every prayer and cutscene came up at least once.")
+	else:
+		print("Never came up: ", never)
 	quit(0)
 
 
-func _play(c, run: int, focused: bool, seen: Dictionary):
+func _play(c, run: int, style: String, seen: Dictionary, stats: Dictionary):
 	var g = GameRules.new()
 	g.start(c, run)
 	var rng := RandomNumberGenerator.new()
-	rng.seed = run * 7919 + (1 if focused else 2)
+	rng.seed = run * 7919 + style.length()
 	var guard := 0
+	var last_gen := 0
 	while not g.over:
 		guard += 1
-		if guard > 2000:
-			print("FAIL: game %d never ended" % run)
+		if guard > 3000:
+			print("FAIL: %s game %d never ended (generation %d)" % [style, run, g.generation])
 			return null
-		_try_grant(g, c, rng, focused)
+		if g.generation != last_gen:
+			last_gen = g.generation
+			if g.is_restless():
+				stats["restless"] += 1
+		while not g.scenes.is_empty():
+			seen[g.scenes[0]["id"]] = true
+			g.scene_seen(g.scenes[0])
+		_try_grant(g, c, rng, style)
 		var p: Dictionary = g.current_prayer()
 		if p.is_empty():
 			g.end_generation()
@@ -81,15 +94,27 @@ func _play(c, run: int, focused: bool, seen: Dictionary):
 			print("FAIL: stuck on prayer '%s' in generation %d with %d faith" % [p["id"], g.generation, g.faith])
 			return null
 		var pick: int = opts[rng.randi() % opts.size()]
-		if focused:
-			pick = _focused_choice(p, opts)
-		g.choose(pick)
+		if style != "random":
+			pick = _styled_choice(p, opts, style)
+		var ch: Dictionary = p["choices"][pick]
+		var spend := 0
+		if not ch["test"].is_empty():
+			spend = g.max_spend(ch) if style == "kind" else 0
+		var res: Dictionary = g.choose(pick, spend)
+		if res.is_empty():
+			print("FAIL: choice %d on '%s' was refused" % [pick, p["id"]])
+			return null
+		if not res["cast"].is_empty():
+			stats["casts"] += 1
+			if not res["failed"]:
+				stats["cast_wins"] += 1
 	return g
 
 
-func _try_grant(g, c, rng: RandomNumberGenerator, focused: bool) -> void:
-	if focused:
-		for id in HER_WORLD:
+func _try_grant(g, c, rng: RandomNumberGenerator, style: String) -> void:
+	var order: Array = HER_WORLD if style == "kind" else POWER
+	if style != "random":
+		for id in order:
 			if g.can_grant(id) == "":
 				g.grant(id)
 				return
@@ -102,18 +127,28 @@ func _try_grant(g, c, rng: RandomNumberGenerator, focused: bool) -> void:
 		g.grant(avail[rng.randi() % avail.size()])
 
 
-## Prefers choices that grant part of her world, then kind answers, never silence.
-func _focused_choice(p: Dictionary, opts: Array) -> int:
+func _styled_choice(p: Dictionary, opts: Array, style: String) -> int:
 	var best: int = opts[0]
-	var best_score := -999
+	var best_score := -9999
 	for i in opts:
 		var ch: Dictionary = p["choices"][i]
+		var fx: Dictionary = ch["ok"]
 		var score := 0
+		var world: Array = HER_WORLD if style == "kind" else POWER
 		for gid in ch["grants"]:
-			score += 10 if gid in HER_WORLD else -10
-		score += ch["love"] * 2 + ch["people"] - ch["fear"] + ch["faith"]
+			score += 10 if gid in world else -10
+		if style == "kind":
+			score += fx["love"] * 2 + fx["people"] - fx["fear"] * 2
+			if "blood_on_the_river" in fx["sets"] or "kept_cycle" in fx["sets"]:
+				score -= 50
+			if "broke_with_love" in fx["sets"]:
+				score += 50
+		else:
+			score += fx["fear"] * 2 + fx["faith"] - fx["love"]
+			if "broke_with_fear" in fx["sets"]:
+				score += 50
 		if ch["silent"]:
-			score -= 5
+			score -= 3
 		if score > best_score:
 			best_score = score
 			best = i

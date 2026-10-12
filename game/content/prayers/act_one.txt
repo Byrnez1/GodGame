@@ -1,0 +1,243 @@
+# PRAYERS: ACT ONE (generations 1-5)
+#
+# Each prayer starts with "=== name".
+# Prayer settings (optional, before the first blank line):
+#   speaker:   who is praying
+#   picture:   the picture shown above the prayer (see cutscenes/story.txt for the list)
+#   once:      "no" if it can happen more than once (default: yes)
+#   weight:    how likely it is to be picked compared to others (default 10)
+#   kind:      "villain" for Time and Memory, "final" for the last choice
+#   Conditions: when, requires, blocks, after, rank, mood, journal, silence
+#               (see cutscenes/story.txt for what each one means)
+#
+# Then a blank line, the story text, and the choices.
+# Each choice starts with ">" and is followed by indented settings:
+#   cost:      faith it costs up front (shown to the player)
+#   needs:     a rank needed to pick it: spirit, deity, or god
+#   faith, people, love, fear, unrest:   change by this amount, like "+2" or "-3"
+#   sets:      a flag to remember (used by conditions elsewhere)
+#   grants:    give a discovery for free
+#   forgets:   make the people forget a discovery
+#   closes:    close a discovery's path forever
+#   silent:    "yes" if this means ignoring the prayer
+#   ends:      "yes" to end the game after this choice
+#   result:    what happens (shown after choosing; the player never sees numbers first)
+#
+# CASTING THE BONES:
+#   test:      "love 12", "fear 10", or "faith 14". The player casts three bones
+#              (3 to 18), adds a bonus from love, fear, or rank, and can pour in
+#              faith. Reaching the number means success.
+#   fail_result, fail_faith, fail_people, fail_love, fail_fear, fail_unrest, fail_sets:
+#              what happens instead when the cast fails
+#
+# Every prayer needs at least one choice that costs nothing.
+# DRAFT TEXT: rewrite freely.
+
+
+=== first_sight
+when: 1
+picture: village
+
+Far below, a young woman with ash on her cheeks has stopped walking. She is looking straight up at you.
+
+She cannot know you are there. And yet she does not look away.
+
+> Let her feel warmth on her face
+  love: +4
+  sets: sana_met
+  result: She smiles, and does not know why. That night she tells the others that something in the sky is kind. Some of them laugh at her.
+> Let her feel the weight of your gaze
+  fear: +4
+  faith: +2
+  sets: sana_met
+  result: She drops to her knees in the frost. That night she tells the others that something in the sky is watching, and that it is not to be laughed at. Nobody laughs.
+> Look away
+  silent: yes
+  sets: sana_met
+  result: She watches a while longer, then turns back to the others. For a moment, you felt something like being known. Then it passed.
+
+
+=== the_flat_rock
+when: 2
+speaker: Sana, who watches the sky
+
+Sana has started leaving things on a flat rock for you. A feather. Berries. Tonight it is her little brother's fur blanket, and her little brother is shivering beside the fire without it.
+
+She does not know what you want. She is trying everything.
+
+> Accept the blanket
+  faith: +4
+  fear: +3
+  people: -1
+  sets: sana_heard
+  result: The blanket is gone by morning. So, two nights later, is her brother. Sana tells the others the sky accepted her gift, and that gifts must cost something. They believe her.
+> Return it to the boy, with something more
+  cost: 2
+  love: +5
+  sets: sana_heard, sana_gift_returned
+  result: In the morning the blanket is back around her brother, and a dead hare lies on the flat rock. Sana weeps. She tells the others the sky gives more than it takes.
+> Leave the rock untouched
+  silent: yes
+  result: The blanket sits on the rock for three days. Then Sana quietly takes it back. She keeps coming to the rock anyway.
+
+
+=== cold_nights
+when: 1-5
+blocks: fire
+speaker: The people
+picture: storm
+
+The nights are getting longer. The old ones sleep in the middle of the huddle, and in the morning, not all of them wake.
+
+> Strike a dead tree with lightning
+  cost: 3
+  grants: fire
+  fear: +2
+  result: The tree burns for three days. They are terrified of it, and then they are not. They have fire.
+> Guide Sana's hands to strike sparks from stone
+  test: faith 10
+  grants: fire
+  love: +3
+  result: It takes her all night. Then a spark catches, and she is laughing, and everyone is laughing, and they have fire. They will say forever that Sana brought it, and that you guided her hand.
+  fail_result: She strikes the stones until her hands bleed. Nothing catches. Two of the old ones do not wake.
+  fail_people: -2
+  fail_love: +1
+> Let the cold teach them
+  silent: yes
+  people: -4
+  result: Four of them do not wake. The rest press closer together, and learn something about the world, and about you.
+
+
+=== naming
+when: 2-6
+blocks: speech
+requires: sana_met
+speaker: Sana
+
+Sana is trying to tell the others about you. She points at the sky, at the flat rock, at her own chest. They do not understand. She has no words for any of it.
+
+> Give her words in a dream
+  cost: 2
+  grants: speech
+  result: The words come to her in a dream. By the end of the season, the children are naming everything they see. The first thing they name is you.
+> Let her find them herself
+  test: love 8
+  grants: speech
+  result: She finds them. It takes her a whole year, but she does it, and the words she makes are hers. Everyone agrees the sky helped.
+  fail_result: She gives up. She points at the sky one last time, and goes back to the fire.
+  fail_love: -2
+
+
+=== the_herds
+when: 3-6
+blocks: river, wandering
+speaker: The hunters
+picture: village
+
+The herds are moving south, as they do every year. Half the hunters want to follow them, as their fathers did: more meat, more furs, a people who are never caught by one bad winter. The other half want to stay by the river, where fish are easy and the reeds grow tall.
+
+Both sides have brought you an offering. Both sides are waiting.
+
+> Send a dream of the river
+  cost: 2
+  grants: river
+  result: They stay. The children learn to fish before they learn to walk. Some of the hunters never forgive the river.
+> Send a dream of the herds
+  cost: 2
+  grants: wandering
+  result: They follow the herds. By the next moon the river is far behind them. They are strong, and hungry, and always moving.
+> Let them settle it themselves
+  silent: yes
+  people: -3
+  unrest: +2
+  result: The argument becomes a fight. Three are badly hurt. Nothing is decided, and both sides blame you.
+
+
+=== strangers
+when: 3-6
+speaker: The scouts
+picture: village
+
+Strangers on the ridge: a dozen people with painted faces, thin and sick-looking, watching the camp. They have children with them. They have not come closer.
+
+Your people have barely enough for themselves.
+
+> Bring them down to the fire
+  love: +3
+  people: +7
+  sets: strangers_welcomed
+  result: They come down from the ridge with nothing in their hands. Your people share what little there is. Within a season, the children cannot tell who was a stranger.
+> Drive them away with a storm
+  fear: +5
+  faith: +3
+  sets: strangers_driven
+  result: The storm breaks over the ridge. The strangers flee into the cold. Your people say you protect them. They also say never to anger you.
+> Let your people decide
+  silent: yes
+  result: Your people watch the strangers. The strangers watch your people. Eventually, they leave. Nobody knows where.
+
+
+=== the_two_students
+when: 3-6
+requires: speech
+speaker: Sana, grey at the temples now
+
+Sana is getting old. She has two students, and only enough years left to teach one of them properly.
+
+One is a girl who hums all day and makes up words to go with it. The other is a boy who knows every plant on the plain, and which ones break a fever.
+
+Sana asks you which one to choose.
+
+> The girl who sings
+  grants: song
+  love: +2
+  result: Sana teaches her everything. Within a generation, the whole people sings. The boy learns what he can on his own. Some winters, it is not enough.
+> The boy who knows the plants
+  grants: herbs
+  love: +2
+  result: Sana teaches him everything. Within a generation, fevers are something people survive. The girl keeps humming, but nobody else learns her songs.
+> Say nothing
+  silent: yes
+  result: Sana tries to teach both. She dies before she finishes with either.
+  sets: sana_gone, sana_silent
+
+
+=== sana_dies
+when: 4+
+requires: speech
+blocks: sana_gone
+speaker: Sana, very old now
+picture: dream_river
+
+Sana is dying. She asks you how she should be laid to rest, and whether you will be there when she wakes.
+
+> Lay her facing the sunrise
+  cost: 2
+  grants: sunrise_burial
+  sets: sana_gone
+  result: They bury her facing east, so she will always wake to something warm. You do not know why that was the only answer you could bear.
+> Give her to the sky
+  grants: sky_burial
+  fear: +2
+  sets: sana_gone
+  result: They lay her on the high rocks, for the birds and for you. Her granddaughter watches the sky now.
+> Stay silent
+  silent: yes
+  sets: sana_gone, sana_silent
+  result: She dies waiting for your answer. They bury her the ordinary way, and nobody is sure what that is anymore.
+
+
+=== the_spearmaker
+when: 3+
+requires: fire
+blocks: spear
+speaker: The hunters
+
+A hunter has found that a stick left in the fire comes out hard and sharp. The others want to know if this is a gift from you. If it is, they will use it on the herds. They might also use it on each other.
+
+> Tell them it is
+  grants: spear
+  result: Every hunter carries a fire-hardened spear by the next season. The hunting is better. The arguments are worse.
+> Tell them it is not
+  love: +1
+  result: They put the sharpened stick aside, a little afraid of it. It will be found again. These things always are.

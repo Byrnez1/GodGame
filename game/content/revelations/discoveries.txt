@@ -15,6 +15,7 @@
 #   glimpse:   a hint about the future, shown once you're a Deity
 #
 # Then a blank line, then the description.
+# DRAFT TEXT: rewrite freely.
 
 === speech
 name: First Words
@@ -23,7 +24,7 @@ cost: 3
 income: 1
 glimpse: Words carry prayers further than hands can.
 
-Sounds become names. Your people begin to speak to each other, and to you. Ordinary words in the journal become readable.
+Sounds become names. Your people begin to speak to each other, and about you.
 
 === fire
 name: Fire
@@ -39,7 +40,7 @@ rank: whisper
 cost: 4
 excludes: wandering
 growth: 2
-glimpse: You see reeds bending in the current, and a woman's hands working them.
+glimpse: Reeds bending in the current, and someone's hands working them.
 
 The people settle where the water runs. Fish, reeds, and floods.
 
@@ -49,50 +50,60 @@ rank: whisper
 cost: 4
 excludes: river
 income: 2
-glimpse: You see a people who never stay anywhere long enough to be remembered.
+glimpse: A people who never stay anywhere long enough to be remembered.
 
-The people follow the herds and never stay. They carry you with them wherever they go.
+The people follow the herds and never stay. They carry you with them, and they are hard to find.
+
+=== spear
+name: Spear Hunting
+rank: whisper
+requires: fire
+cost: 5
+growth: 1
+fear: 3
+
+Fire-hardened points. The hunters bring back more, and they are more dangerous.
 
 === song
 name: Song
 rank: spirit
 requires: speech
-cost: 7
+cost: 8
 income: 1
-love: 1
-glimpse: You hear an old song, sung by a mother to a child who isn't born yet.
+love: 3
+glimpse: An old song, sung by a mother to a child who isn't born yet.
 
-The people sing to you. Faith comes more easily to people who sing together.
+The people sing to you. Faith comes easily to people who sing together.
+
+=== herbs
+name: Healing Herbs
+rank: spirit
+requires: speech
+cost: 6
+growth: 2
+love: 2
+
+Bitter leaves that break fevers. The old live longer, and remember more.
 
 === weaving
 name: Reed Weaving
 rank: spirit
 requires: river
-cost: 6
+cost: 7
 income: 1
 growth: 1
 
 Mats to keep out the mud, baskets to carry fish. Every hut a little warmer.
 
-=== spear
-name: Spear Hunting
-rank: spirit
-requires: fire
-cost: 6
-growth: 2
-fear: 1
-
-Fire-hardened points. The hunters bring back more, and they are more dangerous.
-
 === sunrise_burial
 name: Burial Facing Sunrise
 rank: spirit
 requires: speech
-cost: 5
+cost: 6
 excludes: sky_burial
 income: 1
-love: 1
-glimpse: You see a grave on a hillside, facing east. Someone has left flowers.
+love: 2
+glimpse: A grave on a hillside, facing east. Someone has left flowers.
 
 The dead are laid facing east, so they will always wake to something warm.
 
@@ -102,27 +113,37 @@ rank: spirit
 requires: speech
 cost: 5
 excludes: sunrise_burial
-income: 1
-fear: 1
+income: 2
+fear: 2
 
 The dead are given to the birds on the high rocks, and their spirits to the sky.
+
+=== offerings
+name: Burnt Offerings
+rank: spirit
+requires: fire, speech
+cost: 5
+income: 3
+fear: 4
+
+A share of every hunt and harvest goes into the fire for you. Your people go a little hungrier, and believe a little harder.
 
 === stone
 name: Stone Shaping
 rank: deity
 requires: fire
-cost: 9
+cost: 11
 growth: 2
 
-Stones that split clean, walls that do not fall. Your people begin to build things meant to last.
+Stones that split clean, walls that do not fall. Your people build things meant to last.
 
 === temple
 name: The Stone Temple
 rank: deity
 requires: stone, song
-cost: 12
+cost: 15
 income: 4
-love: 1
+love: 3
 glimpse: Rain on a stone roof. Two people asleep inside, one of them not quite human.
 
 A house of stone, big enough for everyone to sing in when the storms come.
@@ -133,6 +154,6 @@ rank: deity
 requires: spear, song
 cost: 8
 income: 3
-fear: 2
+fear: 6
 
 A rhythm that makes young men brave and old men afraid. Your people become feared by their neighbors.

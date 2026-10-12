@@ -1,20 +1,38 @@
 # GAME NUMBERS
-# Change these to tune the prototype, then run the game again.
+# Change these to tune the prototype, then run the game again (F5).
 # Anything after a # on a line is a note and is ignored.
 
-generations: 12              # how many generations the prototype lasts
+generations: 15              # how many generations the prototype lasts
 starting_people: 30
-starting_faith: 3
-
-people_per_faith: 15         # every 15 people give 1 faith each generation
-base_growth: 4               # % more people each generation, before discoveries
+starting_faith: 4
+starting_love: 0
+starting_fear: 0
 prayers_per_generation: 2    # how many prayers arrive each generation
 
-# Lifetime faith needed to reach each rank
+# --- Where faith comes from (every generation) ---
+love_per_faith: 5            # every 5 love gives 1 faith
+fear_per_faith: 3            # every 3 fear gives 1 faith (fear pays better)
+
+# --- How love and fear behave ---
+love_fade: 20                # % of love lost every generation unless you tend it
+fear_fade: 5                 # % of fear lost every generation (fear lingers much longer)
+fear_crowds_love: 2          # love can never go above 100 minus (fear x this)
+silence_hurts_love: 3        # love lost each time you ignore a people who love you
+fear_unrest: 4               # every 4 fear adds 1 unrest each generation
+love_calms: 6                # every 6 love removes 1 unrest each generation
+restless_at: 6               # unrest at which your people become restless
+base_growth: 3               # % more people each generation (love helps, fear hurts)
+
+# --- Casting the bones (three bones, 1-6 each) ---
+love_per_bonus: 8            # every 8 love adds +1 to a cast guided by love
+fear_per_bonus: 8            # every 8 fear adds +1 to a cast guided by fear
+rank_bonus: 2                # each rank above Whisper adds this to a cast guided by faith
+max_faith_on_cast: 3         # most faith you can pour into one cast (+1 each)
+
+# --- Ranks (lifetime faith needed) ---
 rank_spirit: 20
 rank_deity: 60
-rank_god: 120
+rank_god: 130
 
 # The discovery that makes ordinary journal words readable
-# (words not listed in journal/words.txt)
 common_words: speech

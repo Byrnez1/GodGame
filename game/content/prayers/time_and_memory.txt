@@ -1,29 +1,71 @@
 # TIME AND MEMORY
 # Interference from the villains. To your people, it just looks like bad luck.
-# See story.txt for every setting you can use.
+# See act_one.txt for every setting you can use.
 # DRAFT TEXT: rewrite freely.
 
+
 === the_fog
-when: 7+
+when: 6+
 requires: song
 kind: villain
+picture: fog
 
-A fog rolls in from nowhere. It sits on the camp for three days. When it lifts, the people gather to sing and find they cannot remember how the song goes.
+A fog rolls in from nowhere and sits on the camp for three days. It smells, very faintly, like the hall where the Voices first spoke to you.
 
-> Send the song back to them in dreams
-  cost: 6
+When it lifts, your people gather to sing, and find they cannot remember how the song goes.
+
+> Sing it back to them in dreams
+  test: love 11
+  sets: fog_came
   result: They wake humming. It takes a season, but the song comes back, almost the same as before.
+  fail_result: The dreams come out as noise. The song is gone. In the old book, words you had only just learned to read go dark again.
+  fail_forgets: song
+  fail_sets: fog_came
+  fail_love: -2
+> Pour your strength into them
+  cost: 6
+  needs: spirit
+  sets: fog_came
+  result: You hold the song in their minds by force. They are exhausted for a month, but they remember.
 > Let the song go
   forgets: song
-  result: The song is gone. On the journal's pages, words you had only just learned to read go dark again.
+  sets: fog_came
+  result: The song is gone. In the old book, words you had only just learned to read go dark again.
+
 
 === the_lost_generation
 when: 9+
 kind: villain
+picture: time
 
-You blink. When you look down again, a whole generation has passed without you. Children you watched being born are old. The people say you abandoned them.
+You blink.
 
-> Reach for them
+When you look down again, a whole generation has passed without you. Children you watched being born are old. Prayers piled up unanswered, and the people decided you had abandoned them.
+
+> Reach for them gently
+  love: -4
   faith: -4
-  love: -1
-  result: They do not hear you at first. Then, slowly, some of them do.
+  sets: lost_generation
+  result: They don't hear you at first. Then, slowly, some of them do.
+> Make them feel your return
+  fear: +6
+  sets: lost_generation
+  result: Thunder for seven days. They know you are back. They are not sure that is good news.
+
+
+=== memory_takes
+after: journal_is_mine 1
+kind: villain
+picture: fog
+
+The old book is open in front of you, and the words are going grey, one by one. Something is reaching into your people's minds, pulling out the things that made their world like hers.
+
+> Hold the words in your mind
+  test: faith 13
+  result: You hold on. The grey retreats. Whatever was reaching for them lets go, for now.
+  fail_result: It slips through your fingers. Your people forget how to weave reeds, as if they never knew.
+  fail_sets: memory_struck
+  fail_forgets: weaving
+> Let it take something small
+  forgets: weaving
+  result: Your people forget how to weave reeds, as if they never knew. In the old book, the words go dark.

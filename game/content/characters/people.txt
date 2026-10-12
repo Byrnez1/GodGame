@@ -1,0 +1,168 @@
+# PEOPLE (your notes)
+#
+# The god's own notes about the people in his world, including himself.
+# They live in the Journal tab under "Your notes".
+#
+# Each person starts with "=== name".
+# Settings:
+#   name:    shown as the heading
+#   title:   a short description next to the name
+#   Conditions decide when the person first appears in your notes:
+#            when, requires, blocks, after, rank, mood, journal, silence
+#
+# Then optional intro text, then notes. Each note starts with ">" and can have
+# indented conditions saying when the god learns it. Once learned, a note stays.
+# DRAFT TEXT: rewrite freely.
+
+
+=== you
+name: You
+title: a god, apparently
+
+> You woke in a hall of light with no memory of anything before.
+> Two Voices told you these people are yours to rule. They did not tell you why.
+  requires: voices_met
+> No god may touch another inside the Pantheon. It is the oldest rule.
+  requires: rule_learned
+> You found a book in a room you don't remember, in a hand you can't read.
+  requires: journal_found
+> When your people fear you, you feel larger. When they love you, you feel known.
+  when: 4+
+> Another god welcomed you "back." You do not remember leaving.
+  requires: welcome_back
+> You dreamed, though gods do not dream. A river. A woman laughing.
+  requires: dreamed_of_her
+> You are looking for her. You don't know why.
+  requires: purpose
+> The old book is in your handwriting. You wrote it, and you forgot.
+  requires: journal_is_mine
+> You have done all of this before. Many times.
+  requires: harvest_known
+
+
+=== the_voice_that_counts
+name: The Voice that Counts
+title: one of the two who woke you
+requires: voices_met
+
+> Speaks in measured sentences, as if every word was counted in advance.
+> Wears a ring of light that turns slowly, like a wheel, or a clock.
+> Did not like it when you asked about the woman.
+  requires: voices_warned
+> When a whole generation vanished, you felt it nearby.
+  requires: lost_generation
+> Its true name is Time.
+  requires: harvest_known
+> It does not hate you. It needs you.
+  requires: harvest_known
+
+
+=== the_voice_that_keeps
+name: The Voice that Keeps
+title: the other one who woke you
+requires: voices_met
+
+> Softer than the other. You can never quite remember what it said, only how it sounded.
+> When the fog came, it smelled like the hall where this Voice first spoke to you.
+  requires: fog_came
+> Something reached into your people's minds and took what made their world like hers.
+  requires: memory_struck
+> Its true name is Memory.
+  requires: harvest_known
+> It took everything from you. Not for the first time.
+  requires: harvest_known
+
+
+=== golden_eyes
+name: The god with golden eyes
+title: a stranger in the Pantheon
+requires: welcome_back
+
+> She said "welcome back," as if she knew you.
+> She said that nobody comes back. Not usually.
+> She has stopped looking at you. You think it is pity.
+  requires: harvest_known
+
+
+=== sana
+name: Sana
+title: the first to look up
+requires: sana_met
+
+> A young woman with ash on her cheeks. She looked up at you before anyone else did.
+> She leaves gifts for you on a flat rock.
+  requires: sana_heard
+> You gave her brother back his blanket, and something more. She has not forgotten.
+  requires: sana_gift_returned
+> She taught her people to speak, and the first thing they named was you.
+  requires: speech
+> She is buried facing the sunrise.
+  requires: sunrise_burial, sana_gone
+> She was given to the sky.
+  requires: sky_burial, sana_gone
+> She died waiting for your answer.
+  requires: sana_silent
+
+
+=== ama
+name: Ama
+title: the river-keeper
+requires: river
+when: 4+
+
+> She watches the water the way Sana watched the sky.
+> Her hands are never still. She twists reeds while she talks.
+  requires: weaving
+> Her son was on the low ground when the river rose.
+  requires: flood_children
+
+
+=== teo
+name: Teo
+title: a quiet boy who stacks stones
+requires: fire
+when: 6+
+
+> He found that some stones split clean if you strike them just so.
+> He built a wall. His people sleep behind it now.
+  requires: walls_built
+> He built a house for singing. He did not live to see it finished.
+  requires: song_house
+
+
+=== oren
+name: Oren
+title: a young hunter
+when: 5+
+requires: speech
+
+> Strong, kind, and loved by everyone. The elders offered him to you.
+  requires: oren_given
+> The elders offered him to you, and you refused.
+  requires: oren_spared
+> He died on the high rocks so that it would rain.
+  requires: oren_given
+
+
+=== ina
+name: Ina
+title: the priestess, Sana's great-granddaughter
+requires: purpose
+
+> She dreams what you long for. Not clearly, but enough.
+> She told the people you want a sacrifice.
+  requires: prophecy_sacrifice
+> She told the people you are searching for someone you lost.
+  requires: prophecy_lost
+> She killed a girl on the high rocks in your name.
+  requires: blood_on_the_river
+
+
+=== the_girl
+name: The girl by the river
+title: born facing the sunrise
+requires: her_born
+
+> She does not cry. She looks up.
+> She hums songs no one taught her.
+  requires: her_born

@@ -1,0 +1,115 @@
+# PRAYERS: ACT THREE (generations 11-15) and the final choice
+# See act_one.txt for every setting you can use.
+# DRAFT TEXT: rewrite freely.
+
+
+=== the_hymn
+after: journal_is_mine 1
+speaker: Ina's daughter
+picture: fire
+
+Ina's daughter has written a hymn about you. Everyone sings it. In it, you are vast and terrible and kind, and you have always watched over them, and you always will.
+
+You know now how much of that love was put into them by someone else.
+
+> Let them sing it
+  love: +4
+  faith: +3
+  result: They sing it at every fire. It is beautiful, and it is not entirely theirs.
+> Teach them a truer verse
+  test: love 12
+  love: +2
+  sets: truer_verse
+  result: A new verse appears, as if it was always there. It says you are a god who forgets, and is sorry. They sing it more softly than the others.
+  fail_result: The new verse comes out wrong. It frightens them. They stop singing for a season.
+  fail_love: -4
+  fail_unrest: +2
+
+
+=== the_girl_grows
+after: her_born 1
+speaker: Her mother
+picture: birth
+
+The girl born by the river is five years old. She hums songs no one taught her. She talks to the sky as if it might answer. Her mother is frightened and asks you to make her ordinary.
+
+> Leave her as she is
+  love: +3
+  result: She keeps humming. Some days she looks up, and you could swear she sees you.
+> Make her ordinary, so she is safe
+  love: -2
+  sets: girl_hidden
+  result: She stops humming. She stops looking up. Her mother is grateful. You feel something close, like a door.
+
+
+# ------------------------------------------------------------ THE FINAL CHOICE
+
+=== final_with_her
+when: 15
+requires: her_born
+kind: final
+picture: voices
+
+She is grown now. She stands by the river at dusk and looks up, the way Sana once did, the way she always does.
+
+To go to her, you would have to leave the Pantheon, and in your world, the Voices can touch you.
+
+"Go to her," says Time, "and it happens as it always has. You will love her. We will gather it. You will forget. She will be born again, and so will you."
+
+"Or refuse us," says Memory, "and no one knows what happens. No one has ever refused."
+
+> Go to her, and stand against them with your people's love
+  test: love 15
+  sets: broke_cycle, broke_with_love
+  ends: yes
+  result: Your people's love rises up through you like a tide, and for the first time, it is yours. The Voices cannot hold you. You walk out of the Pantheon and down to the river, and you do not come back.
+  fail_result: The love in you is not enough, or not yours. The Voices close around you, gently, the way they always have.
+  fail_sets: kept_cycle
+> Go to her, and stand against them with your people's fear
+  test: fear 15
+  sets: broke_cycle, broke_with_fear
+  ends: yes
+  result: Your people's terror roars up through you, and the Voices flinch. You tear free of them. You go down to the river as something they have never seen: a god who cannot be harvested.
+  fail_result: Fear is not enough to stand against Time. The Voices close around you.
+  fail_sets: kept_cycle
+> Go to her, and let it all happen again
+  sets: kept_cycle
+  ends: yes
+  result: You go to her. You love her. It is everything the old book said it was. And then, as it always does, the light comes.
+
+
+=== final_without_her
+when: 15
+requires: no_birth
+kind: final
+picture: voices
+
+"She will not be born here," says Memory. "This world is spent. We will begin again."
+
+"You could refuse us," says Time, almost kindly. "But for what? She is not here."
+
+> Let them begin again
+  sets: kept_cycle
+  ends: yes
+  result: You close your eyes. You will wake in a hall of light with no memory of anything before, and somewhere, a book will be waiting.
+> Refuse them anyway
+  test: faith 16
+  sets: broke_cycle, broke_alone
+  ends: yes
+  result: You refuse. For the first time in longer than you can remember, you are a god with nothing taken from him, and no one to love. You stay with your people.
+  fail_result: You refuse, and it changes nothing. The light comes.
+  fail_sets: kept_cycle
+
+
+=== final_fallback
+when: 15
+blocks: her_born, no_birth
+kind: final
+picture: pantheon
+
+Time runs out before you understand what any of it meant. The Voices are waiting.
+
+> Close your eyes
+  sets: kept_cycle
+  ends: yes
+  result: You will wake in a hall of light with no memory of anything before.

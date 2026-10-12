@@ -1,6 +1,11 @@
 extends RefCounted
 ## The rules of the prototype, and everything about the current playthrough.
 ## No visuals here: the screen (main.gd) reads this and calls its actions.
+##
+## Three currencies pull against each other:
+##   faith  is power you spend. Each generation it comes from love and fear.
+##   fear   gives faith fast and never fades, but breeds unrest and crowds out love.
+##   love   gives faith slowly, fades unless tended, calms unrest, helps people grow.
 
 const RANKS := ["whisper", "spirit", "deity", "god"]
 const RANK_NAMES := {"whisper": "Whisper", "spirit": "Spirit", "deity": "Deity", "god": "God"}
@@ -12,19 +17,27 @@ var faith_earned := 0  ## Lifetime faith; decides your rank
 var people := 0
 var love := 0
 var fear := 0
+var unrest := 0
 var granted: Array = []    ## Discoveries your people have (including forgotten ones)
 var forgotten: Array = []  ## Discoveries Memory has taken
 var closed: Array = []     ## Paths shut by an earlier choice
-var flags: Array = []      ## Story facts set by choices, e.g. "sana_heard"
-var used: Array = []       ## Prayers already answered
+var flags := {}            ## Story facts set by choices and cutscenes: flag -> generation it was set
+var used: Array = []       ## Prayers and cutscenes that already happened
 var queue: Array = []      ## Prayers waiting this generation
+var scenes: Array = []     ## Cutscenes waiting to be shown this generation
+var met: Array = []        ## People in the god's notes
+var notes: Array = []      ## Notes learned about people ("person:index")
+var new_notes: Array = []  ## Notes learned since the screen last showed them
 var granted_this_gen := false
+var answered_gen := 0      ## Last generation a prayer was answered in
 var answered := 0
 var unanswered := 0
 var log_entries: Array = []  ## {"gen", "text"} for the Pantheon view
-var fresh: Array = []        ## Discoveries whose words became readable this generation
+var fresh: Array = []        ## Discoveries/flags whose words became readable this generation
 var over := false
 var ending := {}
+var epilogue_lines: Array = []
+var last_income := {"love": 0, "fear": 0}
 var rng := RandomNumberGenerator.new()
 
 var _tok_re := RegEx.create_from_string("[A-Za-z][A-Za-z']*|[^A-Za-z]+")
@@ -38,7 +51,8 @@ func start(content, seed_value: int = -1) -> void:
 		rng.randomize()
 	generation = 1
 	faith = s("starting_faith")
-	faith_earned = 0
+	love = s("starting_love")
+	fear = s("starting_fear")
 	people = s("starting_people")
 	_begin_generation(true)
 
@@ -51,12 +65,9 @@ func s(key: String):
 
 func rank() -> String:
 	var r := "whisper"
-	if faith_earned >= s("rank_spirit"):
-		r = "spirit"
-	if faith_earned >= s("rank_deity"):
-		r = "deity"
-	if faith_earned >= s("rank_god"):
-		r = "god"
+	for name in ["spirit", "deity", "god"]:
+		if faith_earned >= s("rank_" + name):
+			r = name
 	return r
 
 
@@ -73,25 +84,99 @@ func next_rank() -> Array:
 	return [nxt, s("rank_" + nxt)]
 
 
-## True if the people have this discovery (and haven't forgotten it), or a choice set this flag.
+## True if the people have this discovery (and haven't forgotten it), or this flag is set.
 func has(x: String) -> bool:
-	return (x in granted and not (x in forgotten)) or x in flags
+	return (x in granted and not (x in forgotten)) or flags.has(x)
+
+
+func love_cap() -> int:
+	return maxi(0, 100 - fear * int(s("fear_crowds_love")))
+
+
+func mood() -> String:
+	if unrest >= s("restless_at"):
+		return "restless"
+	if love > fear:
+		return "loved"
+	if fear > love:
+		return "feared"
+	return "calm"
+
+
+func is_restless() -> bool:
+	return unrest >= s("restless_at")
+
+
+## Faith coming next generation, split by source.
+func income_parts() -> Dictionary:
+	var from_love := floori(float(love) / float(maxi(1, s("love_per_faith"))))
+	var from_fear := floori(float(fear) / float(maxi(1, s("fear_per_faith"))))
+	var bonus := 0
+	for id in granted:
+		if has(id):
+			bonus += c.revelations[id]["income"]
+	if people <= 0:
+		return {"love": 0, "fear": 0, "bonus": 0}
+	return {"love": from_love, "fear": from_fear, "bonus": bonus}
 
 
 func income() -> int:
-	var total := floori(float(people) / float(s("people_per_faith")))
-	for id in granted:
-		if has(id):
-			total += c.revelations[id]["income"]
-	return total
+	var p := income_parts()
+	return p["love"] + p["fear"] + p["bonus"]
 
 
 func growth() -> int:
-	var total: int = s("base_growth")
+	var total: int = s("base_growth") + floori(love / 20.0) - floori(fear / 25.0)
 	for id in granted:
 		if has(id):
 			total += c.revelations[id]["growth"]
+	if is_restless():
+		total -= 2
 	return total
+
+
+## Does a set of conditions (from any content file) hold right now?
+func conds_ok(cond: Dictionary) -> bool:
+	if generation < cond["when"].x or generation > cond["when"].y:
+		return false
+	for r in cond["requires"]:
+		if not has(r):
+			return false
+	for b in cond["blocks"]:
+		if has(b) or b in closed:
+			return false
+	for a in cond["after"]:
+		if not flags.has(a[0]) and not (a[0] in granted):
+			return false
+		var since: int = flags.get(a[0], generation)
+		if generation - since < a[1]:
+			return false
+	if cond["rank"] != "" and not rank_at_least(cond["rank"]):
+		return false
+	match cond["mood"]:
+		"loved":
+			if not love > fear:
+				return false
+		"feared":
+			if not fear > love:
+				return false
+		"restless":
+			if not is_restless():
+				return false
+		"calm":
+			if is_restless():
+				return false
+	var j: Vector2i = cond["journal"]
+	if j.x > -9999 or j.y < 9999:
+		var pct := readable_percent()
+		if pct < j.x or pct > j.y:
+			return false
+	var sil: Vector2i = cond["silence"]
+	if unanswered < sil.x or unanswered > sil.y:
+		return false
+	if cond["people"] == "none" and people > 0:
+		return false
+	return true
 
 
 func current_prayer() -> Dictionary:
@@ -101,7 +186,7 @@ func current_prayer() -> Dictionary:
 ## Empty string if the choice can be picked, otherwise the reason it can't.
 func choice_check(ch: Dictionary) -> String:
 	if ch["needs"] != "" and not rank_at_least(ch["needs"]):
-		return "You must be a %s" % RANK_NAMES[ch["needs"]]
+		return "Only a %s could do this" % RANK_NAMES[ch["needs"]]
 	if ch["cost"] > faith:
 		return "Needs %d faith" % ch["cost"]
 	for g in ch["grants"]:
@@ -128,9 +213,9 @@ func can_grant(id: String) -> String:
 		if not has(q):
 			return "Needs %s" % c.revelations[q]["name"]
 	if not rank_at_least(r["rank"]):
-		return "You must be a %s" % RANK_NAMES[r["rank"]]
+		return "Only a %s could grant this" % RANK_NAMES[r["rank"]]
 	if granted_this_gen:
-		return "One revelation per generation"
+		return "One discovery per generation"
 	if grant_cost(id) > faith:
 		return "Needs %d faith" % grant_cost(id)
 	return ""
@@ -152,6 +237,16 @@ func revelation_state(id: String) -> Array:
 
 # ---------------------------------------------------------------- journal
 
+func journal_found() -> bool:
+	return flags.has("journal_found")
+
+
+func visible_pages() -> Array:
+	if not journal_found():
+		return []
+	return c.pages.filter(func(p): return conds_ok(p["cond"]))
+
+
 ## Splits text into words and the spaces/punctuation between them.
 func tokens(text: String) -> Array:
 	var out: Array = []
@@ -170,11 +265,11 @@ func readable(word: String) -> bool:
 	return has(concept_of(word))
 
 
-## x = readable words, y = total words, across every journal page.
+## x = readable words, y = total words, across the pages the god can see.
 func journal_counts() -> Vector2i:
 	var total := 0
 	var ok := 0
-	for page in c.pages:
+	for page in visible_pages():
 		for tok in tokens(page["text"]):
 			if tok["is_word"]:
 				total += 1
@@ -183,59 +278,108 @@ func journal_counts() -> Vector2i:
 	return Vector2i(ok, total)
 
 
-## Like journal_counts, but only the key words listed in words.txt: the ones
-## that show whether her world is being rebuilt. Endings use this.
-func key_counts() -> Vector2i:
+## How much of her world is rebuilt: the share of the journal's key words
+## (words tied to discoveries in words.txt) that are readable, across ALL pages.
+func readable_percent() -> int:
 	var total := 0
 	var ok := 0
 	for page in c.pages:
 		for tok in tokens(page["text"]):
-			if tok["is_word"] and c.words.has(tok["text"].to_lower()):
+			if tok["is_word"] and c.is_key_word(tok["text"]):
 				total += 1
 				if readable(tok["text"]):
 					ok += 1
-	return Vector2i(ok, total)
-
-
-func readable_percent() -> int:
-	var n := key_counts()
-	if n.y == 0:
+	if total == 0:
 		return 0
-	return roundi(100.0 * n.x / n.y)
+	return roundi(100.0 * ok / total)
+
+
+## True if words tied to this discovery appear on a page the god can see.
+func journal_answers(id: String) -> bool:
+	for page in visible_pages():
+		for tok in tokens(page["text"]):
+			if tok["is_word"] and c.words.get(tok["text"].to_lower(), "") == id:
+				return true
+	return false
 
 
 # ---------------------------------------------------------------- actions
 
-func choose(index: int) -> String:
+## The bonus a currency gives when casting the bones.
+func cast_bonus(stat: String) -> int:
+	match stat:
+		"love":
+			return floori(float(love) / float(maxi(1, s("love_per_bonus"))))
+		"fear":
+			return floori(float(fear) / float(maxi(1, s("fear_per_bonus"))))
+		"faith":
+			return RANKS.find(rank()) * int(s("rank_bonus"))
+	return 0
+
+
+## How many bones' worth of faith the player may pour in (1 faith = +1).
+func max_spend(ch: Dictionary) -> int:
+	return clampi(faith - ch["cost"], 0, s("max_faith_on_cast"))
+
+
+## A feeling for the odds, without exact numbers. Needed = what the bones must show.
+func odds_word(ch: Dictionary, spend: int) -> String:
+	var needed: int = ch["test"]["target"] - cast_bonus(ch["test"]["stat"]) - spend
+	if needed <= 7:
+		return "Likely"
+	if needed <= 10:
+		return "Even"
+	if needed <= 13:
+		return "Hard"
+	return "Desperate"
+
+
+## Picks a choice. spend = extra faith poured into a cast.
+## Returns {"result", "failed", "cast": {} or {"bones", "bonus", "spend", "target", "total"}}.
+func choose(index: int, spend := 0) -> Dictionary:
 	var p := current_prayer()
 	if p.is_empty() or index < 0 or index >= p["choices"].size():
-		return ""
+		return {}
 	var ch: Dictionary = p["choices"][index]
 	if choice_check(ch) != "":
-		return ""
+		return {}
 	faith -= ch["cost"]
-	_gain(ch["faith"])
-	people = maxi(0, people + ch["people"])
-	love += ch["love"]
-	fear += ch["fear"]
-	for fl in ch["sets"]:
-		if not fl in flags:
-			flags.append(fl)
-	for g in ch["grants"]:
-		_grant(g)
-	for f in ch["forgets"]:
+	var failed := false
+	var cast := {}
+	if not ch["test"].is_empty():
+		spend = clampi(spend, 0, max_spend(ch))
+		faith -= spend
+		var bones := [rng.randi_range(1, 6), rng.randi_range(1, 6), rng.randi_range(1, 6)]
+		var bonus := cast_bonus(ch["test"]["stat"])
+		var total: int = bones[0] + bones[1] + bones[2] + bonus + spend
+		failed = total < ch["test"]["target"]
+		cast = {"bones": bones, "bonus": bonus, "spend": spend, "target": ch["test"]["target"], "total": total, "stat": ch["test"]["stat"]}
+	var fx: Dictionary = ch["fail"] if failed else ch["ok"]
+	_apply(fx)
+	if not failed:
+		for g in ch["grants"]:
+			_grant(g)
+	for f in (ch["fail_forgets"] if failed else []) + ch["forgets"]:
 		_forget(f)
+	for x in ch["closes"]:
+		if not x in granted and not x in closed:
+			closed.append(x)
+			_add_log("The path of %s closes." % c.revelations[x]["name"])
 	if ch["silent"]:
 		unanswered += 1
+		if love > 0:
+			love = maxi(0, love - s("silence_hurts_love"))
 	else:
 		answered += 1
 	used.append(p["id"])
+	answered_gen = generation
 	queue.pop_front()
 	var who: String = p["speaker"] if p["speaker"] != "" else "A prayer"
-	_add_log("%s: you chose \"%s\"." % [who, ch["text"]])
-	if people <= 0:
+	_add_log("%s: you chose \"%s\"%s." % [who, ch["text"], " (it went wrong)" if failed else ""])
+	if ch["ends"] or people <= 0:
 		_finish()
-	return ch["result"]
+	update_notes()
+	return {"result": fx["result"], "failed": failed, "cast": cast}
 
 
 func grant(id: String) -> bool:
@@ -244,7 +388,32 @@ func grant(id: String) -> bool:
 	faith -= grant_cost(id)
 	granted_this_gen = true
 	_grant(id)
+	update_notes()
 	return true
+
+
+## Call when the screen has shown a cutscene.
+func scene_seen(cs: Dictionary) -> void:
+	scenes.erase(cs)
+	for fl in cs["sets"]:
+		_set_flag(fl)
+	# A cutscene can change what should happen this generation (e.g. a birth before the final choice).
+	if answered_gen != generation:
+		_pick_prayers()
+	update_notes()
+
+
+## Learns any notes about people whose conditions are now true. Notes stay learned.
+func update_notes() -> void:
+	for person in c.characters:
+		if not person["id"] in met and conds_ok(person["cond"]):
+			met.append(person["id"])
+		if not person["id"] in met:
+			continue
+		for n in person["notes"]:
+			if not n["key"] in notes and conds_ok(n["cond"]):
+				notes.append(n["key"])
+				new_notes.append(n["key"])
 
 
 func end_generation() -> void:
@@ -259,20 +428,49 @@ func end_generation() -> void:
 
 # ---------------------------------------------------------------- internals
 
+func _apply(fx: Dictionary) -> void:
+	_gain(fx["faith"])
+	people = maxi(0, people + fx["people"])
+	fear = clampi(fear + fx["fear"], 0, 100)
+	love = clampi(love + fx["love"], 0, love_cap())
+	unrest = maxi(0, unrest + fx["unrest"])
+	for fl in fx["sets"]:
+		_set_flag(fl)
+
+
+func _set_flag(fl: String) -> void:
+	if not flags.has(fl):
+		flags[fl] = generation
+		if not fl in fresh:
+			fresh.append(fl)
+
+
 func _begin_generation(first: bool) -> void:
 	fresh.clear()
 	granted_this_gen = false
 	if first:
 		_add_log("You wake.")
 	else:
-		var inc := income()
-		_gain(inc)
+		var parts := income_parts()
+		last_income = parts
+		_gain(parts["love"] + parts["fear"] + parts["bonus"])
 		var born := 0
 		if people > 0:
-			born = maxi(1, roundi(people * growth() / 100.0))
+			born = maxi(0, roundi(people * growth() / 100.0))
 		people += born
-		_add_log("A new generation. Worship brings %d faith. %d children are born." % [inc, born])
+		var faded := roundi(love * s("love_fade") / 100.0)
+		fear = maxi(0, fear - roundi(fear * s("fear_fade") / 100.0))
+		love = maxi(0, love - faded)
+		var stir := floori(float(fear) / float(maxi(1, s("fear_unrest"))))
+		var calm := floori(float(love) / float(maxi(1, s("love_calms"))))
+		unrest = maxi(0, unrest + stir - calm)
+		love = mini(love, love_cap())
+		_add_log("A new generation. Faith from love: %d. From fear: %d. %d children born." % [parts["love"], parts["fear"] + parts["bonus"], born])
+	scenes = c.cutscenes.filter(func(cs): return not (cs["once"] and cs["id"] in used) and conds_ok(cs["cond"]))
+	for cs in scenes:
+		used.append(cs["id"])
 	_pick_prayers()
+	update_notes()
 
 
 func _pick_prayers() -> void:
@@ -280,13 +478,27 @@ func _pick_prayers() -> void:
 	var fixed: Array = []
 	var pool: Array = []
 	for p in c.prayers:
-		if _eligible(p):
-			if p["when"].x == p["when"].y:
-				fixed.append(p)  # written for exactly this generation: always shown
-			else:
-				pool.append(p)
+		if p["once"] and p["id"] in used:
+			continue
+		if not conds_ok(p["cond"]):
+			continue
+		if p["cond"]["when"].x == p["cond"]["when"].y:
+			fixed.append(p)  # written for exactly this generation: always shown
+		else:
+			pool.append(p)
+	var finals := fixed.filter(func(p): return p["kind"] == "final")
+	if not finals.is_empty():
+		queue = finals
+		return
 	queue.append_array(fixed)
 	var want: int = s("prayers_per_generation")
+	# Unrest pushes its own prayers to the front of the line.
+	if is_restless():
+		var unrest_pool := pool.filter(func(p): return p["cond"]["mood"] == "restless")
+		if not unrest_pool.is_empty() and queue.size() < want:
+			var pick = unrest_pool[rng.randi() % unrest_pool.size()]
+			queue.append(pick)
+			pool.erase(pick)
 	while queue.size() < want and not pool.is_empty():
 		var total := 0
 		for p in pool:
@@ -300,20 +512,6 @@ func _pick_prayers() -> void:
 				break
 		queue.append(pick)
 		pool.erase(pick)
-
-
-func _eligible(p: Dictionary) -> bool:
-	if p["once"] and p["id"] in used:
-		return false
-	if generation < p["when"].x or generation > p["when"].y:
-		return false
-	for r in p["requires"]:
-		if not has(r):
-			return false
-	for b in p["blocks"]:
-		if has(b) or b in closed:
-			return false
-	return true
 
 
 func _gain(n: int) -> void:
@@ -333,8 +531,8 @@ func _grant(id: String) -> void:
 		_add_log("%s returns to your people." % r["name"])
 	elif not id in granted:
 		granted.append(id)
-		love += r["love"]
-		fear += r["fear"]
+		fear = clampi(fear + r["fear"], 0, 100)
+		love = clampi(love + r["love"], 0, love_cap())
 		_add_log("Your people discover %s." % r["name"])
 	else:
 		return
@@ -355,21 +553,25 @@ func _forget(id: String) -> void:
 
 func _finish() -> void:
 	over = true
-	var pct := readable_percent()
+	queue.clear()
+	scenes.clear()
+	ending = {}
 	for e in c.endings:
-		var cond: Dictionary = e["condition"]
-		var ok := false
-		match cond["type"]:
-			"no_people":
-				ok = people <= 0
-			"readable":
-				ok = people > 0 and pct >= cond["value"]
-			"always":
-				ok = true
-		if ok:
+		if conds_ok(_ignore_when(e["cond"])):
 			ending = e
 			break
-	_add_log("The first age ends.")
+	epilogue_lines.clear()
+	for e in c.epilogues:
+		if conds_ok(_ignore_when(e["cond"])):
+			epilogue_lines.append(e["text"])
+	_add_log("The age ends.")
+
+
+## Endings can happen at any generation, so their 'when' is ignored.
+func _ignore_when(cond: Dictionary) -> Dictionary:
+	var d := cond.duplicate()
+	d["when"] = Vector2i(1, 9999)
+	return d
 
 
 func _add_log(text: String) -> void:

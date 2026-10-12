@@ -1,33 +1,108 @@
-# ENDINGS
+# ENDINGS AND EPILOGUES
 #
-# Checked from top to bottom. The first one whose condition is true is shown.
-# Conditions:
-#   condition: no people     everyone has died
-#   condition: readable 90   at least 90% of the key words (journal/words.txt) can be read
-#   condition: always        always true (keep one of these last)
-# Optional:  title: the heading shown above the ending
+# ENDINGS: checked from top to bottom when the game ends. The first one whose
+# conditions are all true is shown. Keep one with no conditions at the bottom.
+# EPILOGUES ("kind: epilogue"): every one whose conditions are true is added
+# after the ending, so the ending reflects how the player ruled.
+#
+# Settings:
+#   title:   the heading
+#   kind:    ending (default) or epilogue
+#   Conditions: requires, blocks, mood (loved / feared / restless / calm),
+#               journal ("70+" = 70% of her world rebuilt), silence ("5+" = five or
+#               more prayers ignored), people ("none" = everyone died)
 # DRAFT TEXT: rewrite freely.
 
-=== gone
-condition: no people
+
+=== silence
+people: none
 title: Silence
 
-There is no one left to pray to you. The flat rock where Sana once left berries is overgrown. Somewhere, a journal you cannot read will never be finished.
+There is no one left to pray to you. The flat rock where Sana once left berries is overgrown. Somewhere, a book you wrote will never be finished.
 
-=== whole
-condition: readable 90
-title: Her world, almost
 
-You can read almost every word now. The river, the songs, the reeds, the stone temple, the dead facing the sunrise: your people have built all of it, without ever knowing why. The last line of the last page ends with a name you do not recognize. It is written in your own hand.
+=== broke_with_love
+requires: broke_with_love
+title: The first spring
 
-=== pieces
-condition: readable 50
-title: Half a story
+You walk out of the Pantheon and down to the river, and you do not go back.
 
-The journal is half a story. Some of her world is here, in the way your people live. Some of it is lost, or was never built. Whoever she was, she could almost be born here. Almost.
+The harvest ends. Across every world, a little of the love that people felt for their gods quietly drains away, and people look up at the sky and feel, for the first time, nothing in particular. Some gods fade. Some temples empty.
 
-=== stranger
-condition: always
-title: A stranger's world
+But by the river, a woman you have loved more times than you can count turns and sees you, and this time, you will remember.
 
-Most of the journal is still strange marks. The world below you is real and alive, but it is not hers. Wherever she was born, it was not here. Not yet.
+
+=== broke_with_fear
+requires: broke_with_fear
+title: A god who cannot be harvested
+
+You tear free of the Voices and go down to her as something new: a god held together by terror, and too strong to be taken apart.
+
+The harvest ends. The other gods fade a little, in every world. You do not. Your people fear you enough to keep you strong forever.
+
+She looks at you by the river. She is not sure, yet, whether she should be afraid. Neither are you.
+
+
+=== broke_alone
+requires: broke_alone
+title: A god with nothing taken
+
+You refuse them, and for once, nothing is taken. You have no one to love, and you remember all of it.
+
+You stay with your people. You answer their prayers. You do not know what happens to a world without the harvest. You are going to find out.
+
+
+=== kept_cycle
+requires: kept_cycle
+title: Again
+
+Light. Then more light.
+
+You are somewhere. You are someone. Beyond that, nothing.
+
+Somewhere nearby, in a room you have never seen, there is a book. It is a little thicker than it was.
+
+
+=== the_age_ends
+title: The age ends
+
+The age ends before you understand what it meant.
+
+
+# ---------------------------------------------------------------- EPILOGUES
+
+=== epi_loved
+kind: epilogue
+mood: loved
+
+Your people remember you as a god who answered. They will tell their children that the sky is kind.
+
+=== epi_feared
+kind: epilogue
+mood: feared
+
+Your people remember you as a god to be feared. They will tell their children never to look up for too long.
+
+=== epi_silent
+kind: epilogue
+silence: 5+
+
+But they also remember the silences. All the times they called, and nothing came.
+
+=== epi_oren
+kind: epilogue
+requires: oren_spared
+
+In the valley, they still tell the story of Oren on the high rocks, and the god who would not take him.
+
+=== epi_blood
+kind: epilogue
+requires: blood_on_the_river
+
+On the river, there is a rock no one will stand on. Nobody remembers why.
+
+=== epi_sana
+kind: epilogue
+requires: sunrise_burial
+
+On a hillside facing east, Sana's grave still catches the first light every morning.

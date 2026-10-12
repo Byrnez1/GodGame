@@ -1,0 +1,357 @@
+# CUTSCENES
+#
+# Full-screen story moments, shown at the start of a generation when their
+# conditions are true. Each one plays once.
+#
+# Settings:
+#   picture:   the picture for the first panel. Available pictures:
+#              pantheon, pool, chamber, journal, inks, voices, other_god,
+#              dream_river, village, fire, fog, storm, harvest, birth, time, cycle, stars
+#              (Put an image at game/assets/art/<name>.png to replace a drawn picture.)
+#   sets:      flags to set once the cutscene has been seen
+#   Conditions (same as prayers):
+#     when, requires, blocks, after ("flag 2" = 2+ generations after it was set),
+#     rank, mood (loved / feared / restless / calm), journal ("40+" or "under 40",
+#     the % of her world rebuilt), silence (how many prayers went unanswered)
+#
+# Write the panels as text, separated by a line with only:  ---
+# A panel can start with  picture: name  to change the picture.
+# DRAFT TEXT: rewrite freely.
+
+
+# ------------------------------------------------------------ ACT ONE: WAKING
+
+=== waking
+when: 1
+picture: pantheon
+sets: voices_met
+
+Light. Then more light.
+
+You are somewhere. You are someone. Beyond that, nothing.
+
+---
+
+A hall without walls. Pillars that rise until they stop being pillars. Far away, figures sit on thrones of light, each one gazing down at something you cannot see.
+
+One of the thrones nearest you is dark.
+
+---
+picture: voices
+
+Two shapes stand over you. One wears a ring of slow-turning light, like a wheel, or a clock. The other is harder to look at, like a word on the tip of your tongue.
+
+"You are rested now," says the first.
+
+"Good," says the second.
+
+---
+
+"Who am I?" you ask.
+
+"You are what you have always been," says the one with the ring. "And you have work to do."
+
+---
+picture: pool
+
+At your feet is a pool, and in the pool, a world. A cold plain. A river. A few dozen people huddled around nothing at all.
+
+"These are yours," says the second voice. "Watch over them. That is all you need to know."
+
+---
+
+When you look up, the Voices are gone.
+
+You are alone with your people, and you have no idea how to be a god.
+
+
+=== the_rule
+when: 2
+picture: pantheon
+sets: rule_learned
+
+You walk the hall, looking for anyone who will tell you what you are.
+
+A god sits nearby, gazing into her own pool. You reach out to touch her shoulder.
+
+---
+
+Your hand stops a finger's width from her, as if the air itself refused.
+
+"We do not touch, here," she says, without turning. "That is the oldest rule. No god may lay a hand on another in this place."
+
+"Why?"
+
+She is quiet for a long moment. "So that we cannot hurt each other," she says. "Down there is a different matter."
+
+
+=== the_book
+when: 3
+picture: chamber
+sets: journal_found
+
+Between two pillars there is a door you have never noticed. It opens for you as if it has been waiting.
+
+---
+
+A small room. A chair turned toward a window, and through the window, a river at dusk.
+
+You have never seen this river. It is not in your pool. It is not anywhere you know.
+
+---
+picture: journal
+
+On the table, a book. The writing is in no language you know. And yet your fingers fit the worn places on its cover exactly.
+
+When you open it, a pressed flower falls out.
+
+---
+
+You take the book with you. You couldn't say why.
+
+(The old book is now in your Journal.)
+
+
+=== welcome_back
+when: 5
+picture: other_god
+sets: welcome_back
+
+A god with golden eyes is watching you across the hall. When you meet her gaze, she says two words.
+
+"Welcome back."
+
+---
+
+"Back from where?"
+
+But she has already turned away. You hear her say, to no one in particular: "Nobody comes back. Not usually."
+
+
+# ------------------------------------------------------------ ACT TWO: THE DREAM
+
+=== the_dream
+when: 6+
+journal: 30+
+blocks: dreamed_of_her
+picture: dream_river
+sets: dreamed_of_her
+
+Gods do not sleep. And yet.
+
+---
+
+A river at dusk. Reeds. Someone laughing at something you said. You can't see her face, only the shape of her against the light.
+
+You know that laugh. You have never heard it before, and you know it.
+
+---
+picture: journal
+
+When it fades, you open the old book. For the first time, marks you have stared at a hundred times turn into words.
+
+Her. She.
+
+The book is about a woman.
+
+
+=== the_dream_faint
+when: 8+
+journal: under 30
+blocks: dreamed_of_her
+picture: dream_river
+sets: dreamed_of_her
+
+Gods do not sleep. And yet, something comes to you that is almost a dream.
+
+A river. A shape against the light. It slips away before you can hold it.
+
+---
+picture: journal
+
+When you open the old book, two marks have changed. Her. She.
+
+The book is about a woman. That is all you understand. The world your people live in is too unlike the one in these pages for you to read more.
+
+
+=== purpose
+after: dreamed_of_her 1
+sets: purpose
+picture: pool
+
+You watch your people the way you always do, and realize you have been watching for something.
+
+A river like the one in your dream. Reeds. A song.
+
+---
+
+She lived in a world like this once. Or she will. You don't know which.
+
+You only know you have to find her.
+
+---
+
+But why? A god does not need a mortal. Unless she is something more than mortal. A sacrifice, perhaps. A key. A promise someone made you, a long time ago.
+
+
+=== voices_warn
+when: 8+
+requires: purpose
+picture: voices
+sets: voices_warned
+
+The Voices return.
+
+"You are spending a great deal of attention on one river," says the one with the ring.
+
+"Your people need you everywhere," says the other. "Not just there."
+
+---
+
+"Who is she?" you ask.
+
+The Voices look at each other, and you do not like the look.
+
+"No one," they say together. "Yet."
+
+
+=== three_inks
+when: 9+
+journal: 45+
+requires: dreamed_of_her
+blocks: three_inks
+picture: inks
+sets: three_inks
+
+Turning the old book in your hands, you notice what you missed before. The ink changes.
+
+Red on some pages. Blue on others. Black on the last few.
+
+---
+
+Three pages. Three inks. The same few words on each, written as if for the first time.
+
+Someone met her, and forgot, and met her again. And again.
+
+(A new page is open in the old book.)
+
+
+=== three_inks_late
+when: 11+
+requires: dreamed_of_her
+blocks: three_inks
+picture: inks
+sets: three_inks
+
+Turning the old book in your hands, you notice the ink changes from page to page. Red. Blue. Black.
+
+Three pages, written in three inks, all saying the same thing as if for the first time.
+
+(A new page is open in the old book.)
+
+
+# ------------------------------------------------------------ ACT THREE: THE TRUTH
+
+=== the_hand
+after: three_inks 1
+picture: chamber
+sets: journal_is_mine
+
+Late, alone, you write a note about your people in your own journal. Then, without thinking, you lay it beside the old book.
+
+---
+picture: journal
+
+The loops of the letters. The way the lines lean, as if always in a hurry.
+
+The hands match.
+
+---
+
+The old book is yours. You wrote every word of it.
+
+And you forgot. More than once.
+
+
+=== the_harvest
+after: journal_is_mine 1
+picture: voices
+sets: harvest_known
+
+"You are remembering," says the Voice that Keeps. "You were not meant to remember. Not this time."
+
+"This time?"
+
+---
+
+The Voice that Counts sighs, a sound like a season ending.
+
+"A god who loves a mortal, and a people who believe in that god. Together they make something none of us can make alone."
+
+---
+picture: harvest
+
+"Love that rises. We gather it, and we give it to every people in every world, so that they will love their gods too."
+
+"Without it, mortals would remember what we truly are: distant, silent, often cruel. They would stop believing. And every one of us would fade."
+
+---
+
+"So you let me find her," you say. "You let me love her. And then you take it. You take her. You take my memory. And you start again."
+
+"Yes," says the Voice that Counts. Its true name, you understand now, is Time.
+
+"It was never a punishment," says the other, whose name is Memory. "It is a harvest."
+
+
+=== her_birth
+after: harvest_known 1
+journal: 70+
+blocks: blood_on_the_river
+picture: birth
+sets: her_born
+
+At dawn, by a river full of reeds, a girl is born.
+
+She does not cry. She looks up.
+
+---
+
+You have rebuilt her world, piece by piece, without knowing what you were doing. And here she is.
+
+The Voices are watching too.
+
+
+=== no_birth
+after: harvest_known 1
+journal: under 70
+blocks: her_born, blood_on_the_river
+picture: village
+sets: no_birth
+
+You search the world for her.
+
+You find rivers, and songs, and good people who are not her.
+
+---
+
+The world you built is real, and alive in its own way. But it is not her world. She is not born here.
+
+Not this time.
+
+
+=== no_birth_blood
+after: harvest_known 1
+requires: blood_on_the_river
+picture: fog
+sets: no_birth
+
+You search the world for her.
+
+You find the river where your people killed a girl in your name. The reeds still grow there. Nothing else does.
+
+---
+
+Whatever world she could have been born into, your people ended it on that riverbank.
+
+She is not born here. Not this time.

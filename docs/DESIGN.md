@@ -199,3 +199,48 @@ Look book, round one: https://claude.ai/artifact/EKpLub7YHY7z4d2sHFhSLu (copy sa
 
 ### Living world scenes, round two
 Animated scene sketches: https://claude.ai/artifact/CUWWhm4T3xu1gSvL94MzYN (copy at `docs/art/living-world.html`). Scenes: The Flood (silhouette side view), Fire & Song (night close-up), The Long Walk (overhead map), Generations (pixel time-lapse), Memory's Fog (villain interference). **User feedback:** Memory's Fog, Fire & Song and The Flood are closest to the game in the user's head. ❌ Pixel art (Generations) rejected. ❌ Overhead map (The Long Walk) not working for them. Scenes mostly play out the player's choices with little interaction, so art is parked for now in favor of mechanics and a playable prototype.
+
+---
+
+## Prototype v0.2 plan (after the user's v0.1 playtest, 2026-10-12)
+
+### v0.1 playtest feedback (user)
+- The game works, but choices felt **meaningless** with no weight; it was boring overall
+- There was **no incentive to be mean**, and decisions were too obvious (good vs. evil)
+- Wants **love, fear, and faith as three interacting currencies**
+- **Don't show outcomes while choosing**, so players can't min-max faith
+- Wants dilemmas between **two good things or two bad things**
+- The **plot didn't come through**, even for the person who wrote it. Wants **cutscenes** (text + pictures) triggered under different conditions
+- More **world-building**: the god's memory loss, the Pantheon, his confusion, and his understanding that he's been tasked with ruling these people
+- The journal's words **didn't lead decisions**
+- **Too much story revealed at the start.** It should be completely confusing until about halfway
+
+### v0.2 changes
+**Three currencies that pull against each other**
+- **Faith** is power you spend. Every generation it comes from belief, and belief has two sources:
+- **Fear** produces faith *fast* (twice as efficiently as love) and never fades. But fear breeds **unrest**, which leads to revolts, heretics, and people fleeing. Fear also crowds out love: love can never go above 100 minus fear.
+- **Love** produces faith *slowly* and **fades every generation** unless you tend it by answering prayers. A loving people expect you to answer, so **silence costs love**. Love calms unrest and helps the population grow.
+- The temptation: her world is expensive, and fear is the quickest way to afford it.
+
+**Choices that hide their outcomes**
+- A choice shows only its words, and a faith cost if it's a miracle. Effects are revealed afterward in plain language ("Love grows. Fear spreads. Four died.")
+- Some choices are **gambles** with a chance to go wrong
+- Many choices have **delayed consequences**: they set a flag that brings a new event generations later (strangers return as raiders, a plague, revenge)
+- Prayers are written as **dilemmas**: two goods, two bads, or a price either way
+
+**Story told through cutscenes, gated by conditions**
+- Full-screen cutscenes with pictures (drawn in code for now; real art can replace them later by dropping an image into `assets/art/`)
+- The prototype now covers the **whole arc, compressed into 15 generations**: waking and confusion → finding the journal → halfway dream of her → wrong theories → the journal is his → loops and the harvest → her birth (only if her world was rebuilt) → final choice → epilogue
+- **Pantheon world-building:** the hall of gods, the pool he watches his people through, the rule that gods can't touch each other there, other gods who say "welcome back", and two unnamed Voices (Time and Memory)
+- The Pantheon tab gets a **"What you know"** list that grows as the god learns things
+
+**A journal that confuses first and guides later**
+- The journal isn't found until generation 3, and pages unlock over time
+- "She/her" only become readable after the dream (around the halfway point), and "I/my" only after he realizes the journal is his. Before that, the pages read as unsettling fragments
+- **Margin sketches** are visible from the start and hint at what to build (reeds in water, a grave facing sunrise)
+- Discoveries that match words in the journal are marked: *"Something in the journal answers to this"*
+- Her birth (and the ending) depends on how much of her world was rebuilt
+
+### ✅ Added during the v0.2 build (user requests)
+- **Casting the bones** (user: "like rolling a d20 in D&D, with bonuses from faith, love, and fear"): three bones (3–18, a bell curve so bonuses matter) + a bonus from love, fear, or rank, depending on the act. Before casting, the player can pour in faith (+1 each). Odds are shown as a feeling, never as a number.
+- **People in the journal** (user: "characterize Time, Memory, citizens of note, and yourself, slowly recording what we learn"): the Journal tab has **Your notes** (people, including the god himself) and **The old book**. Notes unlock through conditions and stay learned.

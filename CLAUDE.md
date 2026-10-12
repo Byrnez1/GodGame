@@ -27,3 +27,7 @@ A 2D, single-player, narrative decision game for PC (Steam), built in **Godot 4*
 - `.txt` content isn't imported by Godot, so the Windows export preset must include `content/*.txt` in its non-resource include filter.
 - Git: GitHub remote `Byrnez1/GodGame` (private), branch `main`. Commit working states often, with clear messages.
 - Godot 4.7.2 is installed via winget at `%LOCALAPPDATA%\Microsoft\WinGet\Packages\GodotEngine.GodotEngine_Microsoft.Winget.Source_8wekyb3d8bbwe\` (use `Godot_v4.7.2-stable_win64_console.exe` for headless runs).
+
+## Testing
+- Run `godot --headless --path game --script res://tests/run_tests.gd` (use the `_console.exe` Godot) after any rules or content change. It validates content and plays 900 games with random, kind, and cruel players.
+- Screenshots: `godot --path game --write-movie <out.png> --fixed-fps 10 --quit-after 12 -- --preview=main` (or `--preview=cast`; no flag shows the opening cutscene).

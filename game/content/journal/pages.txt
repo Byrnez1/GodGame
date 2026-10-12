@@ -1,28 +1,57 @@
-# JOURNAL PAGES
+# THE OLD BOOK (journal pages)
 #
+# The book is found in generation 3 (the "the_book" cutscene sets journal_found).
 # Each page starts with "=== name".
 # Settings (optional):
-#   order:  where the page sits in the journal (1 = first)
-#   title:  a heading shown above the page
+#   order:   where the page sits in the book (1 = first)
+#   title:   a heading above the page
+#   sketch:  a drawing in the margin, always visible, even before any words can be read.
+#            Sketches are how the book guides the player early on.
+#   ink:     a note about the ink, shown next to the title
+#   Conditions decide when a page becomes visible: when, requires, rank, journal...
 #
-# Write the page as normal prose. Important words are tied to discoveries
-# in words.txt. Everything else becomes readable with First Words.
+# Write each page as normal prose. Which words are readable depends on words.txt.
 # DRAFT TEXT: rewrite freely.
 
 === page_one
 order: 1
-title: A torn page
+title: The first page
+sketch: reeds bending in moving water, and beside them, a small fire
 
 Her mother sang the old songs by the fire, weaving reeds from the river. I sat where the light could not reach me and listened until the stars went out.
 
 === page_two
 order: 2
 title: A page with a pressed flower
+sketch: a mound of earth on a hillside, with the sun rising behind it
+when: 5+
 
 She laughed at me for watching. She told me her people buried their dead facing the sunrise, so they would always wake to something warm. I asked what I would wake to. She did not answer. She only took my hand.
 
 === page_three
 order: 3
 title: A water-stained page
+sketch: a house of stacked stones, with wavy lines rising from its roof, like singing
+when: 7+
 
 We hid from the storm in the stone temple her grandfather built. Rain on the roof like a thousand small hands. She fell asleep against my shoulder, and for the first time since I have existed, I was afraid of time.
+
+=== page_inks
+order: 4
+title: Three pages, three inks
+ink: red, then blue, then black
+requires: three_inks
+
+I met her today. I have never felt anything like this.
+
+I met her today. I have never felt anything like this.
+
+I met her today. I have never felt anything like this, and I do not know why my hand is shaking as I write it.
+
+=== page_last
+order: 5
+title: The last page
+ink: black, pressed hard into the page
+requires: journal_is_mine
+
+If I am reading this, they have taken everything again. Find the river. Find the songs. Find her. And when the voices tell me it was a punishment, I must not believe them.
