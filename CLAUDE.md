@@ -30,4 +30,4 @@ A 2D, single-player, narrative decision game for PC (Steam), built in **Godot 4*
 
 ## Testing
 - Run `godot --headless --path game --script res://tests/run_tests.gd` (use the `_console.exe` Godot) after any rules or content change. It validates content and plays 900 games with random, kind, and cruel players.
-- Screenshots: `godot --path game --write-movie <out.png> --fixed-fps 10 --quit-after 12 -- --preview=main` (or `--preview=cast`; no flag shows the opening cutscene).
+- Screenshots: `godot --path game --write-movie <out.png> --fixed-fps 10 --quit-after 12 -- --preview=MODE` where MODE is main, cast, known, pantheon, or scene:<cutscene_id>:<panel>. No flag shows the opening cutscene. Check long cutscene panels this way after writing them.

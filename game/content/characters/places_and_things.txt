@@ -1,0 +1,63 @@
+# PLACES AND THINGS (the "Known" tab)
+# Same format as people.txt. DRAFT TEXT: rewrite freely.
+
+
+=== the_pantheon
+name: The Pantheon
+title: where the gods live
+group: places
+requires: voices_met
+
+> A hall without walls. Pillars rise until they stop being pillars.
+> Every god sits on a throne of light, watching their own world below.
+> One throne near yours is always dark.
+> No god may touch another here. Down below is a different matter.
+  requires: rule_learned
+> Every throne in this hall is kept lit by the harvest.
+  requires: harvest_known
+
+
+=== the_pool
+name: Your pool
+title: a window onto your world
+group: places
+requires: voices_met
+
+> Your world, seen from above. If you look long enough, you can almost hear the prayers.
+> When the fog came, the pool went grey for three days.
+  requires: fog_came
+
+
+=== the_small_room
+name: The small room
+title: behind a door you never noticed
+group: places
+requires: journal_found
+
+> A chair turned toward a window. Through the window, a river at dusk that isn't in your world.
+> The river in your dream was the river in that window.
+  requires: dreamed_of_her
+
+
+=== the_flat_rock
+name: The flat rock
+title: the first altar
+group: places
+requires: sana_heard
+
+> Where Sana left her first gifts for you.
+> Someone always keeps it clean. Nobody remembers who started doing that.
+  when: 6+
+
+
+=== the_old_book
+name: The old book
+title: found in the small room
+group: places
+requires: journal_found
+
+> Written in no language you know. Your fingers fit the worn places on its cover.
+> It is written in three different inks.
+  requires: three_inks
+> It is yours.
+  requires: journal_is_mine

@@ -1,12 +1,13 @@
-# PEOPLE (your notes)
+# PEOPLE AND GODS (the "Known" tab)
 #
 # The god's own notes about the people in his world, including himself.
-# They live in the Journal tab under "Your notes".
+# They live in the Known tab, grouped by "group": gods, people, or places.
 #
 # Each person starts with "=== name".
 # Settings:
 #   name:    shown as the heading
 #   title:   a short description next to the name
+#   group:   gods, people, or places (default: people)
 #   Conditions decide when the person first appears in your notes:
 #            when, requires, blocks, after, rank, mood, journal, silence
 #
@@ -17,6 +18,7 @@
 
 === you
 name: You
+group: gods
 title: a god, apparently
 
 > You woke in a hall of light with no memory of anything before.
@@ -42,6 +44,7 @@ title: a god, apparently
 
 === the_voice_that_counts
 name: The Voice that Counts
+group: gods
 title: one of the two who woke you
 requires: voices_met
 
@@ -59,6 +62,7 @@ requires: voices_met
 
 === the_voice_that_keeps
 name: The Voice that Keeps
+group: gods
 title: the other one who woke you
 requires: voices_met
 
@@ -75,6 +79,7 @@ requires: voices_met
 
 === golden_eyes
 name: The god with golden eyes
+group: gods
 title: a stranger in the Pantheon
 requires: welcome_back
 

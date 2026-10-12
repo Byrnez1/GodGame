@@ -14,7 +14,7 @@ const PRAYER_FIELDS := ["speaker", "once", "weight", "kind", "picture"]
 const CHOICE_FIELDS := ["cost", "faith", "people", "love", "fear", "unrest", "sets", "grants", "forgets", "closes", "silent", "needs", "result", "ends",
 	"test", "fail_result", "fail_faith", "fail_people", "fail_love", "fail_fear", "fail_unrest", "fail_sets", "fail_forgets"]
 const CUTSCENE_FIELDS := ["picture", "sets", "once"]
-const CHARACTER_FIELDS := ["name", "title"]
+const CHARACTER_FIELDS := ["name", "title", "group"]
 const TEST_STATS := ["love", "fear", "faith"]
 const PAGE_FIELDS := ["order", "title", "sketch", "ink"]
 const ENDING_FIELDS := ["title", "kind", "condition"]
@@ -561,6 +561,7 @@ func _add_character(b: Dictionary) -> void:
 		"title": str(f.get("title", "")),
 		"cond": _conditions(f, path, line),
 		"intro": b["text"],
+		"group": str(f.get("group", "people")).strip_edges().to_lower(),
 		"notes": [],
 		"file": path,
 		"line": line,

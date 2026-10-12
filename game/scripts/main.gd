@@ -5,6 +5,7 @@ extends Control
 const ContentData := preload("res://scripts/content.gd")
 const GameRules := preload("res://scripts/game_state.gd")
 const Backdrop := preload("res://scripts/backdrop.gd")
+const StarMap := preload("res://scripts/star_map.gd")
 
 const GOLD := "#d9b45a"
 const DIM := "#8a8475"
@@ -18,7 +19,7 @@ var result_text := ""
 var casting := -1          ## Index of the choice being cast, or -1
 var spend := 0             ## Faith poured into the current cast
 var rolling := false
-var journal_view := "notes"
+
 
 var bar := {}
 var love_bar: ProgressBar
@@ -28,11 +29,16 @@ var story: RichTextLabel
 var choices: VBoxContainer
 var end_button: Button
 var tabs: TabContainer
-var rev_box: VBoxContainer
+var known_text: RichTextLabel
 var journal_text: RichTextLabel
-var notes_btn: Button
-var book_btn: Button
-var history: RichTextLabel
+var view := "world"
+var view_btns := {}
+var world_view: Control
+var pantheon_view: Control
+var star_map
+var star_info: RichTextLabel
+var star_btn: Button
+var record: RichTextLabel
 var overlay: Control
 var overlay_pic
 var overlay_text: RichTextLabel
@@ -63,7 +69,9 @@ func _new_game() -> void:
 	game.start(content)
 	result_text = ""
 	casting = -1
-	journal_view = "notes"
+	view = "world"
+	star_map.selected = ""
+	star_map.game = game
 	scene_panel = 0
 	_refresh()
 
@@ -81,8 +89,19 @@ func _build() -> void:
 	margin.add_child(col)
 
 	var top := HBoxContainer.new()
-	top.add_theme_constant_override("separation", 26)
+	top.add_theme_constant_override("separation", 22)
 	col.add_child(top)
+	var views := HBoxContainer.new()
+	views.add_theme_constant_override("separation", 4)
+	top.add_child(views)
+	for v in ["World", "Pantheon"]:
+		var vb := Button.new()
+		vb.text = v
+		vb.toggle_mode = true
+		vb.custom_minimum_size = Vector2(96, 0)
+		vb.pressed.connect(_on_switch_view.bind(v.to_lower()))
+		views.add_child(vb)
+		view_btns[v.to_lower()] = vb
 	for key in ["generation", "faith"]:
 		bar[key] = _label(top)
 	love_bar = _meter(top, "Love", Color("e0915a"))
@@ -94,6 +113,7 @@ func _build() -> void:
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_theme_constant_override("separation", 16)
 	col.add_child(body)
+	world_view = body
 
 	var world := _panel(Color("1e212a"), 0)
 	world.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -134,39 +154,45 @@ func _build() -> void:
 	tabs.custom_minimum_size = Vector2(440, 0)
 	body.add_child(tabs)
 
-	var jcol := VBoxContainer.new()
-	jcol.name = "Journal"
-	jcol.add_theme_constant_override("separation", 10)
-	tabs.add_child(jcol)
-	var jrow := HBoxContainer.new()
-	jcol.add_child(jrow)
-	notes_btn = Button.new()
-	notes_btn.text = "Your notes"
-	notes_btn.toggle_mode = true
-	notes_btn.pressed.connect(_on_view.bind("notes"))
-	jrow.add_child(notes_btn)
-	book_btn = Button.new()
-	book_btn.text = "The old book"
-	book_btn.toggle_mode = true
-	book_btn.pressed.connect(_on_view.bind("book"))
-	jrow.add_child(book_btn)
-	var jscroll := _scroll("JournalScroll")
-	jscroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	jcol.add_child(jscroll)
+	var kscroll := _scroll("Known")
+	tabs.add_child(kscroll)
+	known_text = _rich(16)
+	kscroll.add_child(known_text)
+
+	var jscroll := _scroll("Journal")
+	tabs.add_child(jscroll)
 	journal_text = _rich(17)
 	jscroll.add_child(journal_text)
 
-	var rscroll := _scroll("Discoveries")
-	tabs.add_child(rscroll)
-	rev_box = VBoxContainer.new()
-	rev_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	rev_box.add_theme_constant_override("separation", 8)
-	rscroll.add_child(rev_box)
-
-	var hscroll := _scroll("Pantheon")
-	tabs.add_child(hscroll)
-	history = _rich(15)
-	hscroll.add_child(history)
+	# The Pantheon view: discoveries as constellations, with details and your record.
+	pantheon_view = HBoxContainer.new()
+	pantheon_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	pantheon_view.add_theme_constant_override("separation", 16)
+	pantheon_view.visible = false
+	col.add_child(pantheon_view)
+	star_map = StarMap.new()
+	star_map.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	star_map.clip_contents = true
+	star_map.setup(content)
+	star_map.star_clicked.connect(_on_star)
+	pantheon_view.add_child(star_map)
+	var info := _panel(Color("0c1430"), 18)
+	info.custom_minimum_size = Vector2(400, 0)
+	pantheon_view.add_child(info)
+	var iscroll := _scroll("Info")
+	info.add_child(iscroll)
+	var icol := VBoxContainer.new()
+	icol.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	icol.add_theme_constant_override("separation", 12)
+	iscroll.add_child(icol)
+	star_info = _rich(16)
+	icol.add_child(star_info)
+	star_btn = Button.new()
+	star_btn.custom_minimum_size = Vector2(0, 40)
+	star_btn.pressed.connect(_on_star_grant)
+	icol.add_child(star_btn)
+	record = _rich(14)
+	icol.add_child(record)
 
 	# Cutscene overlay, on top of everything.
 	overlay = Control.new()
@@ -179,20 +205,23 @@ func _build() -> void:
 	overlay.add_child(overlay_bg)
 	overlay_pic = Backdrop.new()
 	overlay_pic.anchor_right = 1.0
-	overlay_pic.anchor_bottom = 0.64
+	overlay_pic.anchor_bottom = 0.55
 	overlay.add_child(overlay_pic)
 	var shade := _panel(Color(0.04, 0.04, 0.07, 0.86), 28)
 	shade.anchor_left = 0.0
 	shade.anchor_right = 1.0
-	shade.anchor_top = 0.64
+	shade.anchor_top = 0.55
 	shade.anchor_bottom = 1.0
 	overlay.add_child(shade)
 	var orow := VBoxContainer.new()
 	orow.add_theme_constant_override("separation", 14)
 	shade.add_child(orow)
-	overlay_text = _rich(22)
-	overlay_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	orow.add_child(overlay_text)
+	# The text scrolls if it's long, so the button below always stays on screen.
+	var oscroll := _scroll("SceneText")
+	oscroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	orow.add_child(oscroll)
+	overlay_text = _rich(20)
+	oscroll.add_child(overlay_text)
 	overlay_btn = Button.new()
 	overlay_btn.custom_minimum_size = Vector2(200, 44)
 	overlay_btn.size_flags_horizontal = Control.SIZE_SHRINK_END
@@ -286,11 +315,11 @@ func _refresh() -> void:
 	bar["mood"].text = mood_words[game.mood()]
 	bar["mood"].add_theme_color_override("font_color", Color("c46a5a") if game.is_restless() else Color(DIM))
 	bar["rank"].text = "Rank: %s" % GameRules.RANK_NAMES[game.rank()]
-	tabs.set_tab_title(0, "Journal" + (" •" if not game.new_notes.is_empty() else ""))
+	tabs.set_tab_title(0, "Known" + (" •" if not game.new_notes.is_empty() else ""))
 	_refresh_story()
-	_refresh_revelations()
+	_refresh_known()
 	_refresh_journal()
-	_refresh_history()
+	_refresh_pantheon()
 	_maybe_show_scene()
 
 
@@ -381,99 +410,45 @@ func _show_cast(p: Dictionary) -> void:
 	_end_btn(false, "The bones are in your hand")
 
 
-func _refresh_revelations() -> void:
-	for ch in rev_box.get_children():
-		ch.queue_free()
-	var intro := _rich(15)
-	intro.text = "[color=%s]Grant one discovery per generation. Each changes how your people live, and some close other paths for good.[/color]" % DIM
-	rev_box.add_child(intro)
-	var last_rank := ""
-	for id in content.revelation_order:
-		var r: Dictionary = content.revelations[id]
-		if r["rank"] != last_rank:
-			last_rank = r["rank"]
-			var h := Label.new()
-			h.text = GameRules.RANK_NAMES[last_rank].to_upper()
-			h.add_theme_color_override("font_color", Color(GOLD))
-			rev_box.add_child(h)
-		var st: Array = game.revelation_state(id)
-		var box := _panel(Color("232733"), 14)
-		rev_box.add_child(box)
-		var v := VBoxContainer.new()
-		v.add_theme_constant_override("separation", 6)
-		box.add_child(v)
-		var status := ""
-		match st[0]:
-			"granted":
-				status = "[color=#7fc28a]Granted[/color]"
-			"forgotten":
-				status = "[color=%s]Forgotten · restore for %d faith[/color]" % [COLD, game.grant_cost(id)]
-			"closed":
-				status = "[color=#a06a6a]Path closed[/color]"
-			"available":
-				status = "[color=%s]%d faith[/color]" % [GOLD, game.grant_cost(id)]
-			_:
-				status = "[color=%s]%d faith · %s[/color]" % [DIM, game.grant_cost(id), st[1]]
-		var title := _rich(17)
-		title.text = "[b]%s[/b]   %s" % [_esc(r["name"]), status]
-		v.add_child(title)
-		if r["text"] != "" and st[0] != "closed":
-			var desc := _rich(15)
-			desc.text = "[color=#b8b2a4]%s[/color]" % _esc(r["text"])
-			v.add_child(desc)
-		if st[0] != "granted" and st[0] != "closed" and game.journal_answers(id):
-			var hint := _rich(15)
-			hint.text = "[color=%s]✦ Something in the old book answers to this.[/color]" % GOLD
-			v.add_child(hint)
-		if r["glimpse"] != "" and st[0] in ["available", "locked"] and game.rank_at_least("deity"):
-			var gl := _rich(15)
-			gl.text = "[i][color=%s]A glimpse of what could be: %s[/color][/i]" % [GOLD, _esc(r["glimpse"])]
-			v.add_child(gl)
-		if st[0] == "available" or (st[0] == "forgotten" and st[1] == ""):
-			var b := Button.new()
-			b.text = "Restore" if st[0] == "forgotten" else "Grant %s" % r["name"]
-			b.pressed.connect(_on_grant.bind(id))
-			v.add_child(b)
+func _refresh_known() -> void:
+	var groups := [["gods", "GODS AND POWERS"], ["people", "PEOPLE"], ["places", "PLACES AND THINGS"]]
+	var t := "[color=%s]Everything and everyone you have come to know, and what you have learned about them.[/color]\n" % DIM
+	for g in groups:
+		var section := ""
+		for person in content.characters:
+			if person["group"] != g[0] or not person["id"] in game.met:
+				continue
+			var learned: Array = person["notes"].filter(func(n): return n["key"] in game.notes)
+			if learned.is_empty() and person["intro"] == "":
+				continue
+			section += "[b]%s[/b]" % _esc(person["name"])
+			if person["title"] != "":
+				section += "   [color=%s]%s[/color]" % [DIM, _esc(person["title"])]
+			section += "\n"
+			if person["intro"] != "":
+				section += "[color=#b8b2a4]%s[/color]\n" % _esc(person["intro"])
+			for n in learned:
+				if n["key"] in game.new_notes:
+					section += "[color=%s]• %s[/color]\n" % [GOLD, _esc(n["text"])]
+				else:
+					section += "• %s\n" % _esc(n["text"])
+			section += "\n"
+		if section != "":
+			t += "\n[color=%s]%s[/color]\n%s" % [GOLD, g[1], section]
+	known_text.text = t.strip_edges()
+	if tabs.current_tab == 0 and view == "world":
+		game.new_notes.clear()
 
 
 func _refresh_journal() -> void:
 	var found: bool = game.journal_found()
-	book_btn.visible = found
-	if not found:
-		journal_view = "notes"
-	notes_btn.button_pressed = journal_view == "notes"
-	book_btn.button_pressed = journal_view == "book"
-	journal_text.text = _notes_text() if journal_view == "notes" else _book_text()
-	if journal_view == "notes" and tabs.current_tab == 0:
-		game.new_notes.clear()
-
-
-func _notes_text() -> String:
-	var t := "[color=%s]What you have learned about the people in your world, including yourself.[/color]\n\n" % DIM
-	for person in content.characters:
-		if not person["id"] in game.met:
-			continue
-		var learned: Array = person["notes"].filter(func(n): return n["key"] in game.notes)
-		if learned.is_empty() and person["intro"] == "":
-			continue
-		var heading := "[b]%s[/b]" % _esc(person["name"])
-		if person["title"] != "":
-			heading += "   [color=%s]%s[/color]" % [DIM, _esc(person["title"])]
-		t += heading + "\n"
-		if person["intro"] != "":
-			t += "[color=#b8b2a4]%s[/color]\n" % _esc(person["intro"])
-		for n in person["notes"]:
-			if n["key"] in game.notes:
-				if n["key"] in game.new_notes:
-					t += "[color=%s]• %s[/color]\n" % [GOLD, _esc(n["text"])]
-				else:
-					t += "• %s\n" % _esc(n["text"])
-		t += "\n"
-	return t.strip_edges()
+	tabs.set_tab_hidden(1, not found)
+	if found:
+		journal_text.text = _book_text()
 
 
 func _book_text() -> String:
-	var t := ""
+	var t := "[color=%s]The old book. You are slowly learning to read it.[/color]\n" % DIM
 	if game.flags.has("dreamed_of_her"):
 		t += "[color=%s]Her world, rebuilt: %d%%[/color]\n\n" % [GOLD, game.readable_percent()]
 	else:
@@ -503,21 +478,57 @@ func _book_text() -> String:
 	return t.strip_edges()
 
 
-func _refresh_history() -> void:
+func _refresh_pantheon() -> void:
+	world_view.visible = view == "world"
+	pantheon_view.visible = view == "pantheon"
+	for k in view_btns.keys():
+		view_btns[k].button_pressed = k == view
+	star_map.game = game
+	var id: String = star_map.selected
 	var t := ""
+	star_btn.visible = false
+	if id == "" or not content.revelations.has(id):
+		t = "[color=#bcd4ff]THE PANTHEON[/color]\n\nYour people's discoveries, seen from your throne as constellations.\n\n"
+		t += "[color=#8fa3cc]Bright stars: your people have them.\nPulsing stars: you could grant them now.\nFaint stars: not yet within reach.\nCrossed stars: paths you closed forever.\nA small white spark: something in the old book answers to it.[/color]\n\nClick a star."
+	else:
+		var r: Dictionary = content.revelations[id]
+		var st: Array = game.revelation_state(id)
+		var states := {"granted": "Your people have this.", "forgotten": "Your people have forgotten this.", "closed": "This path is closed forever.", "available": "You could grant this now.", "locked": st[1]}
+		t = "[color=#bcd4ff][b]%s[/b][/color]\n[color=#8fa3cc]%s · %s[/color]\n\n" % [_esc(r["name"]), GameRules.RANK_NAMES[r["rank"]], states[st[0]]]
+		t += _esc(r["text"])
+		if not r["requires"].is_empty():
+			var needs := PackedStringArray()
+			for q in r["requires"]:
+				needs.append(content.revelations[q]["name"])
+			t += "\n\n[color=#8fa3cc]Needs: %s[/color]" % _esc(", ".join(needs))
+		if not r["excludes"].is_empty() and st[0] != "granted":
+			var ex := PackedStringArray()
+			for q in r["excludes"]:
+				ex.append(content.revelations[q]["name"])
+			t += "\n[color=#d8a0a8]Granting this closes: %s[/color]" % _esc(", ".join(ex))
+		if st[0] != "granted" and st[0] != "closed" and game.journal_answers(id):
+			t += "\n\n[color=#ffffff]✦ Something in the old book answers to this.[/color]"
+		if r["glimpse"] != "" and st[0] in ["available", "locked"] and game.rank_at_least("deity"):
+			t += "\n\n[i][color=#bcd4ff]A glimpse of what could be: %s[/color][/i]" % _esc(r["glimpse"])
+		if st[0] == "available" or (st[0] == "forgotten" and st[1] == ""):
+			star_btn.visible = true
+			star_btn.text = ("Restore it (%d faith)" if st[0] == "forgotten" else "Grant it to your people (%d faith)") % game.grant_cost(id)
+	star_info.text = t
+	var rec := ""
 	if not game.closed.is_empty():
 		var names := PackedStringArray()
-		for id in game.closed:
-			names.append(content.revelations[id]["name"])
-		t += "[color=%s]PATHS NOT TAKEN[/color]\n%s\n\n" % [GOLD, _esc(", ".join(names))]
+		for cid in game.closed:
+			names.append(content.revelations[cid]["name"])
+		rec += "[color=#bcd4ff]PATHS NOT TAKEN[/color]\n%s\n\n" % _esc(", ".join(names))
+	rec += "[color=#bcd4ff]YOUR RECORD[/color]\n"
 	var last_gen := -1
 	for i in range(game.log_entries.size() - 1, -1, -1):
 		var e: Dictionary = game.log_entries[i]
 		if e["gen"] != last_gen:
 			last_gen = e["gen"]
-			t += "[color=%s]GENERATION %d[/color]\n" % [GOLD, last_gen]
-		t += "• %s\n" % _esc(e["text"])
-	history.text = t.strip_edges()
+			rec += "[color=#8fa3cc]Generation %d[/color]\n" % last_gen
+		rec += "• %s\n" % _esc(e["text"])
+	record.text = rec.strip_edges()
 
 
 ## Same word, same glyphs, every time, so players can learn to recognize them.
@@ -708,14 +719,24 @@ func _on_scene_next() -> void:
 	_refresh()
 
 
-## Developer aid for screenshots: run with "-- --preview=main" to skip ahead to
-## generation 4 with the journal found and open, or "--preview=cast" to open a cast.
+## Developer aid for screenshots. Run with "-- --preview=MODE":
+##   main      the journal found and open      cast       a cast in progress
+##   known     the Known tab                   pantheon   the Pantheon view
+##   scene:ID:N   panel N of cutscene ID (to check long text)
 func _dev_preview() -> void:
 	var mode := ""
 	for a in OS.get_cmdline_user_args():
 		if a.begins_with("--preview="):
 			mode = a.substr(10)
 	if mode == "":
+		return
+	if mode.begins_with("scene:"):
+		var bits := mode.split(":")
+		for cs in content.cutscenes:
+			if cs["id"] == bits[1]:
+				game.scenes = [cs]
+				scene_panel = bits[2].to_int() if bits.size() > 2 else 0
+		_refresh()
 		return
 	game.scenes.clear()
 	game.faith = 30
@@ -727,19 +748,24 @@ func _dev_preview() -> void:
 	game.fear = 9
 	game.update_notes()
 	if mode == "main":
+		tabs.current_tab = 1
+	elif mode == "known":
+		for f in ["voices_met", "rule_learned", "sana_met", "sana_heard", "welcome_back"]:
+			game.flags[f] = 1
+		game.update_notes()
 		tabs.current_tab = 0
-		journal_view = "book"
+	elif mode == "pantheon":
+		game.granted_this_gen = false
+		game.grant("river")
+		game.faith_earned = 25
+		view = "pantheon"
+		star_map.selected = "song"
 	elif mode == "cast":
 		for p in content.prayers:
 			if p["id"] == "cold_nights":
 				game.queue = [p]
 		casting = 1
 	_refresh()
-
-
-func _on_view(view: String) -> void:
-	journal_view = view
-	_refresh_journal()
 
 
 func _on_spend(delta: int) -> void:
@@ -754,3 +780,25 @@ func _on_cancel_cast() -> void:
 	casting = -1
 	spend = 0
 	_refresh()
+
+
+func _on_switch_view(v: String) -> void:
+	view = v
+	_refresh()
+
+
+func _on_star(_id: String) -> void:
+	_refresh_pantheon()
+
+
+func _on_star_grant() -> void:
+	if star_map.selected != "":
+		view = "world"
+		_on_grant(star_map.selected)
+
+
+## Enter or Space also advances a cutscene.
+func _unhandled_input(event: InputEvent) -> void:
+	if overlay != null and overlay.visible and event.is_action_pressed("ui_accept"):
+		_on_scene_next()
+		get_viewport().set_input_as_handled()

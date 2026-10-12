@@ -244,3 +244,9 @@ Animated scene sketches: https://claude.ai/artifact/CUWWhm4T3xu1gSvL94MzYN (copy
 ### ✅ Added during the v0.2 build (user requests)
 - **Casting the bones** (user: "like rolling a d20 in D&D, with bonuses from faith, love, and fear"): three bones (3–18, a bell curve so bonuses matter) + a bonus from love, fear, or rank, depending on the act. Before casting, the player can pour in faith (+1 each). Odds are shown as a feeling, never as a number.
 - **People in the journal** (user: "characterize Time, Memory, citizens of note, and yourself, slowly recording what we learn"): the Journal tab has **Your notes** (people, including the god himself) and **The old book**. Notes unlock through conditions and stay learned.
+
+### ✅ v0.2 playtest feedback (user, 2026-10-12)
+- Got stuck at the second cutscene (a bug: the button was pushed off-screen). Fixed in v0.2.1.
+- **Visuals are good.**
+- Wants a **separate tab for known entities and people**, so the journal entries being transcribed aren't cluttered. Done: the **Known** tab (gods, people, places and things). The **Journal** tab is now only the old book.
+- The **Pantheon screen should look like the blue-and-white astral view** from the look book. Done: the Pantheon is now a full view, with discoveries drawn as constellations on a blue-white starfield.

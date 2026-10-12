@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.1: Fixes from the first v0.2 playtest (2026-10-12)
+- **Fixed:** long cutscene panels pushed the Continue button off-screen (the player got stuck after "So that we cannot hurt each other"). Cutscene text now has more room and scrolls if needed, and the button always stays visible. **Enter** or **Space** also advances cutscenes.
+- **New "Known" tab** for people and entities, grouped into Gods and Powers, People, and Places and Things (the Pantheon, your pool, the small room, the flat rock, the old book). The **Journal** tab now holds only the old book, and it appears once the book is found.
+- **New Pantheon view** (button at top left): a blue-and-white astral sky where your discoveries are constellations. Bright stars are discoveries your people have, pulsing stars can be granted now, crossed stars are closed paths, and a white spark means the old book answers to it. Click a star for details and to grant it. The side panel shows paths not taken and your full record. This replaces the old Discoveries and Pantheon tabs.
+
+
 ## v0.2: Weight, mystery, and the whole arc (2026-10-12)
 
 Rebuilt after the v0.1 playtest ("choosing felt meaningless", "the plot didn't come through").

@@ -18,7 +18,8 @@ Each file starts with notes explaining exactly what you can write in it.
   revelations/discoveries.txt    the decision web: Fire, Song, River Dwelling...
   journal/pages.txt              the old book's pages and margin sketches
   journal/words.txt              which words become readable, and when
-  characters/people.txt          the god's notes about people
+  characters/people.txt          gods and people in the Known tab
+  characters/places_and_things.txt   places and things in the Known tab
   endings/endings.txt            endings and epilogue lines
 
 Rules that apply to every file:
