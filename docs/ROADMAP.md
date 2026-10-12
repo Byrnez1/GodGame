@@ -40,7 +40,7 @@ Start each work session with something like *"read the roadmap and changelog, th
 ### Phase 0: Setup and Design Foundations (Week 1–2) · $0
 - [x] Git installed (already on this PC); local repo created in `C:\Dev\GodGame`
 - [x] Install Godot 4 (4.7.2, installed via winget to `%LOCALAPPDATA%\Microsoft\WinGet\Packages\GodotEngine.GodotEngine_Microsoft.Winget.Source_8wekyb3d8bbwe\`)
-- [ ] Create a GitHub account and a private repo for the project, then make the first commit and push
+- [x] GitHub account (Byrnez1) + private repo `Byrnez1/GodGame`, first push done
 - [ ] Write the one-page pitch in `DESIGN.md`:
   - The game in one sentence
   - **Core loop:** what the player does every 30 seconds, every 10 minutes, and every session
@@ -122,5 +122,5 @@ For a first-time developer working part-time: **12–24 months** to a polished r
 **Phase:** 0 (setup and design)
 **Done:** core concept in `DESIGN.md` (2D, single player, one playthrough); full story and reveal order in `STORY.md`; project moved to `C:\Dev\GodGame`; Git repo initialized.
 **Prototype format (default unless changed):** generation-by-generation turns + prayer cards + decision web + journal words unlocked by discoveries.
-**Next steps:** user creates a GitHub account → install Godot → first commit/push → start the Phase 1 prototype.
+**Next steps:** user opens the project in Godot (desktop shortcut) for a first look → finalize the content text format → start the Phase 1 prototype.
 **Story in progress:** what the harvested power is for and the consequences of defying Time and Memory (brainstorm in `STORY.md`, story logic #3).
