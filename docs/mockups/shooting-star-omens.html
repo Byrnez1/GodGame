@@ -1,0 +1,1634 @@
+<title>Shooting Star Omens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IM+Fell+English:ital@0;1&display=swap">
+<style>
+/* Layout: the night-sky stage leads the page. The five versions sit as tabs above it,
+   the prayer and its outcome sit under it, then the settings. The chosen version's notes
+   and your attempts run down a side column, stacked below the stage on narrow screens.
+   One deliberate world: a night sky, so the page stays dark in every theme. */
+:root{
+  color-scheme: dark;
+  --night:#060a1a;      /* page ground: the sky after dusk */
+  --deep:#0c1331;       /* raised surfaces */
+  --raise:#141e45;      /* controls */
+  --rule:#28345f;       /* hairlines */
+  --ink:#e9eefb;        /* starlight text */
+  --mist:#9ca8ce;       /* secondary text */
+  --gold:#e8bf6c;       /* the god's light: the one accent */
+  --on-gold:#1d1406;
+  --understood:#97dbb0;
+  --misread:#f2c76f;
+  --unseen:#f19393;
+  --font-display:"IM Fell English","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --font-body:"Alegreya Sans","Gill Sans","Gill Sans MT","Segoe UI",system-ui,sans-serif;
+  --t-sm:.8125rem;
+  --t-base:1rem;
+  --t-md:1.1875rem;
+  --t-lg:1.75rem;
+  --t-xl:clamp(2.1rem,4.4vw,3.2rem);
+  --radius:10px;
+}
+*{box-sizing:border-box}
+html{background:var(--night)}
+body{
+  margin:0;min-height:100%;color:var(--ink);font-family:var(--font-body);font-size:var(--t-base);line-height:1.5;
+  background:radial-gradient(1100px 520px at 78% -8%,#16255c 0%,rgba(22,37,92,0) 62%),var(--night);
+  padding-block:28px 56px;padding-inline:clamp(16px,3.2vw,44px);
+}
+.page{max-width:1400px;margin-inline:auto;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{margin:0;font-size:var(--t-sm);letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+h1{margin:0;font-family:var(--font-display);font-weight:400;font-size:var(--t-xl);line-height:1.02;letter-spacing:.005em;text-wrap:balance}
+.lede{margin:0;max-width:66ch;color:var(--mist);font-size:var(--t-md)}
+
+.tabs{display:flex;flex-wrap:wrap;gap:8px}
+.tab{appearance:none;font:inherit;cursor:pointer;display:flex;align-items:baseline;gap:10px;padding:8px 16px 9px 14px;border-radius:999px;border:1px solid var(--rule);background:var(--deep);color:var(--ink)}
+.tab .name{font-family:var(--font-display);font-size:1.1875rem;line-height:1}
+.tab .verb{font-size:var(--t-sm);color:var(--mist)}
+.tab:hover{border-color:var(--mist)}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--night)}
+.tab[aria-selected="true"] .verb{color:#46507a}
+
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:26px;align-items:start}
+@media (max-width:1060px){.workspace{grid-template-columns:minmax(0,1fr)}}
+.play{display:grid;gap:14px;min-width:0}
+.stage{position:relative;width:100%;aspect-ratio:16/9;max-width:100%;border-radius:var(--radius);overflow:hidden;border:1px solid var(--rule);background:#040716}
+canvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair}
+.stagebar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;min-height:40px}
+.hint{margin:0;color:var(--mist);font-size:.9375rem;flex:1 1 280px}
+.act{appearance:none;font:inherit;font-weight:700;cursor:pointer;border:0;border-radius:999px;padding:9px 22px;background:var(--gold);color:var(--on-gold);box-shadow:0 0 0 6px rgba(232,191,108,.14)}
+
+.omen{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:20px;padding:16px 18px;border-radius:var(--radius);background:var(--deep);border:1px solid var(--rule)}
+@media (max-width:720px){.omen{grid-template-columns:minmax(0,1fr)}}
+.omen p{margin:0}
+.prayer,.verdict{display:grid;gap:6px;align-content:start}
+.small-label{font-size:var(--t-sm);letter-spacing:.07em;text-transform:uppercase;color:var(--mist)}
+.choice{font-family:var(--font-display);font-size:1.375rem;line-height:1.2;text-wrap:balance}
+.meta{color:var(--mist);font-size:.9375rem}
+.tier{font-family:var(--font-display);font-size:var(--t-lg);line-height:1.1}
+.tier.waiting{color:var(--mist)}
+.tier.understood{color:var(--understood)}
+.tier.misread{color:var(--misread)}
+.tier.unseen{color:var(--unseen)}
+.badge{font-family:var(--font-body);font-size:var(--t-sm);letter-spacing:.03em;border:1px solid currentColor;border-radius:999px;padding:1px 9px;margin-left:10px;vertical-align:4px}
+.why{color:var(--mist);font-size:.9375rem;max-width:68ch}
+.story{font-style:italic;max-width:68ch}
+.buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.btn{appearance:none;font:inherit;cursor:pointer;border-radius:8px;padding:6px 14px;border:1px solid var(--rule);background:var(--raise);color:var(--ink)}
+.btn:hover{border-color:var(--mist)}
+.btn.primary{background:var(--gold);border-color:var(--gold);color:var(--on-gold);font-weight:700}
+.btn:disabled{opacity:.4;cursor:default}
+
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px 24px;padding:16px 18px;border-radius:var(--radius);border:1px solid var(--rule)}
+fieldset{border:0;margin:0;padding:0;min-width:0}
+legend{padding:0}
+.ctl{display:grid;gap:7px;align-content:start}
+.ctl.wide{grid-column:1/-1}
+.lab{font-size:var(--t-sm);letter-spacing:.07em;text-transform:uppercase;color:var(--mist)}
+.seg{display:flex;flex-wrap:wrap;gap:5px}
+.seg label{position:relative;display:inline-flex}
+.seg input{position:absolute;inset:0;margin:0;opacity:0;cursor:pointer}
+.seg span{display:inline-block;padding:4px 12px 5px;border-radius:999px;border:1px solid var(--rule);font-size:.9375rem;color:var(--ink)}
+.seg span small{color:var(--mist);font-size:var(--t-sm);margin-left:4px;font-variant-numeric:tabular-nums}
+.seg input:checked + span{background:var(--ink);border-color:var(--ink);color:var(--night)}
+.seg input:checked + span small{color:#46507a}
+.seg label:hover span{border-color:var(--mist)}
+select{font:inherit;width:100%;max-width:640px;padding:6px 10px;border-radius:8px;border:1px solid var(--rule);background:var(--raise);color:var(--ink)}
+.stepper{display:flex;align-items:center;gap:10px}
+.stepper output{min-width:1.5ch;text-align:center;font-size:1.25rem;font-variant-numeric:tabular-nums}
+.stepper .btn{padding:2px 12px;font-size:1.125rem}
+.sub{color:var(--mist);font-size:var(--t-sm)}
+
+.notes{display:grid;gap:18px;padding-left:24px;border-left:1px solid var(--rule)}
+@media (max-width:1060px){.notes{padding-left:0;border-left:0;padding-top:20px;border-top:1px solid var(--rule)}}
+.notes h2{margin:0;font-family:var(--font-display);font-weight:400;font-size:var(--t-lg);line-height:1.1}
+.notes h3{margin:0;font-size:var(--t-sm);letter-spacing:.07em;text-transform:uppercase;color:var(--mist);font-weight:500}
+.notes p{margin:0}
+#notes-body{display:grid;gap:10px}
+.kicker{font-size:var(--t-sm);letter-spacing:.07em;text-transform:uppercase;color:var(--gold)}
+.pitch{max-width:60ch}
+.notes dl{margin:4px 0 0;display:grid;grid-template-columns:6.6rem minmax(0,1fr);gap:9px 12px}
+.notes dt{font-size:var(--t-sm);letter-spacing:.05em;text-transform:uppercase;color:var(--mist);padding-top:2px}
+.notes dd{margin:0;font-size:.9375rem}
+.log{display:grid;gap:8px}
+.log ol{list-style:none;margin:0;padding:0;display:grid;gap:7px;font-size:var(--t-sm)}
+.log li{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:8px;align-items:baseline}
+.log li.empty{display:block;color:var(--mist)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--mist);align-self:center}
+.dot.understood,.res.understood{background:var(--understood);color:var(--understood)}
+.dot.misread{background:var(--misread)}
+.dot.unseen{background:var(--unseen)}
+.res{background:none !important;font-weight:700}
+.res.misread{color:var(--misread)}
+.res.unseen{color:var(--unseen)}
+details{border-top:1px solid var(--rule);padding-top:12px;font-size:.9375rem}
+summary{cursor:pointer;color:var(--ink)}
+details ul{margin:10px 0 0;padding-left:18px;display:grid;gap:6px;color:var(--mist)}
+details b{color:var(--ink);font-weight:500}
+
+:where(button,select,summary,canvas,.seg input):focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.seg input:focus-visible + span{outline:2px solid var(--gold);outline-offset:2px}
+canvas:focus-visible{outline-offset:-3px}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto}}
+</style>
+
+<div class="page">
+  <header>
+    <p class="eyebrow">God Game · mock-ups, not in the game yet</p>
+    <h1>Shooting Star Omens</h1>
+    <p class="lede">Five ways to replace casting the bones. You send a shooting star across the night sky, and your people have to see it and understand it. The harder the attempt, the more stars crowd the sky to hide it.</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Versions" id="tabs">
+    <button class="tab" role="tab" type="button" data-v="throw" id="tab-throw" aria-selected="true" aria-controls="play"><span class="name">The Throw</span><span class="verb">aim and let go</span></button>
+    <button class="tab" role="tab" type="button" data-v="turning" id="tab-turning" aria-selected="false" aria-controls="play" tabindex="-1"><span class="name">The Turning Sky</span><span class="verb">wait for the gap</span></button>
+    <button class="tab" role="tab" type="button" data-v="fall" id="tab-fall" aria-selected="false" aria-controls="play" tabindex="-1"><span class="name">The Fall</span><span class="verb">steer it through</span></button>
+    <button class="tab" role="tab" type="button" data-v="clear" id="tab-clear" aria-selected="false" aria-controls="play" tabindex="-1"><span class="name">Clear the Sky</span><span class="verb">snuff stars, then pray</span></button>
+    <button class="tab" role="tab" type="button" data-v="reading" id="tab-reading" aria-selected="false" aria-controls="play" tabindex="-1"><span class="name">The Reading</span><span class="verb">draw the sign</span></button>
+  </nav>
+
+  <div class="workspace">
+    <section class="play" id="play" role="tabpanel" aria-label="Play the selected version">
+      <div class="stage">
+        <canvas id="sky" tabindex="0" aria-label="The night sky above your people. Play the selected version here with the mouse, a finger, or the Space key."></canvas>
+      </div>
+      <div class="stagebar">
+        <p class="hint" id="hint" aria-live="polite">Drag back anywhere, then let go to throw.</p>
+        <button class="act" id="act" type="button" hidden>Let it fall</button>
+      </div>
+
+      <div class="omen">
+        <div class="prayer">
+          <p class="small-label">The prayer</p>
+          <p class="choice" id="choice">Guide Sana's hands to strike sparks from stone</p>
+          <p class="meta" id="meta">Cold nights</p>
+        </div>
+        <div class="verdict" aria-live="polite">
+          <p class="tier waiting" id="tier">Waiting for your star</p>
+          <p class="why" id="why"></p>
+          <p class="story" id="story"></p>
+          <div class="buttons">
+            <button class="btn primary" id="again" type="button">Try this sky again</button>
+            <button class="btn" id="newsky" type="button">New sky</button>
+          </div>
+        </div>
+      </div>
+
+      <form class="controls" id="controls" onsubmit="return false">
+        <div class="ctl wide">
+          <label class="lab" for="scenario">Try it on a prayer from the game</label>
+          <select id="scenario">
+            <option value="first_words">First words · Let her find them herself (love, Likely)</option>
+            <option value="cold_nights" selected>Cold nights · Guide Sana's hands to strike sparks (faith, Even)</option>
+            <option value="drought">The drought · Refuse Oren, and send rain anyway (love, Hard)</option>
+            <option value="girl">The girl on the rocks · Stop her (fear, Hard)</option>
+            <option value="final">The final choice · Stand against them with your people's love (love, Desperate)</option>
+          </select>
+        </div>
+        <fieldset class="ctl">
+          <legend class="lab">Difficulty · stars in the sky</legend>
+          <div class="seg">
+            <label><input type="radio" name="diff" id="diff-0" value="0"><span>Likely<small>37</small></span></label>
+            <label><input type="radio" name="diff" id="diff-1" value="1" checked><span>Even<small>83</small></span></label>
+            <label><input type="radio" name="diff" id="diff-2" value="2"><span>Hard<small>143</small></span></label>
+            <label><input type="radio" name="diff" id="diff-3" value="3"><span>Desperate<small>222</small></span></label>
+          </div>
+        </fieldset>
+        <fieldset class="ctl">
+          <legend class="lab">Guided by</legend>
+          <div class="seg">
+            <label><input type="radio" name="guide" id="guide-love" value="love"><span>Love</span></label>
+            <label><input type="radio" name="guide" id="guide-fear" value="fear"><span>Fear</span></label>
+            <label><input type="radio" name="guide" id="guide-faith" value="faith" checked><span>Faith</span></label>
+          </div>
+        </fieldset>
+        <fieldset class="ctl">
+          <legend class="lab">Strength of that bond</legend>
+          <div class="seg">
+            <label><input type="radio" name="bond" id="bond-0" value="0"><span>Faint</span></label>
+            <label><input type="radio" name="bond" id="bond-1" value="1" checked><span>Steady</span></label>
+            <label><input type="radio" name="bond" id="bond-2" value="2"><span>Strong</span></label>
+          </div>
+        </fieldset>
+        <div class="ctl">
+          <span class="lab" id="poured-lab">Faith poured in</span>
+          <div class="stepper" role="group" aria-labelledby="poured-lab">
+            <button class="btn" type="button" id="pour-less" aria-label="Pour in less faith">−</button>
+            <output id="poured" aria-live="polite">0</output>
+            <button class="btn" type="button" id="pour-more" aria-label="Pour in more faith">+</button>
+            <span class="sub">up to 3, as with the bones</span>
+          </div>
+        </div>
+        <fieldset class="ctl">
+          <legend class="lab">Interference</legend>
+          <div class="seg">
+            <label><input type="checkbox" id="moon"><span>Full moon</span></label>
+            <label><input type="checkbox" id="fog"><span>Memory's fog</span></label>
+            <label><input type="checkbox" id="skip"><span>Time's skip</span></label>
+          </div>
+        </fieldset>
+      </form>
+    </section>
+
+    <aside class="notes" aria-label="About this version">
+      <div id="notes-body"></div>
+      <div class="log">
+        <h3>Your attempts</h3>
+        <ol id="log"><li class="empty">No attempts yet.</li></ol>
+      </div>
+      <details>
+        <summary>What the interference does</summary>
+        <ul>
+          <li><b>Full moon.</b> Its glare hides your star near it, but it hides the other stars too.</li>
+          <li><b>Memory's fog.</b> Drifting banks hide whatever is behind them. In The Reading, the fog also erases your trail as you draw.</li>
+          <li><b>Time's skip.</b> Every few seconds part of the sky jumps. In The Turning Sky the whole wheel jumps. In Clear the Sky it happens the moment your star falls.</li>
+        </ul>
+      </details>
+    </aside>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+const W = 1200, H = 675, TAU = Math.PI * 2;
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const BODY = '"Alegreya Sans", "Gill Sans", "Segoe UI", sans-serif';
+const DISPLAY = '"IM Fell English", Georgia, serif';
+
+// ------------------------------------------------------------------ data
+const DIFFS = [
+  { name: 'Likely', target: 8, stars: 34, heavy: 3 },
+  { name: 'Even', target: 10, stars: 78, heavy: 5 },
+  { name: 'Hard', target: 12, stars: 135, heavy: 8 },
+  { name: 'Desperate', target: 15, stars: 210, heavy: 12 },
+];
+const GUIDES = {
+  love: { name: 'Love', rgb: [255, 186, 150], core: [255, 244, 236], speed: 0.82, glow: 1.7 },
+  fear: { name: 'Fear', rgb: [255, 78, 70], core: [255, 226, 220], speed: 1.35, glow: 0.95 },
+  faith: { name: 'Faith', rgb: [196, 222, 255], core: [255, 255, 255], speed: 1.0, glow: 1.2 },
+};
+const BONDS = ['Faint', 'Steady', 'Strong'];
+const SCENARIOS = {
+  first_words: {
+    title: 'First words', choice: 'Let her find them herself', guide: 'love', diff: 0, rune: 'speak',
+    ok: 'She finds them. It takes her a whole year, but she does it, and the words she makes are hers. Everyone agrees the sky helped.',
+    misread: 'She finds words, but the first one she makes for you means “storm”. The children grow up afraid to look at the sky.',
+    fail: 'She gives up. She points at the sky one last time, and goes back to the fire.',
+  },
+  cold_nights: {
+    title: 'Cold nights', choice: "Guide Sana's hands to strike sparks from stone", guide: 'faith', diff: 1, rune: 'fire',
+    ok: 'It takes her all night. Then a spark catches, and she is laughing, and everyone is laughing, and they have fire.',
+    misread: 'Sana takes the star as a sign to move on. They walk all night through the cold and find a dead tree burning where it fell. They have fire, but two of the old ones did not survive the walk.',
+    fail: 'She strikes the stones until her hands bleed. Nothing catches. Two of the old ones do not wake.',
+  },
+  drought: {
+    title: 'The drought', choice: 'Refuse Oren, and send rain anyway', guide: 'love', diff: 2, rune: 'rain',
+    ok: 'Lightning splits the sky before they can raise the knife. Then rain, hard and warm. Oren comes down from the rocks laughing.',
+    misread: 'They see the star fall toward the high rocks and take it for a yes. You stop the knife at the last moment and the rain comes, but your people will always say you wanted him.',
+    fail: 'You stop the knife. You cannot bring the rain. The drought drags on, and they wonder whether refusing the gift was the mistake.',
+  },
+  girl: {
+    title: 'The girl on the rocks', choice: 'Stop her', guide: 'fear', diff: 2, rune: 'shelter',
+    ok: "The knife flies from Ina's hand as if struck. The girl runs. Ina falls on her face before you, and does not get up for a long time.",
+    misread: 'Ina sees the star and drops the knife, but she reads your anger as anger at the girl. The girl is driven out of the camp at dawn.',
+    fail: 'The knife falls. You were not strong enough to stop it. Ina raises her bloody hands to the sky and calls it a gift.',
+  },
+  final: {
+    title: 'The final choice', choice: "Stand against them with your people's love", guide: 'love', diff: 3, rune: 'her',
+    ok: "Your people's love rises up through you like a tide, and for the first time, it is yours. The Voices cannot hold you.",
+    misread: 'Your people see the star and sing, but they sing it to the Voices. The love rises, and Time gathers it, as it always has.',
+    fail: 'The love in you is not enough, or not yours. The Voices close around you, gently, the way they always have.',
+  },
+};
+const circle = Array.from({ length: 13 }, (_, i) => { const a = -Math.PI / 2 + i * TAU / 12; return [0.5 + 0.45 * Math.cos(a), 0.5 + 0.45 * Math.sin(a)]; });
+// The runes your people know, each drawn in one stroke inside a 1 x 1 box.
+const RUNES = {
+  speak: { name: 'Speak', pts: [[0.15, 0.1], [0.85, 0.5], [0.15, 0.9]] },
+  take: { name: 'Take', dark: true, pts: [[0.85, 0.1], [0.15, 0.5], [0.85, 0.9]] },
+  fire: { name: 'Fire', pts: [[0.3, 0], [0.72, 0.33], [0.28, 0.66], [0.7, 1]] },
+  storm: { name: 'Storm', dark: true, pts: [[0, 0.1], [1, 0.1], [0, 0.9], [1, 0.9]] },
+  rain: { name: 'Rain', pts: [[0, 0.1], [0.25, 0.9], [0.5, 0.3], [0.75, 0.9], [1, 0.1]] },
+  blood: { name: 'Blood', dark: true, pts: [[0.05, 0.1], [0.5, 0.9], [0.95, 0.1]] },
+  shelter: { name: 'Shelter', closed: true, pts: [[0.5, 0.05], [0.95, 0.9], [0.05, 0.9], [0.5, 0.05]] },
+  her: { name: 'Her', closed: true, pts: circle },
+};
+const VINFO = {
+  throw: {
+    name: 'The Throw', chip: 'Skill · gravity',
+    pitch: 'Pull back and let go. The star flies on its own, bent by the gravity of the brightest stars. Fly too close to one and it swallows your star. Skim past and your star borrows some of its light.',
+    rows: [
+      ['Harder', 'More stars to get lost among, and more bright stars pulling it off course.'],
+      ['Love', 'A slow, rose-gold star with a wide glow. Easy to see, but easy to bend. More of your people look up.'],
+      ['Fear', 'A fast red star that burns through the small stars in its way. The people who see it flinch.'],
+      ['Faith', 'A steady white star. The stronger your rank, the more of its path you see.'],
+      ['Faith poured', 'Shows more of the path before you throw. With all three, you see the whole flight.'],
+      ['The twist', 'Slingshots. The dotted gold ring around a bright star is where it lends you light. The red ring is where it swallows you.'],
+    ],
+  },
+  turning: {
+    name: 'The Turning Sky', chip: 'Timing',
+    pitch: "The whole sky wheels slowly around the pole star. Your star's path is fixed. Watch the stars drift across it and let go when the way is clear. The strip on the ground shows how clear the path will be in the seconds ahead.",
+    rows: [
+      ['Harder', 'More stars wheel across the path, so clear gaps are rarer and shorter.'],
+      ['Love', 'More watchers along the path, and a slower star that stays in view longer.'],
+      ['Fear', 'A fast star that burns away the first stars in its way.'],
+      ['Faith', 'The sky turns more slowly, so the gaps last longer.'],
+      ['Faith poured', 'See further ahead on the strip: 2 seconds with none, 8 with all three.'],
+      ['The twist', "Time's skip is cruelest here. The wheel jumps, and the gap you were waiting for is gone."],
+    ],
+  },
+  fall: {
+    name: 'The Fall', chip: 'Reflexes',
+    pitch: "The star crosses the sky on its own. You steer it up and down like a kite on a string, threading it through your people's gaze. Every star you touch dims it. Bring it down by the fire, where the priest can find where it fell.",
+    rows: [
+      ['Harder', 'A thicker field of stars to weave through.'],
+      ['Love', 'The star starts brighter and can take more hits. More watchers.'],
+      ['Fear', 'It burns through every star it touches and loses no light, but it terrifies the people who see it.'],
+      ['Faith', 'Tighter steering.'],
+      ['Faith poured', 'More light to spend.'],
+      ['The twist', 'The landing. A sign counts for more when the priest can find where it fell. Arrow keys steer too.'],
+    ],
+  },
+  clear: {
+    name: 'Clear the Sky', chip: 'Luck and planning',
+    pitch: "Fate picks the star's path, and the pale band shows only roughly where. Before it falls you get a few breaths to snuff out stars, and the odds change as you clear the way. Then you let it fall and hope. This is the closest to the bones.",
+    rows: [
+      ['Harder', 'More stars than you have breaths to clear.'],
+      ['Love', 'More watchers, so more of the band is watched.'],
+      ['Fear', 'The star burns through the first few stars it meets.'],
+      ['Faith', 'A narrower band, so you know better where it will fall, and an extra breath for each step of strength.'],
+      ['Faith poured', 'Two more breaths for each.'],
+      ['The twist', "With Time's skip on, part of the sky shifts the moment the star falls, undoing some of your work."],
+    ],
+  },
+  reading: {
+    name: 'The Reading', chip: 'Drawing',
+    pitch: 'Here your people have to read the sign as well as see it. Draw the rune the prayer needs; the star follows your hand with a little lag. Stars near your trail pull the shape out of true, because your people join them into it, and parts lost in bright clusters drop out. The priest reads what is left, and may read a different rune than the one you meant.',
+    rows: [
+      ['Harder', 'More stars to snag the shape and hide parts of it.'],
+      ['Love', 'Kind readers who forgive a messy sign.'],
+      ['Fear', 'A brighter trail, but frightened readers are quicker to see dark runes: Blood, Take, Storm.'],
+      ['Faith', 'A steadier hand.'],
+      ['Faith poured', 'A longer trail.'],
+      ['Runes', 'Speak, Take, Fire, Storm, Rain, Blood, Shelter, Her. Mirror images and near shapes are easy to confuse.'],
+      ['The twist', 'Misreadings. Your people act on a message you never sent.'],
+    ],
+  },
+};
+const VERSION_IDS = ['throw', 'turning', 'fall', 'clear', 'reading'];
+const TIER_NAMES = { understood: 'Understood', misread: 'Misread', unseen: 'Unseen' };
+
+// ------------------------------------------------------------------ state
+const S = { version: 'throw', scenario: 'cold_nights', diff: 1, guide: 'faith', bond: 1, poured: 0, moon: false, fog: false, skip: false };
+let seed = 7;
+let world = null, game = null, T = 0;
+const parts = [];
+const log = [];
+
+// ------------------------------------------------------------------ random
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+let rand = Math.random;
+function withSeed(s, fn) { const prev = rand; rand = mulberry32(s >>> 0); try { return fn(); } finally { rand = prev; } }
+const rr = (a, b) => a + (b - a) * rand();
+const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+const lerp = (a, b, t) => a + (b - a) * t;
+function gauss(r) { const f = r || rand; let u = 0; while (u === 0) u = f(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(TAU * f()); }
+
+// ------------------------------------------------------------------ reading shapes (a small $1-style recognizer)
+function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+function resample(points, n) {
+  const pts = points.map(p => ({ x: p.x, y: p.y }));
+  let total = 0;
+  for (let i = 1; i < pts.length; i++) total += dist(pts[i - 1], pts[i]);
+  if (pts.length < 2 || total <= 0) return Array.from({ length: n }, () => ({ x: pts[0].x, y: pts[0].y }));
+  const I = total / (n - 1);
+  let D = 0;
+  const out = [{ x: pts[0].x, y: pts[0].y }];
+  for (let i = 1; i < pts.length; i++) {
+    const d = dist(pts[i - 1], pts[i]);
+    if (d > 0 && D + d >= I) {
+      const t = (I - D) / d;
+      const q = { x: pts[i - 1].x + t * (pts[i].x - pts[i - 1].x), y: pts[i - 1].y + t * (pts[i].y - pts[i - 1].y) };
+      out.push(q);
+      pts.splice(i, 0, q);
+      D = 0;
+    } else D += d;
+  }
+  while (out.length < n) out.push({ x: pts[pts.length - 1].x, y: pts[pts.length - 1].y });
+  return out.slice(0, n);
+}
+function normalize(pts) {
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity, cx = 0, cy = 0;
+  for (const p of pts) { minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x); minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y); cx += p.x; cy += p.y; }
+  cx /= pts.length; cy /= pts.length;
+  const s = Math.max(maxX - minX, maxY - minY) || 1;
+  return pts.map(p => ({ x: (p.x - cx) / s, y: (p.y - cy) / s }));
+}
+function pathDist(a, b) { let d = 0; for (let i = 0; i < a.length; i++) d += dist(a[i], b[i]); return d / a.length; }
+function shapeDistance(cand, tmpl, closed) {
+  let best = Math.min(pathDist(cand, tmpl), pathDist(cand.slice().reverse(), tmpl));
+  if (closed) {
+    for (let k = 1; k < cand.length; k++) {
+      const rot = cand.slice(k).concat(cand.slice(0, k));
+      best = Math.min(best, pathDist(rot, tmpl), pathDist(rot.slice().reverse(), tmpl));
+    }
+  }
+  return best;
+}
+for (const id in RUNES) { const r = RUNES[id]; r.norm = normalize(resample(r.pts.map(([x, y]) => ({ x, y })), 32)); }
+
+// ------------------------------------------------------------------ canvas
+const canvas = document.getElementById('sky');
+const ctx = canvas.getContext('2d');
+function resize() {
+  const r = canvas.getBoundingClientRect();
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  canvas.width = Math.max(2, Math.round(r.width * dpr));
+  canvas.height = Math.max(2, Math.round(r.height * dpr));
+}
+new ResizeObserver(resize).observe(canvas);
+resize();
+
+const sprites = new Map();
+function glowSprite(rgb) {
+  const key = rgb.join(',');
+  let c = sprites.get(key);
+  if (c) return c;
+  c = document.createElement('canvas');
+  c.width = c.height = 64;
+  const g = c.getContext('2d');
+  const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  gr.addColorStop(0, `rgba(${key},1)`);
+  gr.addColorStop(0.15, `rgba(${key},0.6)`);
+  gr.addColorStop(0.45, `rgba(${key},0.16)`);
+  gr.addColorStop(1, `rgba(${key},0)`);
+  g.fillStyle = gr;
+  g.fillRect(0, 0, 64, 64);
+  sprites.set(key, c);
+  return c;
+}
+function glow(x, y, rad, rgb, a) {
+  if (a <= 0.003 || rad <= 0.3) return;
+  ctx.globalAlpha = Math.min(1, a);
+  ctx.drawImage(glowSprite(rgb), x - rad, y - rad, rad * 2, rad * 2);
+  ctx.globalAlpha = 1;
+}
+function ellipseGlow(x, y, rx, ry, rgb, a) { ctx.save(); ctx.translate(x, y); ctx.scale(1, ry / rx); glow(0, 0, rx, rgb, a); ctx.restore(); }
+function skyGradient(stops) { const g = ctx.createLinearGradient(0, 0, 0, H); for (const [o, c] of stops) g.addColorStop(o, c); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+function horizonY(x) { return 560 + Math.sin(x * 0.006 + 1.3) * 14 + Math.sin(x * 0.017 + 0.4) * 6; }
+function drawGround(fill) { ctx.fillStyle = fill; ctx.beginPath(); ctx.moveTo(0, H); for (let x = 0; x <= W; x += 20) ctx.lineTo(x, horizonY(x)); ctx.lineTo(W, H); ctx.closePath(); ctx.fill(); }
+function stones(fill) {
+  ctx.fillStyle = fill;
+  for (const [fx, h, w] of [[0.05, 34, 12], [0.13, 48, 15], [0.29, 28, 11], [0.88, 42, 14], [0.96, 30, 12]]) {
+    const x = fx * W, y = horizonY(x) + 4;
+    ctx.beginPath(); ctx.moveTo(x - w / 2, y); ctx.lineTo(x - w / 2 + 2, y - h); ctx.lineTo(x + w / 2 - 1, y - h - 3); ctx.lineTo(x + w / 2, y); ctx.closePath(); ctx.fill();
+  }
+}
+function hut(x, w, fill) { const y = horizonY(x) + 3; ctx.fillStyle = fill; ctx.beginPath(); ctx.moveTo(x - w, y); ctx.lineTo(x, y - w * 1.25); ctx.lineTo(x + w, y); ctx.closePath(); ctx.fill(); }
+function rrect(x, y, w, h, r) { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+function panel(x, y, w, h) { ctx.fillStyle = 'rgba(6,10,26,0.68)'; ctx.strokeStyle = 'rgba(156,168,206,0.3)'; ctx.lineWidth = 1; rrect(x, y, w, h, 9); ctx.fill(); ctx.stroke(); }
+function label(text, x, y, size, color, o) {
+  o = o || {};
+  ctx.font = `${o.italic ? 'italic ' : ''}${o.display ? 400 : (o.weight || 500)} ${size || 13}px ${o.display ? DISPLAY : BODY}`;
+  ctx.fillStyle = color || 'rgba(233,238,251,0.88)';
+  ctx.textAlign = o.align || 'left';
+  ctx.fillText(text, x, y);
+  ctx.textAlign = 'left';
+}
+function bar(x, y, w, h, frac, rgb) {
+  ctx.fillStyle = 'rgba(255,255,255,0.13)'; rrect(x, y, w, h, h / 2); ctx.fill();
+  ctx.fillStyle = `rgb(${rgb})`; rrect(x, y, Math.max(h, w * clamp(frac, 0, 1)), h, h / 2); ctx.fill();
+}
+function drawRune(r, x, y, size, color, width) {
+  const lw = width || 3;
+  ctx.strokeStyle = color; ctx.lineWidth = lw; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.beginPath();
+  r.pts.forEach(([px, py], i) => { const X = x + px * size, Y = y + py * size; if (i) ctx.lineTo(X, Y); else ctx.moveTo(X, Y); });
+  ctx.stroke();
+  ctx.fillStyle = color;
+  ctx.beginPath(); ctx.arc(x + r.pts[0][0] * size, y + r.pts[0][1] * size, lw * 1.4, 0, TAU); ctx.fill();
+  ctx.lineCap = 'butt'; ctx.lineJoin = 'miter';
+}
+
+// ------------------------------------------------------------------ the shared sky
+function makeStars(n, nh, o) {
+  o = o || {};
+  const top = o.top ?? 22, bottom = o.bottom ?? 505;
+  const keep = (x, y, heavy) => !o.clear || Math.hypot(x - o.clear[0].x, y - o.clear[0].y) > o.clear[1] * (heavy ? 2.2 : 1);
+  const out = [];
+  let guard = 0;
+  while (out.length < n && guard++ < n * 5) {
+    const x = rand() * W, y = top + rand() * (bottom - top);
+    const b = 0.22 + Math.pow(rand(), 2.6) * 0.75;
+    const tw = rand() * TAU, ts = 0.5 + rand() * 1.6;
+    if (!keep(x, y, false)) continue;
+    out.push({ x, y, b, r: 0.6 + b * 1.5, tw, ts, alive: 1, fade: 0, flare: 0, heavy: false, m: 0 });
+  }
+  let placed = 0;
+  guard = 0;
+  while (placed < nh && guard++ < 500) {
+    const x = rr(130, W - 110), y = rr(top + 50, bottom - 50);
+    if (!keep(x, y, true)) continue;
+    if (out.some(s => s.heavy && Math.hypot(s.x - x, s.y - y) < 150)) continue;
+    const m = rr(0.6, 1.4);
+    out.push({ x, y, b: 1.0 + m * 0.25, r: 2.1 + m * 1.1, tw: rand() * TAU, ts: 0.4 + rand(), alive: 1, fade: 0, flare: 0, heavy: true, m });
+    placed++;
+  }
+  return out;
+}
+// Your people on the hills. Each looks at one part of the sky (a cone). Love brings more of them out to look.
+function makeWatchers(o) {
+  o = o || {};
+  const love = S.guide === 'love';
+  const n = (o.base ?? 5) + (love ? 1 + S.bond : 0);
+  const x0 = o.x0 ?? 110, x1 = o.x1 ?? 1090;
+  const list = [];
+  for (let i = 0; i < n; i++) {
+    const x = o.xs ? o.xs[i % o.xs.length] + rr(-18, 18) : x0 + (x1 - x0) * (i + 0.5) / n + rr(-22, 22);
+    const y = horizonY(x), hy = y - 17;
+    const a = o.aim ? o.aim(x, hy) : rr(-0.5, 0.5);
+    list.push({ x, y, hy, a, hw: (o.hw ?? 0.2) + (love ? 0.025 * S.bond : 0), w: 0, seeing: 0, flinch: 0, h: rr(0.9, 1.1), priest: false });
+  }
+  return list;
+}
+function makeInterference() {
+  world.moon = S.moon ? { x: rr(760, 1060), y: rr(80, 150), r: 30, halo: 200 } : null;
+  world.fogs = [];
+  if (S.fog) {
+    for (let i = 0; i < 4; i++) {
+      const f = { x: rr(0, W), y: rr(150, 470), rx: rr(150, 230), ry: rr(48, 78), vx: rr(9, 20) * (rand() < 0.5 ? -1 : 1), puffs: [] };
+      for (let k = 0; k < 8; k++) f.puffs.push([rr(-0.7, 0.7), rr(-0.5, 0.5), rr(0.45, 0.8)]);
+      world.fogs.push(f);
+    }
+  }
+  world.skipT = rr(2.2, 3.4);
+}
+function fogAt(x, y) {
+  let a = 0;
+  for (const f of world.fogs) { const q = ((x - f.x) / f.rx) ** 2 + ((y - f.y) / f.ry) ** 2; if (q < 1) a += (1 - q) * 0.95; }
+  return Math.min(0.93, a);
+}
+function moonGlare(x, y) {
+  const m = world.moon;
+  if (!m) return 0;
+  const d = Math.hypot(x - m.x, y - m.y);
+  if (d >= m.halo) return 0;
+  const k = 1 - d / m.halo;
+  return 2.6 * k * k + (d < m.r * 1.3 ? 4 : 0);
+}
+function moonFade(x, y) { const m = world.moon; if (!m) return 1; const d = Math.hypot(x - m.x, y - m.y); return d < m.halo ? 0.2 + 0.8 * (d / m.halo) : 1; }
+// How much starlight is around a point. More stars nearby = harder to pick your star out.
+const CLUTTER_K = 5, GLARE2 = 2 * 15 * 15;
+function clutterAt(x, y) {
+  let c = 0;
+  for (const s of world.stars) {
+    if (!s.alive || s.hid) continue;
+    const dx = s.x - x, dy = s.y - y, d2 = dx * dx + dy * dy;
+    if (d2 > 2600) continue;
+    c += s.b * Math.exp(-d2 / GLARE2) * (s.heavy ? 1.6 : 1);
+  }
+  return c + moonGlare(x, y);
+}
+function contrastAt(x, y, L) { const eff = L * (1 - fogAt(x, y)); return eff / (eff + CLUTTER_K * clutterAt(x, y) + 0.08); }
+function inCone(w, x, y) { const dx = x - w.x, dy = y - w.hy; if (dy > -8) return false; return Math.abs(Math.atan2(dx, -dy) - w.a) <= w.hw; }
+const RATE = 4.5, SEEN = 0.16, CLEAR = 0.4;
+// Each watcher builds up a memory of the sign while it's inside their cone, faster when it stands out.
+function witness(x, y, L, dt) {
+  const c = contrastAt(x, y, L);
+  for (const w of world.watchers) {
+    if (!inCone(w, x, y)) continue;
+    w.w += dt * RATE * c * c;
+    w.seeing = Math.max(w.seeing, c);
+    if (S.guide === 'fear') w.flinch = Math.min(1, w.flinch + dt * 4 * c);
+  }
+  return c;
+}
+function judge(extra) {
+  const ws = world.watchers;
+  let seen = 0, clear = 0;
+  for (const w of ws) { if (w.w >= SEEN) seen++; if (w.w >= CLEAR) clear++; }
+  const glimpsed = seen - clear;
+  clear = Math.min(ws.length, clear + (extra || 0));
+  const need = Math.max(2, Math.round(ws.length * 0.34));
+  const tier = clear >= need ? 'understood' : (seen > 0 || clear > 0) ? 'misread' : 'unseen';
+  return { tier, clear, glimpsed, need, n: ws.length };
+}
+function watchLine(j) { let t = `${j.clear} of ${j.n} saw it clearly (${j.need} needed)`; if (j.glimpsed > 0) t += `, and ${j.glimpsed} only glimpsed it`; return t + '.'; }
+function burnNear(x, y, R, maxN, heavyToo) {
+  let n = 0;
+  for (const s of world.stars) {
+    if (n >= maxN) break;
+    if (!s.alive || s.hid || (s.heavy && !heavyToo)) continue;
+    const dx = s.x - x, dy = s.y - y;
+    if (dx * dx + dy * dy < R * R) {
+      s.alive = 0; s.fade = 1; s.flare = 1; n++;
+      for (let k = 0; k < 7; k++) spawn(s.x, s.y, rr(-70, 70), rr(-70, 70), 0.5, 5, [255, 112, 88], 0.85);
+    }
+  }
+  return n;
+}
+
+// ------------------------------------------------------------------ particles
+function spawn(x, y, vx, vy, life, size, rgb, a, kind) { if (parts.length > 1400) return; parts.push({ x, y, vx, vy, life, max: life, size, rgb, a: a ?? 1, kind: kind || 0 }); }
+function updateParts(dt) {
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const p = parts[i];
+    p.life -= dt;
+    if (p.life <= 0) { parts[i] = parts[parts.length - 1]; parts.pop(); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt;
+    p.vx *= 1 - dt * 1.5; p.vy *= 1 - dt * 1.5;
+    if (p.kind === 1) { p.vy -= 14 * dt; p.size += 9 * dt; }
+  }
+}
+function drawParts() {
+  for (const p of parts) if (p.kind === 1) glow(p.x, p.y, p.size, [190, 196, 210], 0.22 * p.life / p.max);
+  ctx.globalCompositeOperation = 'lighter';
+  for (const p of parts) if (p.kind !== 1) { const k = p.life / p.max; glow(p.x, p.y, p.size * (0.4 + 0.6 * k), p.rgb, p.a * k); }
+  ctx.globalCompositeOperation = 'source-over';
+}
+function drawComet(x, y, L) {
+  const g = GUIDES[S.guide], k = clamp(L, 0, 1.5);
+  glow(x, y, 30 * g.glow * (0.55 + 0.45 * k), g.rgb, 0.35 + 0.3 * k);
+  glow(x, y, 10 + 3 * k, g.core, Math.min(1, 0.55 + 0.5 * k));
+}
+function cometTail(x, y, vx, vy, L) {
+  const g = GUIDES[S.guide];
+  for (let k = 0; k < 2; k++) spawn(x + rr(-2, 2), y + rr(-2, 2), -vx * 0.08 + rr(-18, 18), -vy * 0.08 + rr(-18, 18), 0.5 + rr(0, 0.35) * g.glow, 5 * g.glow * (0.5 + L * 0.6), g.rgb, 0.55 * Math.max(0.2, L));
+}
+
+// ------------------------------------------------------------------ shared drawing
+function drawStars(tint) {
+  for (const s of world.stars) {
+    if (s.hid) continue;
+    const life = s.alive ? 1 : s.fade;
+    if (life <= 0.01 && s.flare <= 0) continue;
+    const tw = REDUCED ? 1 : 0.78 + 0.22 * Math.sin(T * s.ts + s.tw);
+    const b = s.b * tw * life * moonFade(s.x, s.y);
+    if (life > 0.01) {
+      glow(s.x, s.y, s.r * (s.heavy ? 7.5 : 5.2), tint || (s.heavy ? [228, 238, 255] : [205, 220, 255]), b * 0.6);
+      ctx.globalAlpha = Math.min(1, b * 0.9 + 0.12);
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r * 0.62 * life, 0, TAU); ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+    if (s.flare > 0) glow(s.x, s.y, 30 * s.flare, [255, 240, 214], Math.min(1, s.flare));
+  }
+}
+function drawMoon() {
+  const m = world.moon;
+  if (!m) return;
+  glow(m.x, m.y, m.halo * 1.2, [220, 230, 255], 0.5);
+  glow(m.x, m.y, m.r * 3, [255, 250, 235], 0.6);
+  ctx.fillStyle = '#f3efe2'; ctx.beginPath(); ctx.arc(m.x, m.y, m.r, 0, TAU); ctx.fill();
+  ctx.fillStyle = 'rgba(176,166,146,0.35)';
+  for (const [dx, dy, r] of [[-8, -6, 7], [9, 5, 5], [-2, 11, 4]]) { ctx.beginPath(); ctx.arc(m.x + dx, m.y + dy, r, 0, TAU); ctx.fill(); }
+}
+function drawFog(rgb) { for (const f of world.fogs) for (const [px, py, s] of f.puffs) glow(f.x + px * f.rx, f.y + py * f.ry, f.rx * s, rgb || [205, 214, 230], 0.34); }
+function figure(x, y, h, fill, priest) {
+  ctx.fillStyle = fill;
+  ctx.beginPath(); ctx.moveTo(x - h * 0.22, y + 2); ctx.lineTo(x - h * 0.09, y - h * 0.7); ctx.lineTo(x + h * 0.09, y - h * 0.7); ctx.lineTo(x + h * 0.22, y + 2); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.arc(x, y - h * 0.83, h * 0.135, 0, TAU); ctx.fill();
+  if (priest) { ctx.strokeStyle = fill; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x + h * 0.3, y + 2); ctx.lineTo(x + h * 0.36, y - h * 1.1); ctx.stroke(); }
+}
+function drawWatchers(fill, coneRGB) {
+  for (const w of world.watchers) {
+    const len = 660, a0 = w.a - w.hw, a1 = w.a + w.hw;
+    const mx = w.x + Math.sin(w.a) * len, my = w.hy - Math.cos(w.a) * len;
+    const g = ctx.createLinearGradient(w.x, w.hy, mx, my);
+    g.addColorStop(0, `rgba(${coneRGB},${0.05 + 0.2 * w.seeing})`);
+    g.addColorStop(1, `rgba(${coneRGB},0)`);
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.moveTo(w.x, w.hy);
+    ctx.lineTo(w.x + Math.sin(a0) * len, w.hy - Math.cos(a0) * len);
+    ctx.lineTo(w.x + Math.sin(a1) * len, w.hy - Math.cos(a1) * len);
+    ctx.closePath(); ctx.fill();
+  }
+  for (const w of world.watchers) {
+    const h = 26 * w.h * (1 - 0.35 * w.flinch);
+    figure(w.x, w.y, h, fill, w.priest);
+    const k = Math.min(1, w.w / CLEAR), ey = w.y - h - 12;
+    ctx.strokeStyle = 'rgba(233,238,251,0.5)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(w.x, ey, 4.5, 0, TAU); ctx.stroke();
+    if (k > 0) {
+      ctx.fillStyle = k >= 1 ? '#ffe7a6' : `rgba(255,214,140,${0.3 + 0.6 * k})`;
+      ctx.beginPath(); ctx.moveTo(w.x, ey); ctx.arc(w.x, ey, 4.5, -Math.PI / 2, -Math.PI / 2 + TAU * k); ctx.closePath(); ctx.fill();
+    }
+    if (k >= 1) glow(w.x, ey, 15, [255, 220, 150], 0.6);
+  }
+}
+function drawSkip() {
+  for (const g of world.ghosts) { ctx.strokeStyle = `rgba(200,215,255,${g.life})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(g.x, g.y, 3 + (0.7 - g.life) * 9, 0, TAU); ctx.stroke(); }
+  if (world.skipFlash > 0) {
+    ctx.fillStyle = `rgba(210,220,255,${world.skipFlash * 0.16})`; ctx.fillRect(0, 0, W, H);
+    label('The sky skips', W / 2, 44, 22, `rgba(233,238,251,${world.skipFlash})`, { display: true, align: 'center' });
+  }
+}
+function updateSkip(dt) {
+  if (!S.skip || !game.skipActive()) return;
+  world.skipT -= dt;
+  if (world.skipT <= 0) { world.skipT = rr(2.4, 3.8); doSkip(); }
+}
+// Time's interference: part of the sky jumps somewhere else.
+function doSkip() {
+  world.skipFlash = 1;
+  if (game.skip) { game.skip(); return; }
+  for (const s of world.stars) {
+    if (s.alive && !s.hid && rand() < 0.35) { world.ghosts.push({ x: s.x, y: s.y, life: 0.7 }); s.x = rand() * W; s.y = rr(24, 500); }
+  }
+}
+
+// ------------------------------------------------------------------ the five versions
+class Base {
+  constructor() { this.phase = 'ready'; this.finished = false; }
+  down() {} move() {} up() {} key() {} act() {} hud() {}
+  actLabel() { return null; }
+  hint() { return ''; }
+  skipActive() { return this.phase === 'flying'; }
+}
+
+// THE THROW: a slingshot through gravity wells.
+const G = 1.7e6;
+const capR = s => 9 + 7 * s.m;
+class ThrowGame extends Base {
+  build() {
+    const d = DIFFS[S.diff];
+    this.origin = { x: 120, y: 104 };
+    world.stars = makeStars(d.stars, d.heavy, { top: 24, bottom: 505, clear: [this.origin, 70] });
+    world.watchers = makeWatchers({ base: 5, aim: x => Math.atan2((W * 0.55 - x) * 0.6, 340) + rr(-0.3, 0.3) });
+    this.drag = null; this.c = null; this.boosted = new Set(); this.boosts = 0; this.burnt = 0;
+  }
+  hint() {
+    if (this.phase === 'ready') return this.drag ? 'Let go to throw. The dots show its path. Faith poured in shows more of it.' : 'Drag back anywhere, then let go to throw.';
+    if (this.phase === 'flying') return 'It flies on its own now.';
+    return '';
+  }
+  vel() {
+    if (!this.drag) return null;
+    const g = GUIDES[S.guide];
+    let vx = (this.drag.x0 - this.drag.x) * 3.1 * g.speed, vy = (this.drag.y0 - this.drag.y) * 3.1 * g.speed;
+    const sp = Math.hypot(vx, vy), max = 760 * g.speed;
+    if (sp > max) { vx *= max / sp; vy *= max / sp; }
+    return { vx, vy, power: Math.min(1, sp / max) };
+  }
+  down(p) { if (this.phase === 'ready') this.drag = { x0: p.x, y0: p.y, x: p.x, y: p.y }; }
+  move(p) { if (this.drag) { this.drag.x = p.x; this.drag.y = p.y; } }
+  up() {
+    if (this.phase !== 'ready' || !this.drag) return;
+    const v = this.vel();
+    this.drag = null;
+    if (!v || v.power < 0.08) return;
+    this.c = { x: this.origin.x, y: this.origin.y, vx: v.vx, vy: v.vy,
+      L: 1 + (S.guide === 'love' ? 0.12 * S.bond : 0) + (S.guide === 'fear' ? 0.1 : 0), decay: S.guide === 'fear' ? 0.19 : 0.13 };
+    this.phase = 'flying';
+  }
+  pull(c, h) {
+    let ax = 0, ay = 0;
+    for (const s of world.stars) {
+      if (!s.heavy || !s.alive) continue;
+      const dx = s.x - c.x, dy = s.y - c.y, d2 = dx * dx + dy * dy + 900;
+      const inv = G * s.m / (d2 * Math.sqrt(d2));
+      ax += dx * inv; ay += dy * inv;
+    }
+    c.vx += ax * h; c.vy += ay * h; c.x += c.vx * h; c.y += c.vy * h;
+  }
+  preview() {
+    const v = this.vel();
+    if (!v) return [];
+    const c = { x: this.origin.x, y: this.origin.y, vx: v.vx, vy: v.vy };
+    const steps = [40, 85, 150, 420][S.poured] + (S.guide === 'faith' ? 35 * S.bond : 0);
+    const pts = [];
+    for (let i = 0; i < steps; i++) {
+      this.pull(c, 1 / 60);
+      if (c.y > horizonY(c.x) || c.x < -50 || c.x > W + 50 || c.y < -80) break;
+      let caught = false;
+      for (const s of world.stars) if (s.heavy && s.alive && Math.hypot(s.x - c.x, s.y - c.y) < capR(s)) caught = true;
+      if (caught) { pts.push({ x: c.x, y: c.y, caught: true }); break; }
+      if (i % 3 === 0) pts.push({ x: c.x, y: c.y });
+    }
+    return pts;
+  }
+  update(dt) {
+    if (this.phase !== 'flying') return;
+    const c = this.c, sub = 4, h = dt / sub;
+    for (let k = 0; k < sub; k++) {
+      this.pull(c, h);
+      for (const s of world.stars) {
+        if (!s.heavy || !s.alive) continue;
+        const d = Math.hypot(s.x - c.x, s.y - c.y);
+        if (d < capR(s)) { s.flare = 1.4; return this.end('It fell into a brighter star and was swallowed by its light.'); }
+        if (d < capR(s) * 2.7 && !this.boosted.has(s)) {
+          this.boosted.add(s); this.boosts++; c.L += 0.24; s.flare = 1;
+          for (let q = 0; q < 10; q++) spawn(c.x, c.y, rr(-90, 90), rr(-90, 90), 0.6, 6, [255, 240, 200], 0.9);
+        }
+      }
+    }
+    c.L -= c.decay * dt;
+    if (S.guide === 'fear') this.burnt += burnNear(c.x, c.y, 9 + 3 * S.bond, Infinity, false);
+    witness(c.x, c.y, c.L, dt);
+    cometTail(c.x, c.y, c.vx, c.vy, c.L);
+    if (c.L <= 0.03) return this.end('It burned out.');
+    if (c.y >= horizonY(c.x) - 2) return this.end('It fell beyond the hills.');
+    if (c.x < -40 || c.x > W + 40 || c.y < -90) return this.end('It left the sky.');
+  }
+  end(how) {
+    const j = judge();
+    let t = `${how} ${watchLine(j)}`;
+    if (this.boosts) t += ` It borrowed light from ${this.boosts} bright star${this.boosts > 1 ? 's' : ''}.`;
+    if (this.burnt) t += ` It burned through ${this.burnt} small star${this.burnt > 1 ? 's' : ''}.`;
+    finish(j, t);
+  }
+  draw() {
+    skyGradient([[0, '#030820'], [0.42, '#0a1a4c'], [0.8, '#163172'], [1, '#1f3d84']]);
+    glow(W * 0.22, H * 0.32, 320, [80, 120, 230], 0.1);
+    glow(W * 0.68, H * 0.2, 280, [100, 130, 240], 0.1);
+    glow(W * 0.52, H * 0.6, 360, [60, 95, 210], 0.1);
+    for (const s of world.stars) {
+      if (!s.heavy || !s.alive) continue;
+      const cr = capR(s);
+      ctx.lineWidth = 1;
+      for (let k = 1; k <= 3; k++) {
+        ctx.strokeStyle = `rgba(170,200,255,${0.1 / k})`;
+        ctx.beginPath(); ctx.arc(s.x, s.y, cr * (1.4 + k * 1.15) + (REDUCED ? 0 : Math.sin(T * 1.3 + k + s.tw) * 1.5), 0, TAU); ctx.stroke();
+      }
+      ctx.setLineDash([2, 5]);
+      ctx.strokeStyle = 'rgba(255,226,160,0.34)'; ctx.beginPath(); ctx.arc(s.x, s.y, cr * 2.7, 0, TAU); ctx.stroke();
+      ctx.strokeStyle = 'rgba(255,120,120,0.38)'; ctx.beginPath(); ctx.arc(s.x, s.y, cr, 0, TAU); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    drawMoon(); drawStars(null); drawFog();
+    drawGround('#030712');
+    drawWatchers('#02040b', [200, 220, 255]);
+    const o = this.origin;
+    glow(o.x, o.y, 46, [255, 226, 170], 0.42 + (REDUCED ? 0 : 0.12 * Math.sin(T * 2.2)));
+    ctx.strokeStyle = 'rgba(232,191,108,0.65)'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(o.x, o.y, 15, 0, TAU); ctx.stroke();
+    if (this.drag) {
+      const v = this.vel();
+      ctx.strokeStyle = 'rgba(232,191,108,0.4)'; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(this.drag.x0, this.drag.y0); ctx.lineTo(this.drag.x, this.drag.y); ctx.stroke(); ctx.setLineDash([]);
+      const pts = this.preview();
+      pts.forEach((p, i) => {
+        if (p.caught) {
+          ctx.strokeStyle = 'rgba(255,120,120,0.95)'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(p.x - 6, p.y - 6); ctx.lineTo(p.x + 6, p.y + 6); ctx.moveTo(p.x + 6, p.y - 6); ctx.lineTo(p.x - 6, p.y + 6); ctx.stroke();
+        } else {
+          ctx.fillStyle = `rgba(233,238,251,${0.85 * (1 - i / (pts.length + 4))})`;
+          ctx.beginPath(); ctx.arc(p.x, p.y, 2.2, 0, TAU); ctx.fill();
+        }
+      });
+      if (v) label(`Power ${Math.round(v.power * 100)}%`, o.x + 24, o.y - 20, 13, 'rgba(232,191,108,0.95)');
+      drawComet(o.x, o.y, 1);
+    } else if (this.phase === 'ready') drawComet(o.x, o.y, 0.7);
+    if (this.c && this.phase === 'flying') drawComet(this.c.x, this.c.y, this.c.L);
+  }
+  hud() {
+    if (!this.c || this.phase !== 'flying') return;
+    panel(W - 232, 16, 214, 50);
+    label('Light', W - 218, 36, 13);
+    bar(W - 218, 44, 186, 8, this.c.L / 1.35, GUIDES[S.guide].rgb);
+  }
+}
+
+// THE TURNING SKY: the starfield wheels around the pole star. Choose your moment.
+class TurningGame extends Base {
+  build() {
+    const d = DIFFS[S.diff];
+    this.C = { x: W * 0.5, y: 74 };
+    const R = 820, k = Math.PI * R * R / (W * 480);
+    const n = Math.round(d.stars * k), nh = Math.round(d.heavy * k);
+    world.stars = [];
+    for (let i = 0; i < n + nh; i++) {
+      const heavy = i >= n;
+      const b = heavy ? rr(1.05, 1.35) : 0.22 + Math.pow(rand(), 2.6) * 0.75;
+      world.stars.push({ r0: 16 + Math.sqrt(rand()) * R, th: rand() * TAU, b, r: heavy ? rr(2.3, 3.3) : 0.6 + b * 1.5, tw: rand() * TAU, ts: 0.5 + rand() * 1.6, alive: 1, fade: 0, flare: 0, heavy, m: 0, x: 0, y: 0, hid: true });
+    }
+    this.P0 = { x: W * 0.09, y: 136 };
+    this.P1 = { x: W * 0.74, y: 452 };
+    this.omega = 0.07 * (S.guide === 'faith' ? 1 - 0.22 * S.bond : 1);
+    this.angBase = 0; this.timeBase = 0; this.ang = 0;
+    world.watchers = makeWatchers({ base: 5, aim: (x, hy) => {
+      const t = rr(0.3, 0.95);
+      return Math.atan2(lerp(this.P0.x, this.P1.x, t) - x, -(lerp(this.P0.y, this.P1.y, t) - hy)) + rr(-0.07, 0.07);
+    } });
+    this.strip = new Map(); this.flight = null; this.burned = 0;
+  }
+  afterBuild() { this.angBase = 0; this.timeBase = T; this.place(); this.fillStrip(999); }
+  angAt(t) { return this.angBase + this.omega * (t - this.timeBase); }
+  place() {
+    this.ang = this.angAt(T);
+    for (const s of world.stars) {
+      const a = s.th + this.ang;
+      s.x = this.C.x + s.r0 * Math.cos(a); s.y = this.C.y + s.r0 * Math.sin(a);
+      s.hid = s.y < -24 || s.x < -24 || s.x > W + 24 || s.y > horizonY(clamp(s.x, 0, W)) - 2;
+    }
+  }
+  // How clear the whole path would be if the sky stood at this angle.
+  clearAt(ang) {
+    let sum = 0;
+    const N = 12;
+    for (let i = 0; i < N; i++) {
+      const u = (i + 0.5) / N, x = lerp(this.P0.x, this.P1.x, u), y = lerp(this.P0.y, this.P1.y, u);
+      let c = 0;
+      for (const s of world.stars) {
+        if (!s.alive) continue;
+        const a = s.th + ang, dx = this.C.x + s.r0 * Math.cos(a) - x;
+        if (dx > 52 || dx < -52) continue;
+        const dy = this.C.y + s.r0 * Math.sin(a) - y, d2 = dx * dx + dy * dy;
+        if (d2 > 2600) continue;
+        c += s.b * Math.exp(-d2 / GLARE2) * (s.heavy ? 1.6 : 1);
+      }
+      sum += 1 / (1 + CLUTTER_K * (c + moonGlare(x, y)) + 0.08);
+    }
+    return sum / N;
+  }
+  span() { return [2, 4, 6, 8][S.poured]; }
+  fillStrip(budget) {
+    let left = budget || 24;
+    const k0 = Math.floor(T * 10), k1 = k0 + this.span() * 10 + 2;
+    for (let k = k0; k <= k1 && left > 0; k++) if (!this.strip.has(k)) { this.strip.set(k, this.clearAt(this.angAt(k / 10))); left--; }
+    for (const k of this.strip.keys()) if (k < k0 - 2) this.strip.delete(k);
+  }
+  hint() {
+    if (this.phase === 'ready') return 'The sky is turning. Click the sky or press Space when the path looks clear.';
+    if (this.phase === 'flying') return 'It falls.';
+    return '';
+  }
+  actLabel() { return this.phase === 'ready' ? 'Loose the star' : null; }
+  skipActive() { return this.phase !== 'done'; }
+  down() { this.act(); }
+  key(k) { if (k === 'space') this.act(); }
+  act() {
+    if (this.phase !== 'ready') return;
+    this.phase = 'flying';
+    this.flight = { u: 0, T: 1.15 / GUIDES[S.guide].speed, x: this.P0.x, y: this.P0.y, L: 1 };
+  }
+  skip() {
+    this.angBase = this.angAt(T) + rr(0.25, 0.55);
+    this.timeBase = T;
+    this.strip.clear();
+    let n = 0;
+    for (const s of world.stars) if (!s.hid && n < 70 && rand() < 0.5) { world.ghosts.push({ x: s.x, y: s.y, life: 0.7 }); n++; }
+    this.place();
+    this.fillStrip(999);
+  }
+  update(dt) {
+    this.place();
+    this.fillStrip();
+    if (this.phase !== 'flying') return;
+    const f = this.flight;
+    f.u = Math.min(1, f.u + dt / f.T);
+    f.x = lerp(this.P0.x, this.P1.x, f.u); f.y = lerp(this.P0.y, this.P1.y, f.u);
+    f.L = 1.05 - 0.35 * f.u + (S.guide === 'love' ? 0.1 * S.bond : 0);
+    const maxBurn = S.guide === 'fear' ? 1 + S.bond : 0;
+    if (this.burned < maxBurn) this.burned += burnNear(f.x, f.y, 14, maxBurn - this.burned, true);
+    witness(f.x, f.y, f.L, dt);
+    cometTail(f.x, f.y, (this.P1.x - this.P0.x) / f.T, (this.P1.y - this.P0.y) / f.T, f.L);
+    if (f.u >= 1) {
+      const j = judge();
+      finish(j, `It crossed the turning sky. ${watchLine(j)}${this.burned ? ` It burned away ${this.burned} star${this.burned > 1 ? 's' : ''} on the way.` : ''}`);
+    }
+  }
+  draw() {
+    skyGradient([[0, '#02050e'], [0.45, '#0a1830'], [0.74, '#1b3450'], [0.86, '#3a5068'], [1, '#2b3848']]);
+    glow(W * 0.5, 640, 760, [110, 150, 190], 0.2);
+    const trail = REDUCED ? 0.06 : 0.22;
+    ctx.lineCap = 'round';
+    for (const s of world.stars) {
+      if (s.hid) continue;
+      const life = s.alive ? 1 : s.fade;
+      if (life <= 0.01) continue;
+      const a = s.th + this.ang, al = s.b * life * moonFade(s.x, s.y);
+      ctx.lineWidth = Math.max(0.8, s.r * 0.85);
+      ctx.strokeStyle = `rgba(200,220,255,${0.13 * al})`; ctx.beginPath(); ctx.arc(this.C.x, this.C.y, s.r0, a - trail, a); ctx.stroke();
+      ctx.strokeStyle = `rgba(225,236,255,${0.3 * al})`; ctx.beginPath(); ctx.arc(this.C.x, this.C.y, s.r0, a - trail * 0.3, a); ctx.stroke();
+    }
+    ctx.lineCap = 'butt';
+    drawStars(null);
+    glow(this.C.x, this.C.y, 46, [230, 240, 255], 0.75);
+    ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(this.C.x, this.C.y, 2.8, 0, TAU); ctx.fill();
+    label('the pole star', this.C.x + 14, this.C.y - 10, 14, 'rgba(205,218,240,0.6)', { display: true, italic: true });
+    drawMoon(); drawFog();
+    const N = 26;
+    ctx.lineWidth = 2;
+    for (let i = 0; i < N; i++) {
+      const u0 = i / N, u1 = (i + 0.6) / N;
+      const x0 = lerp(this.P0.x, this.P1.x, u0), y0 = lerp(this.P0.y, this.P1.y, u0), x1 = lerp(this.P0.x, this.P1.x, u1), y1 = lerp(this.P0.y, this.P1.y, u1);
+      const c = contrastAt((x0 + x1) / 2, (y0 + y1) / 2, 1);
+      ctx.strokeStyle = c > 0.6 ? `rgba(255,222,150,${0.25 + 0.5 * c})` : `rgba(230,120,120,${0.25 + 0.3 * (1 - c)})`;
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+    }
+    drawGround('#05090f'); stones('#04070c');
+    drawWatchers('#03060b', [190, 215, 240]);
+    if (this.phase === 'flying') drawComet(this.flight.x, this.flight.y, this.flight.L);
+    else if (this.phase === 'ready') drawComet(this.P0.x, this.P0.y, 0.75);
+  }
+  hud() {
+    const x = 28, y = 604, w = 440, h = 36, span = this.span();
+    panel(x - 12, y - 26, w + 24, h + 46);
+    label(`The sky ahead · the next ${span} seconds`, x, y - 9, 13);
+    const k0 = Math.floor(T * 10), n = span * 10, bw = w / n;
+    for (let i = 0; i < n; i++) {
+      const v = this.strip.get(k0 + i);
+      if (v === undefined) continue;
+      const q = clamp((v - 0.35) / 0.55, 0, 1), bh = 4 + (h - 6) * q;
+      ctx.fillStyle = q > 0.55 ? `rgba(255,214,140,${0.45 + 0.5 * q})` : `rgba(140,150,190,${0.35 + 0.3 * q})`;
+      ctx.fillRect(x + i * bw, y + h - bh, Math.max(1, bw - 1), bh);
+    }
+    const fw = Math.min(w, (1.15 / GUIDES[S.guide].speed) * 10 * bw);
+    ctx.strokeStyle = 'rgba(233,238,251,0.75)'; ctx.lineWidth = 1.2; ctx.strokeRect(x, y - 2, fw, h + 4);
+    label('your star needs this long', x + fw + 8, y + 12, 12, 'rgba(233,238,251,0.6)');
+  }
+}
+
+// THE FALL: steer it through the field like a kite, then bring it down by the fire.
+class FallGame extends Base {
+  build() {
+    const d = DIFFS[S.diff];
+    this.start = { x: 34, y: 210 };
+    world.stars = makeStars(d.stars, d.heavy, { top: 26, bottom: 500, clear: [this.start, 80] });
+    this.fire = { x: W * 0.885 };
+    this.fire.y = horizonY(this.fire.x);
+    world.watchers = makeWatchers({ base: 5, x0: 90, x1: W * 0.76, aim: () => rr(-0.5, 0.45) });
+    const px = this.fire.x - 36, py = horizonY(px);
+    world.watchers.push({ x: px, y: py, hy: py - 17, a: -0.3, hw: 0.32, w: 0, seeing: 0, flinch: 0, h: 1.15, priest: true });
+    this.maxL = 1 + (S.guide === 'love' ? 0.35 + 0.25 * S.bond : 0) + 0.3 * S.poured;
+    this.s = { x: this.start.x, y: this.start.y, vy: 0, ty: this.start.y, L: this.maxL };
+    this.ribbon = []; this.hits = 0; this.burnt = 0;
+  }
+  hint() {
+    if (this.phase === 'ready') return S.guide === 'fear' ? 'Click to send it, then steer with your mouse or finger. Your red star burns through what it touches.' : 'Click to send it, then steer with your mouse or finger. Bring it down by the fire.';
+    if (this.phase === 'flying') return 'Steer through their gaze, then bring it down inside the ring by the fire.';
+    return '';
+  }
+  actLabel() { return this.phase === 'ready' ? 'Send it' : null; }
+  act() { if (this.phase === 'ready') this.phase = 'flying'; }
+  down(p) { if (this.phase === 'ready') this.phase = 'flying'; this.s.ty = p.y; }
+  move(p) { this.s.ty = p.y; }
+  key(k) {
+    if (k === 'space') this.act();
+    else if (k === 'up') this.s.ty = clamp(this.s.ty - 45, 22, H);
+    else if (k === 'down') this.s.ty = clamp(this.s.ty + 45, 22, H);
+  }
+  update(dt) {
+    if (rand() < dt * 14) spawn(this.fire.x + rr(-8, 8), this.fire.y - 12, rr(-12, 12), rr(-70, -35), 1.3, 3, [255, 170, 90], 0.85);
+    const s = this.s;
+    if (this.phase === 'ready') { s.y = this.start.y + (REDUCED ? 0 : Math.sin(T * 2) * 6); return; }
+    if (this.phase !== 'flying') return;
+    const g = GUIDES[S.guide];
+    const K = 15 + (S.guide === 'faith' ? 9 * S.bond : 0), Cd = 2 * Math.sqrt(K) * 0.8, ty = clamp(s.ty, 22, H);
+    for (let i = 0; i < 2; i++) { s.vy = clamp(s.vy + (K * (ty - s.y) - Cd * s.vy) * dt / 2, -560, 560); s.y += s.vy * dt / 2; }
+    const vx = 245 * g.speed;
+    s.x += vx * dt;
+    if (s.y < 20) { s.y = 20; s.vy = Math.max(0, s.vy); }
+    s.L -= 0.045 * dt;
+    for (const st of world.stars) {
+      if (!st.alive || st.touched) continue;
+      const R = st.heavy ? 17 : 9;
+      if ((st.x - s.x) ** 2 + (st.y - s.y) ** 2 >= R * R) continue;
+      st.touched = true; st.flare = 1;
+      if (S.guide === 'fear') {
+        st.alive = 0; st.fade = 1; this.burnt++;
+        for (let k = 0; k < 7; k++) spawn(st.x, st.y, rr(-80, 80), rr(-80, 80), 0.5, 6, [255, 110, 80], 0.9);
+      } else {
+        s.L -= (st.heavy ? 0.3 : 0.13) * (S.guide === 'faith' ? 0.9 : 1); this.hits++;
+        for (let k = 0; k < 6; k++) spawn(s.x, s.y, rr(-70, 70), rr(-70, 70), 0.4, 4, [255, 255, 255], 0.7);
+      }
+    }
+    witness(s.x, s.y, Math.max(0, s.L), dt);
+    this.ribbon.push({ x: s.x, y: s.y, L: Math.max(0, s.L) });
+    if (this.ribbon.length > 90) this.ribbon.shift();
+    cometTail(s.x, s.y, vx, s.vy, Math.max(0.2, s.L));
+    if (s.L <= 0) return this.end(null, 'Your star went out among the others.');
+    if (s.y >= horizonY(s.x) - 1) return this.end(s.x);
+    if (s.x > W + 20) return this.end(null, 'It passed beyond the edge of the world.');
+  }
+  end(landX, how) {
+    let bonus = 0, msg = how || '';
+    if (landX !== null && landX !== undefined) {
+      if (Math.abs(landX - this.fire.x) < 80) {
+        bonus = 1; msg = 'It came down by the fire, where the priest could find it.';
+        for (let k = 0; k < 34; k++) spawn(landX, horizonY(landX) - 4, rr(-140, 140), rr(-220, -30), 0.9, 6, [255, 190, 120], 0.9);
+      } else msg = 'It came down far out in the hills. Nobody found where it fell.';
+    }
+    const j = judge(bonus);
+    finish(j, `${msg} ${watchLine(j)}${this.hits ? ` It struck ${this.hits} star${this.hits > 1 ? 's' : ''} on the way.` : ''}${this.burnt ? ` It burned through ${this.burnt}.` : ''}`);
+  }
+  draw() {
+    skyGradient([[0, '#0c0720'], [0.42, '#29143f'], [0.68, '#652c55'], [0.82, '#b45a52'], [0.9, '#dc8458'], [1, '#e9955f']]);
+    glow(W * 0.66, 580, 460, [255, 170, 110], 0.2);
+    drawStars([255, 232, 214]); drawMoon(); drawFog([236, 206, 214]);
+    ctx.fillStyle = '#4c2448';
+    ctx.beginPath(); ctx.moveTo(0, H);
+    for (let x = 0; x <= W; x += 20) ctx.lineTo(x, horizonY(x) - 22 + Math.sin(x * 0.004 + 2) * 12);
+    ctx.lineTo(W, H); ctx.closePath(); ctx.fill();
+    drawGround('#170b1d');
+    for (const [dx, w] of [[-110, 15], [-70, 19], [52, 17], [92, 13]]) hut(this.fire.x + dx, w, '#110816');
+    ctx.setLineDash([3, 5]); ctx.strokeStyle = 'rgba(255,200,140,0.4)'; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.ellipse(this.fire.x, this.fire.y + 6, 80, 12, 0, 0, TAU); ctx.stroke(); ctx.setLineDash([]);
+    const fl = REDUCED ? 1 : 0.88 + 0.12 * Math.sin(T * 13) + 0.05 * Math.sin(T * 27);
+    glow(this.fire.x, this.fire.y - 10, 90 * fl, [255, 150, 70], 0.8);
+    for (let k = 0; k < 5; k++) {
+      ctx.fillStyle = `rgba(255,${140 + k * 22},${60 + k * 10},0.85)`;
+      const bx = this.fire.x - 9 + k * 4, top = this.fire.y - (16 + 8 * Math.sin(T * 5 + k * 1.7)) * fl - (k === 2 ? 8 : 0);
+      ctx.beginPath(); ctx.moveTo(bx - 4, this.fire.y); ctx.lineTo(bx + Math.sin(T * 4 + k) * 2, top); ctx.lineTo(bx + 4, this.fire.y); ctx.closePath(); ctx.fill();
+    }
+    drawWatchers('#100611', [255, 205, 150]);
+    const g = GUIDES[S.guide];
+    ctx.lineCap = 'round';
+    for (let i = 1; i < this.ribbon.length; i++) {
+      const a = this.ribbon[i - 1], b = this.ribbon[i], k = i / this.ribbon.length;
+      ctx.strokeStyle = `rgba(${g.rgb},${0.06 + 0.55 * k * Math.max(0.25, b.L)})`;
+      ctx.lineWidth = 1 + 6 * k * Math.max(0.3, Math.min(1.4, b.L));
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+    }
+    ctx.lineCap = 'butt';
+    if (this.phase === 'flying') {
+      ctx.strokeStyle = 'rgba(255,226,170,0.2)'; ctx.setLineDash([2, 6]); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(this.s.x, this.s.y); ctx.lineTo(this.s.x + 40, clamp(this.s.ty, 22, H)); ctx.stroke(); ctx.setLineDash([]);
+    }
+    if (this.phase !== 'done') drawComet(this.s.x, this.s.y, Math.max(0.2, this.s.L));
+  }
+  hud() {
+    panel(W - 232, 16, 214, 50);
+    label('Light', W - 218, 36, 13);
+    bar(W - 218, 44, 186, 8, this.s.L / this.maxL, GUIDES[S.guide].rgb);
+  }
+}
+
+// CLEAR THE SKY: fate chooses the path. Spend your breaths snuffing stars, watch the odds, then pray.
+class ClearGame extends Base {
+  build() {
+    const d = DIFFS[S.diff];
+    world.stars = makeStars(d.stars, d.heavy, { top: 22, bottom: 505 });
+    this.A = { x: rr(90, 300), y: rr(36, 80) };
+    this.B = { x: rr(620, 900), y: 470 };
+    this.sigma = 0.17 - (S.guide === 'faith' ? 0.04 * S.bond : 0);
+    this.base = Math.atan2(this.B.y - this.A.y, this.B.x - this.A.x);
+    this.samples = [];
+    for (let i = 0; i < 90; i++) this.samples.push(this.samplePath(rand));
+    world.watchers = makeWatchers({ base: 5, aim: (x, hy) => {
+      const t = rr(0.35, 0.9);
+      return Math.atan2(lerp(this.A.x, this.B.x, t) - x, -(lerp(this.A.y, this.B.y, t) - hy)) + rr(-0.1, 0.1);
+    } });
+    this.breaths = this.maxBreaths = 2 + 2 * S.poured + (S.guide === 'faith' ? S.bond : 0);
+    this.fall = null; this.odds = 0; this.recalcT = 0; this.hover = null; this.noBreath = 0;
+  }
+  afterBuild() { this.recalc(); }
+  samplePath(r) {
+    const ang = this.base + gauss(r) * this.sigma, jx = (r() - 0.5) * 70;
+    let x = this.A.x + jx, y = this.A.y;
+    const dx = Math.cos(ang) * 8, dy = Math.sin(ang) * 8, pts = [];
+    for (let i = 0; i < 220; i++) { pts.push({ x, y }); x += dx; y += dy; if (y >= horizonY(x) - 2 || x < -20 || x > W + 20) break; }
+    return pts;
+  }
+  // Plays one possible fall in the head, using the same rules as the real one.
+  evalPath(pts) {
+    const speed = 360 * GUIDES[S.guide].speed, dt = 8 / speed;
+    const ws = world.watchers.map(() => 0);
+    let L = 1 + (S.guide === 'love' ? 0.1 * S.bond : 0);
+    const burned = new Set(), maxBurn = S.guide === 'fear' ? 2 + S.bond : 0;
+    for (const p of pts) {
+      if (burned.size < maxBurn) {
+        for (const s of world.stars) {
+          if (s.alive && !burned.has(s) && (s.x - p.x) ** 2 + (s.y - p.y) ** 2 < 144) { burned.add(s); if (burned.size >= maxBurn) break; }
+        }
+      }
+      let c = 0;
+      for (const s of world.stars) {
+        if (!s.alive || burned.has(s)) continue;
+        const dx = s.x - p.x, dy = s.y - p.y, d2 = dx * dx + dy * dy;
+        if (d2 > 2600) continue;
+        c += s.b * Math.exp(-d2 / GLARE2) * (s.heavy ? 1.6 : 1);
+      }
+      const eff = L * (1 - fogAt(p.x, p.y));
+      const k = eff / (eff + CLUTTER_K * (c + moonGlare(p.x, p.y)) + 0.08);
+      for (let i = 0; i < ws.length; i++) if (inCone(world.watchers[i], p.x, p.y)) ws[i] += dt * RATE * k * k;
+      L -= 0.1 * 8 / 100;
+    }
+    let seen = 0, clear = 0;
+    for (const v of ws) { if (v >= SEEN) seen++; if (v >= CLEAR) clear++; }
+    return clear >= Math.max(2, Math.round(ws.length * 0.34)) ? 2 : seen ? 1 : 0;
+  }
+  recalc() { let ok = 0; for (const p of this.samples) if (this.evalPath(p) === 2) ok++; this.odds = ok / this.samples.length; }
+  oddsWord() { const f = this.odds; return f >= 0.7 ? 'Likely' : f >= 0.45 ? 'Even' : f >= 0.2 ? 'Hard' : 'Desperate'; }
+  nearest(p) {
+    let best = null, bd = 24 * 24;
+    for (const s of world.stars) { if (!s.alive) continue; const d = (s.x - p.x) ** 2 + (s.y - p.y) ** 2; if (d < bd) { bd = d; best = s; } }
+    return best;
+  }
+  hint() {
+    if (this.phase === 'ready') {
+      if (this.noBreath > 0) return 'You have no breaths left. Let it fall when you are ready.';
+      return `Click stars to snuff them out. ${this.breaths} breath${this.breaths === 1 ? '' : 's'} left. The odds feel ${this.oddsWord().toLowerCase()}.`;
+    }
+    if (this.phase === 'flying') return 'It falls where fate sends it.';
+    return '';
+  }
+  actLabel() { return this.phase === 'ready' ? 'Let it fall' : null; }
+  skipActive() { return false; }
+  move(p) { this.hover = this.phase === 'ready' ? this.nearest(p) : null; }
+  down(p) {
+    if (this.phase !== 'ready') return;
+    const s = this.nearest(p);
+    if (!s) return;
+    if (this.breaths <= 0) { this.noBreath = 2; return; }
+    s.alive = 0; s.fade = 1; this.breaths--;
+    for (let k = 0; k < 8; k++) spawn(s.x + rr(-3, 3), s.y + rr(-3, 3), rr(-8, 8), rr(-26, -10), 1.6, 5, [190, 196, 210], 1, 1);
+    this.hover = null;
+    this.recalc();
+  }
+  key(k) { if (k === 'space') this.act(); }
+  act() {
+    if (this.phase !== 'ready') return;
+    if (S.skip) doSkip();
+    const pts = this.samplePath(Math.random);
+    this.fall = { pts, i: 0, x: pts[0].x, y: pts[0].y, L: 1 + (S.guide === 'love' ? 0.1 * S.bond : 0), burned: 0, oddsWord: this.oddsWord() };
+    this.phase = 'flying';
+  }
+  update(dt) {
+    this.noBreath = Math.max(0, this.noBreath - dt);
+    if (this.phase === 'ready' && S.fog) { this.recalcT -= dt; if (this.recalcT <= 0) { this.recalcT = 0.8; this.recalc(); } }
+    if (this.phase !== 'flying') return;
+    const f = this.fall, speed = 360 * GUIDES[S.guide].speed;
+    let move = speed * dt;
+    while (move > 0 && f.i < f.pts.length - 1) {
+      const a = f.pts[f.i], b = f.pts[f.i + 1], seg = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+      const along = Math.hypot(f.x - a.x, f.y - a.y), left = seg - along;
+      if (move < left) { const t = (along + move) / seg; f.x = lerp(a.x, b.x, t); f.y = lerp(a.y, b.y, t); f.L -= 0.1 * move / 100; move = 0; }
+      else { f.x = b.x; f.y = b.y; f.L -= 0.1 * left / 100; move -= left; f.i++; }
+    }
+    const maxBurn = S.guide === 'fear' ? 2 + S.bond : 0;
+    if (f.burned < maxBurn) f.burned += burnNear(f.x, f.y, 12, maxBurn - f.burned, true);
+    witness(f.x, f.y, f.L, dt);
+    cometTail(f.x, f.y, Math.cos(this.base) * speed, Math.sin(this.base) * speed, f.L);
+    if (f.i >= f.pts.length - 1) {
+      const j = judge();
+      finish(j, `Fate chose its path. ${watchLine(j)} Before it fell, the odds felt ${f.oddsWord.toLowerCase()}.`);
+    }
+  }
+  draw() {
+    skyGradient([[0, '#0a0f1b'], [0.5, '#182334'], [0.8, '#31425a'], [1, '#4c5d72']]);
+    for (let i = 0; i < 4; i++) {
+      const drift = REDUCED ? 0 : T * 6 * (i % 2 ? 1 : -1);
+      const x = ((i * 340 + drift) % (W + 400) + (W + 400)) % (W + 400) - 200;
+      ellipseGlow(x, 150 + i * 95, 420, 60, [190, 205, 225], 0.07);
+    }
+    drawStars([222, 230, 244]); drawMoon(); drawFog();
+    if (this.phase === 'ready') {
+      ctx.lineWidth = 2.4;
+      for (const p of this.samples) {
+        const a = p[0], b = p[p.length - 1];
+        ctx.strokeStyle = 'rgba(190,232,236,0.055)'; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+      }
+    }
+    glow(this.A.x, this.A.y, 34, [214, 236, 244], 0.45 + (REDUCED ? 0 : 0.12 * Math.sin(T * 2)));
+    if (this.hover && this.phase === 'ready') {
+      ctx.strokeStyle = this.breaths > 0 ? 'rgba(233,238,251,0.85)' : 'rgba(240,140,140,0.85)'; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.arc(this.hover.x, this.hover.y, 11, 0, TAU); ctx.stroke();
+    }
+    drawGround('#0a0f17'); stones('#080c13');
+    drawWatchers('#070a11', [205, 228, 236]);
+    if (this.fall && this.phase === 'flying') drawComet(this.fall.x, this.fall.y, this.fall.L);
+  }
+  hud() {
+    const x = W - 262, y = 16;
+    panel(x, y, 244, 74);
+    label('Breaths', x + 14, y + 22, 13);
+    for (let i = 0; i < this.maxBreaths; i++) {
+      const cx = x + 80 + i * 16, cy = y + 18;
+      ctx.strokeStyle = 'rgba(233,238,251,0.6)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(cx, cy, 5, 0, TAU); ctx.stroke();
+      if (i < this.breaths) { ctx.fillStyle = 'rgba(214,236,244,0.95)'; ctx.fill(); }
+    }
+    label(`The odds feel: ${(this.fall ? this.fall.oddsWord : this.oddsWord())}`, x + 14, y + 56, 19, '#f2d79a', { display: true });
+  }
+}
+
+// THE READING: draw the rune; the stars bend it; the priest reads what's left.
+class ReadingGame extends Base {
+  build() {
+    const d = DIFFS[S.diff];
+    world.stars = makeStars(d.stars, d.heavy, { top: 22, bottom: 490 });
+    this.rune = RUNES[SCENARIOS[S.scenario].rune];
+    this.win = { x: W * 0.5, y: 262, rx: 360, ry: 200 };
+    const hv = world.stars.filter(s => s.heavy);
+    this.lines = [];
+    for (let i = 0; i < hv.length; i++) {
+      let best = null, bd = 1e9;
+      for (let j = 0; j < hv.length; j++) { if (i === j) continue; const dd = (hv[i].x - hv[j].x) ** 2 + (hv[i].y - hv[j].y) ** 2; if (dd < bd) { bd = dd; best = hv[j]; } }
+      if (best && bd < 320 * 320) this.lines.push([hv[i], best]);
+    }
+    world.watchers = makeWatchers({ base: 3, xs: [W * 0.43, W * 0.5, W * 0.57], hw: 0.5, aim: (x, hy) => Math.atan2(this.win.x - x, -(this.win.y - hy)) + rr(-0.05, 0.05) });
+    world.watchers[1].priest = true;
+    this.fuel = this.maxFuel = 1000 + 340 * S.poured;
+    this.head = null; this.target = null; this.trail = []; this.read = null; this.kept = []; this.snags = []; this.readT = 0;
+  }
+  hint() {
+    if (this.phase === 'ready') return `Press and hold inside the dashed ring to draw “${this.rune.name}”. Let go when it is finished.`;
+    if (this.phase === 'drawing') return 'Let go when the sign is finished.';
+    if (this.phase === 'reading') return 'The priest is reading the sky.';
+    return '';
+  }
+  skipActive() { return this.phase === 'drawing'; }
+  down(p) {
+    if (this.phase !== 'ready') return;
+    this.phase = 'drawing';
+    this.head = { x: p.x, y: p.y, vx: 0, vy: 0 };
+    this.target = { x: p.x, y: p.y };
+    this.trail = [{ x: p.x, y: p.y, a: 1 }];
+  }
+  move(p) { if (this.phase === 'drawing') this.target = { x: p.x, y: p.y }; }
+  up() { if (this.phase === 'drawing') this.doRead(); }
+  update(dt) {
+    for (const q of this.trail) q.a -= dt * (0.02 + (S.fog ? fogAt(q.x, q.y) * 0.9 : 0));
+    if (this.phase === 'drawing') {
+      const h = this.head, t = this.target;
+      const k = 55 + (S.guide === 'faith' ? 35 * S.bond : 0), c = 2 * Math.sqrt(k) * 0.72;
+      for (let i = 0; i < 2; i++) {
+        h.vx += (k * (t.x - h.x) - c * h.vx) * dt / 2; h.vy += (k * (t.y - h.y) - c * h.vy) * dt / 2;
+        h.x += h.vx * dt / 2; h.y += h.vy * dt / 2;
+      }
+      const last = this.trail[this.trail.length - 1], seg = Math.hypot(h.x - last.x, h.y - last.y);
+      if (seg > 5) { this.trail.push({ x: h.x, y: h.y, a: 1 }); this.fuel -= seg; }
+      spawn(h.x, h.y, rr(-15, 15), rr(-15, 15), 0.5, 4, GUIDES[S.guide].rgb, 0.6);
+      if (this.fuel <= 0) { this.fuel = 0; this.doRead(); }
+    }
+    if (this.phase === 'reading') {
+      this.readT += dt;
+      if (this.readT > 1.9) finish(this.read.j, this.read.why);
+    }
+  }
+  doRead() {
+    this.phase = 'reading';
+    this.readT = 0;
+    const L = S.guide === 'fear' ? 1.3 : 1.0, pullK = S.guide === 'love' ? 0.6 : 1.1;
+    const kept = [], snags = [];
+    for (const q of this.trail) {
+      q.lost = null;
+      if (((q.x - this.win.x) / this.win.rx) ** 2 + ((q.y - this.win.y) / this.win.ry) ** 2 > 1) { q.lost = 'unwatched'; continue; }
+      if (contrastAt(q.x, q.y, L * Math.max(0, q.a)) < 0.3) { q.lost = 'hidden'; continue; }
+      let px = 0, py = 0;
+      for (const s of world.stars) {
+        if (!s.alive) continue;
+        const dx = s.x - q.x, dy = s.y - q.y, d2 = dx * dx + dy * dy;
+        if (d2 > 3600) continue;
+        const w = s.b * (s.heavy ? 1.5 : 1) * Math.exp(-d2 / (2 * 24 * 24)) * pullK;
+        px += dx * w; py += dy * w;
+        if (w > 0.25) snags.push([q, s]);
+      }
+      kept.push({ x: q.x + px, y: q.y + py });
+    }
+    this.kept = kept; this.snags = snags;
+    const frac = kept.length / Math.max(1, this.trail.length);
+    let j, why, readId = null;
+    if (this.trail.length < 10) { j = { tier: 'unseen' }; why = 'The sign was too small to see.'; }
+    else if (frac < 0.5) {
+      j = { tier: 'unseen' };
+      why = `Only ${Math.round(frac * 100)}% of the sign could be made out. The rest was lost among the stars${S.fog ? ' and the fog' : ''}, or drawn where nobody was looking.`;
+    } else {
+      const cand = normalize(resample(kept, 32));
+      let best = null;
+      for (const id in RUNES) {
+        const r = RUNES[id];
+        let dd = shapeDistance(cand, r.norm, r.closed);
+        if (S.guide === 'fear' && r.dark) dd *= 0.82;
+        if (!best || dd < best.d) best = { id, d: dd };
+      }
+      const tol = 0.27 + (S.guide === 'love' ? 0.03 * (1 + S.bond) : 0);
+      if (best.d > tol) { j = { tier: 'misread' }; why = 'They saw it, but could not agree on what it was. Every elder read it differently.'; }
+      else if (RUNES[best.id] === this.rune) { j = { tier: 'understood' }; why = `The priest read it as “${this.rune.name}”, the sign you meant.`; readId = best.id; }
+      else { j = { tier: 'misread' }; why = `You meant “${this.rune.name}”. The priest read it as “${RUNES[best.id].name}”.`; readId = best.id; }
+      if (frac < 0.85) why += ` About ${Math.round((1 - frac) * 100)}% of the trail was lost.`;
+    }
+    this.read = { j, why, readId };
+  }
+  draw() {
+    skyGradient([[0, '#04071a'], [0.6, '#0a1333'], [1, '#121e48']]);
+    ctx.strokeStyle = 'rgba(214,178,110,0.075)'; ctx.lineWidth = 1;
+    for (let i = 1; i <= 6; i++) { ctx.beginPath(); ctx.ellipse(W / 2, 900, 260 + i * 130, 220 + i * 105, 0, Math.PI, TAU); ctx.stroke(); }
+    for (let i = -6; i <= 6; i++) { ctx.beginPath(); ctx.moveTo(W / 2 + i * 36, 590); ctx.quadraticCurveTo(W / 2 + i * 110, 260, W / 2 + i * 170, -30); ctx.stroke(); }
+    ctx.strokeStyle = 'rgba(214,178,110,0.22)';
+    for (const [a, b] of this.lines) { if (!a.alive || !b.alive) continue; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+    drawStars([242, 228, 200]); drawMoon(); drawFog([210, 214, 228]);
+    ctx.setLineDash([4, 7]); ctx.strokeStyle = 'rgba(232,191,108,0.3)'; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.ellipse(this.win.x, this.win.y, this.win.rx, this.win.ry, 0, 0, TAU); ctx.stroke(); ctx.setLineDash([]);
+    label('where the priest is watching', this.win.x, this.win.y - this.win.ry - 10, 15, 'rgba(232,191,108,0.6)', { display: true, italic: true, align: 'center' });
+    drawGround('#04060d');
+    drawWatchers('#03040a', [232, 191, 108]);
+    this.drawTrail();
+    if (this.phase === 'reading' || this.phase === 'done') this.drawReading();
+    if (this.phase === 'drawing') drawComet(this.head.x, this.head.y, 1);
+  }
+  drawTrail() {
+    const t = this.trail;
+    if (t.length < 2) return;
+    const col = S.guide === 'love' ? '255,200,160' : S.guide === 'fear' ? '255,110,90' : '255,214,140';
+    const judged = this.phase === 'reading' || this.phase === 'done';
+    ctx.lineCap = 'round';
+    for (let i = 1; i < t.length; i++) {
+      const a = t[i - 1], b = t[i], al = Math.max(0, Math.min(a.a, b.a));
+      if (al <= 0.02) continue;
+      const lost = judged && (a.lost || b.lost);
+      ctx.strokeStyle = `rgba(${col},${(lost ? 0.1 : 0.18) * al})`; ctx.lineWidth = 10;
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+      ctx.strokeStyle = lost ? `rgba(150,150,172,${0.35 * al})` : `rgba(255,240,210,${0.9 * al})`; ctx.lineWidth = 2.4;
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+    }
+    ctx.lineCap = 'butt';
+  }
+  drawReading() {
+    const r = Math.min(1, this.readT / 1.1);
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = `rgba(200,215,255,${0.24 * r})`;
+    for (const [q, s] of this.snags) { ctx.beginPath(); ctx.moveTo(q.x, q.y); ctx.lineTo(s.x, s.y); ctx.stroke(); }
+    if (this.kept.length > 1) {
+      ctx.strokeStyle = `rgba(190,215,255,${0.85 * r})`; ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
+      ctx.beginPath(); ctx.moveTo(this.kept[0].x, this.kept[0].y);
+      for (const p of this.kept) ctx.lineTo(p.x, p.y);
+      ctx.stroke(); ctx.setLineDash([]);
+    }
+    if (this.readT > 1.0 && this.read) {
+      const px = this.win.x;
+      panel(px - 120, 590, 240, 70);
+      if (this.read.readId) {
+        drawRune(RUNES[this.read.readId], px - 104, 600, 50, '#f3e2b8', 2.6);
+        label(`“${RUNES[this.read.readId].name}”`, px - 40, 626, 22, '#f3e2b8', { display: true });
+      } else label('“…?”', px - 40, 626, 22, '#f3e2b8', { display: true });
+      label('the priest reads', px - 40, 648, 12, 'rgba(233,238,251,0.6)');
+    }
+  }
+  hud() {
+    const x = W - 210, y = 16;
+    panel(x, y, 192, 182);
+    label('The sign they need', x + 14, y + 24, 12, 'rgba(233,238,251,0.6)');
+    label(this.rune.name, x + 14, y + 52, 26, '#f3e2b8', { display: true });
+    drawRune(this.rune, x + 92, y + 40, 78, 'rgba(232,191,108,0.95)');
+    label('Trail left', x + 14, y + 162, 12, 'rgba(233,238,251,0.7)');
+    bar(x + 72, y + 155, 104, 7, this.fuel / this.maxFuel, [232, 191, 108]);
+  }
+}
+
+const VERSIONS = { throw: ThrowGame, turning: TurningGame, fall: FallGame, clear: ClearGame, reading: ReadingGame };
+
+// ------------------------------------------------------------------ building and the loop
+function build() {
+  const vi = VERSION_IDS.indexOf(S.version);
+  parts.length = 0;
+  world = { stars: [], watchers: [], moon: null, fogs: [], skipT: 3, skipFlash: 0, ghosts: [] };
+  game = new VERSIONS[S.version]();
+  withSeed(seed * 7919 + S.diff * 131 + vi * 17 + 3, () => game.build());
+  withSeed(seed * 104729 + 11, makeInterference);
+  if (game.afterBuild) game.afterBuild();
+  resetVerdict(); syncControls(); syncPrayer(); renderNotes();
+  lastHint = null; lastAct = null;
+}
+function update(dt) {
+  T += dt;
+  for (const f of world.fogs) {
+    f.x += f.vx * dt * (REDUCED ? 0.4 : 1);
+    if (f.x > W + f.rx * 1.2) f.x = -f.rx * 1.2; else if (f.x < -f.rx * 1.2) f.x = W + f.rx * 1.2;
+  }
+  for (const s of world.stars) {
+    if (s.flare > 0) s.flare = Math.max(0, s.flare - dt * 2.2);
+    if (!s.alive && s.fade > 0) s.fade = Math.max(0, s.fade - dt * 1.4);
+  }
+  for (const w of world.watchers) { w.seeing = Math.max(0, w.seeing - dt * 1.6); if (S.guide !== 'fear') w.flinch = Math.max(0, w.flinch - dt); }
+  for (let i = world.ghosts.length - 1; i >= 0; i--) { world.ghosts[i].life -= dt; if (world.ghosts[i].life <= 0) world.ghosts.splice(i, 1); }
+  world.skipFlash = Math.max(0, world.skipFlash - dt * 1.6);
+  updateSkip(dt);
+  game.update(dt);
+  updateParts(dt);
+}
+function draw() {
+  ctx.setTransform(canvas.width / W, 0, 0, canvas.height / H, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  if (!game) return;
+  game.draw();
+  drawParts();
+  drawSkip();
+  game.hud();
+}
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, Math.max(0, (now - last) / 1000));
+  last = now;
+  if (world && game) { update(dt); syncFrameUI(); }
+  draw();
+  requestAnimationFrame(frame);
+}
+
+// ------------------------------------------------------------------ the page around the sky
+const $ = id => document.getElementById(id);
+const els = { hint: $('hint'), act: $('act'), tier: $('tier'), why: $('why'), story: $('story'), choice: $('choice'), meta: $('meta'), log: $('log'), poured: $('poured'), scenario: $('scenario') };
+let lastHint = null, lastAct = null;
+
+function finish(j, why) {
+  if (game.finished) return;
+  game.finished = true;
+  game.phase = 'done';
+  const sc = SCENARIOS[S.scenario];
+  els.tier.className = 'tier ' + j.tier;
+  els.tier.textContent = TIER_NAMES[j.tier];
+  if (j.tier === 'misread') { const b = document.createElement('span'); b.className = 'badge'; b.textContent = 'new middle outcome'; els.tier.appendChild(b); }
+  els.why.textContent = why + (j.tier === 'understood' && S.guide === 'fear' ? ' They understood, and they were afraid.' : '');
+  els.story.textContent = j.tier === 'understood' ? sc.ok : j.tier === 'misread' ? sc.misread : sc.fail;
+  log.unshift({ v: S.version, d: S.diff, g: S.guide, b: S.bond, p: S.poured, i: [S.moon && 'moon', S.fog && 'fog', S.skip && 'skip'].filter(Boolean), tier: j.tier });
+  if (log.length > 10) log.pop();
+  renderLog();
+}
+function resetVerdict() {
+  els.tier.className = 'tier waiting';
+  els.tier.textContent = 'Waiting for your star';
+  els.why.textContent = 'It can end three ways. Understood: the cast holds. Misread: a new middle outcome, where your people act on the wrong message. Unseen: the cast fails.';
+  els.story.textContent = '';
+}
+function syncPrayer() {
+  const sc = SCENARIOS[S.scenario], d = DIFFS[S.diff];
+  els.choice.textContent = sc.choice;
+  els.meta.textContent = `${sc.title} · guided by ${GUIDES[S.guide].name.toLowerCase()} (${BONDS[S.bond].toLowerCase()}) · ${d.name}: the bones needed ${d.target}`;
+}
+function renderNotes() {
+  const v = VINFO[S.version];
+  $('notes-body').innerHTML = `<p class="kicker">${v.chip}</p><h2>${v.name}</h2><p class="pitch">${v.pitch}</p><dl>${v.rows.map(([k, t]) => `<dt>${k}</dt><dd>${t}</dd>`).join('')}</dl>`;
+}
+function renderLog() {
+  if (!log.length) { els.log.innerHTML = '<li class="empty">No attempts yet.</li>'; return; }
+  els.log.innerHTML = log.map(e => {
+    const extra = (e.p ? ` · ${e.p} faith` : '') + (e.i.length ? ` · ${e.i.join(', ')}` : '');
+    return `<li><span class="dot ${e.tier}"></span><span><b>${VINFO[e.v].name}</b> · ${DIFFS[e.d].name} · ${GUIDES[e.g].name.toLowerCase()} (${BONDS[e.b].toLowerCase()})${extra}</span><span class="res ${e.tier}">${TIER_NAMES[e.tier]}</span></li>`;
+  }).join('');
+}
+function syncControls() {
+  document.querySelectorAll('.tab').forEach(b => { const on = b.dataset.v === S.version; b.setAttribute('aria-selected', on ? 'true' : 'false'); b.tabIndex = on ? 0 : -1; });
+  $(`diff-${S.diff}`).checked = true;
+  $(`guide-${S.guide}`).checked = true;
+  $(`bond-${S.bond}`).checked = true;
+  els.poured.textContent = String(S.poured);
+  $('pour-less').disabled = S.poured <= 0;
+  $('pour-more').disabled = S.poured >= 3;
+  $('moon').checked = S.moon; $('fog').checked = S.fog; $('skip').checked = S.skip;
+  els.scenario.value = S.scenario;
+}
+function syncFrameUI() {
+  const h = game.hint();
+  if (h !== lastHint) { lastHint = h; els.hint.textContent = h || ' '; }
+  const a = game.actLabel();
+  if (a !== lastAct) { lastAct = a; els.act.hidden = !a; if (a) els.act.textContent = a; }
+}
+function initUI() {
+  const tabs = Array.from(document.querySelectorAll('.tab'));
+  tabs.forEach(b => b.addEventListener('click', () => { S.version = b.dataset.v; build(); }));
+  $('tabs').addEventListener('keydown', e => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const i = VERSION_IDS.indexOf(S.version), n = VERSION_IDS.length;
+    S.version = VERSION_IDS[(i + (e.key === 'ArrowRight' ? 1 : n - 1)) % n];
+    build();
+    $(`tab-${S.version}`).focus();
+    e.preventDefault();
+  });
+  els.scenario.addEventListener('change', () => { S.scenario = els.scenario.value; const sc = SCENARIOS[S.scenario]; S.diff = sc.diff; S.guide = sc.guide; build(); });
+  document.querySelectorAll('input[name="diff"]').forEach(i => i.addEventListener('change', () => { S.diff = +i.value; build(); }));
+  document.querySelectorAll('input[name="guide"]').forEach(i => i.addEventListener('change', () => { S.guide = i.value; build(); }));
+  document.querySelectorAll('input[name="bond"]').forEach(i => i.addEventListener('change', () => { S.bond = +i.value; build(); }));
+  $('pour-less').addEventListener('click', () => { if (S.poured > 0) { S.poured--; build(); } });
+  $('pour-more').addEventListener('click', () => { if (S.poured < 3) { S.poured++; build(); } });
+  for (const k of ['moon', 'fog', 'skip']) $(k).addEventListener('change', e => { S[k] = e.target.checked; build(); });
+  $('again').addEventListener('click', () => build());
+  $('newsky').addEventListener('click', () => { seed++; build(); });
+  els.act.addEventListener('click', () => { if (game) game.act(); canvas.focus({ preventScroll: true }); });
+  const toLogical = e => { const r = canvas.getBoundingClientRect(); return { x: (e.clientX - r.left) * W / r.width, y: (e.clientY - r.top) * H / r.height }; };
+  canvas.addEventListener('pointerdown', e => { try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ } if (game) game.down(toLogical(e)); });
+  canvas.addEventListener('pointermove', e => { if (game) game.move(toLogical(e)); });
+  canvas.addEventListener('pointerup', e => { if (game) game.up(toLogical(e)); });
+  canvas.addEventListener('pointercancel', e => { if (game) game.up(toLogical(e)); });
+  window.addEventListener('keydown', e => {
+    const tag = (e.target && e.target.tagName) || '';
+    if (['INPUT', 'SELECT', 'BUTTON', 'TEXTAREA', 'SUMMARY', 'A'].includes(tag) || !game) return;
+    if (e.code === 'Space' || e.key === ' ') { e.preventDefault(); game.key('space'); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); game.key('up'); }
+    else if (e.key === 'ArrowDown') { e.preventDefault(); game.key('down'); }
+  });
+}
+
+window.claude?.hot?.snapshot?.(() => ({ S: { ...S }, seed, log: log.slice() }));
+function start(data) {
+  if (data && data.S) Object.assign(S, data.S);
+  if (data && typeof data.seed === 'number') seed = data.seed;
+  if (data && Array.isArray(data.log)) log.push(...data.log);
+  initUI();
+  build();
+  renderLog();
+  requestAnimationFrame(frame);
+}
+if (window.claude?.hot?.ready) window.claude.hot.ready(start);
+else start(window.claude?.hot?.data ?? {});
+})();
+</script>

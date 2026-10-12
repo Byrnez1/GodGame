@@ -260,3 +260,14 @@ Animated scene sketches: https://claude.ai/artifact/CUWWhm4T3xu1gSvL94MzYN (copy
 - "More visually pleasing meters for love, fear, and faith." → animated vessels with danger zones.
 - "There should be ramifications for fear too high or too low, and love too low." → danger zones: terrified, fearless, forsaken.
 - "Less obvious paths past what you're currently picking: a fog of war, and more options. Most should unlock during the story, and I should feel the impact of not choosing certain techs." → fog of war, 25 discoveries, story unlocks, expiring windows, missed options.
+
+### 💡 Proposal: shooting-star omens instead of casting the bones (mock-ups only, 2026-10-12)
+User idea: the god sends a shooting star across the night sky, and the harder the attempt, the more stars fill the sky to hide it from the people. Five playable mock-ups are in `docs/mockups/shooting-star-omens.html` (open it in a browser; also published at https://claude.ai/artifact/5n9sSc9kAU685erp8FJDbs). **Nothing is in the game yet.**
+- **The Throw:** drag back and let go; bright stars bend the path with gravity, swallow it if too close, and lend it light if you skim past.
+- **The Turning Sky:** the sky wheels around the pole star; let go when the fixed path is clear. A strip shows the seconds ahead.
+- **The Fall:** steer the star like a kite through the people's gaze, then land it by the priest's fire.
+- **Clear the Sky:** fate picks the path inside a band; spend breaths snuffing stars while the odds word updates, then let it fall. Closest to the bones.
+- **The Reading:** draw the rune the prayer needs; nearby stars bend the shape and the priest may read a different rune.
+- Shared rules: difficulty sets how many stars there are; love, fear, and faith change the star itself; faith poured in buys foresight, light, breaths, or trail; interference toggles for a full moon, Memory's fog, and Time's skip.
+- New idea from the mock-ups: a third outcome, **Misread**, between success and failure, where the people act on the wrong message.
+- ❓ For the user: which version (or mix) should replace the bones?
