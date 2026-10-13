@@ -174,10 +174,13 @@ svg g.node:focus-visible rect{stroke:var(--gold);stroke-width:3}
     <section class="block">
       <h2>How the proposal works</h2>
       <ul class="threads">
-        <li><b>Four turning points</b> <span>(one per act) where the player commits to a direction: how to treat the Voices, what they believe she is, what to do with the truth, and how to face the end.</span></li>
+        <li><b>Six eras, 36 generations.</b> <span>About twice as long as today. Eras 2 and 4 have no big turning point: they are where your investments play out.</span></li>
+        <li><b>Four turning points</b> <span>where the player commits to a direction: how to treat the Voices, what they believe she is, what to do with the truth, and how to face the end.</span></li>
+        <li><b>Your people become something.</b> <span>Love, fear, and silence add up over the eras into a culture with its own prayers, institutions that act on their own, and exiles who come back. It decides which paths come easily and which final options appear.</span></li>
+        <li><b>Quiet generations.</b> <span>Some generations pass in a single summary (“Three generations pass. Your temple grows. Fear of you has become law.”). They keep a longer game from dragging, and show investments paying off.</span></li>
         <li><b>Paths, not stats.</b> <span>Each answer sets a path flag. Later cutscenes, prayers, and the Voices' interference check it, so the same story moment plays differently on each path.</span></li>
         <li><b>The finale reflects the path.</b> <span>Which final options appear depends on the paths taken, and the shooting-star cast decides whether the attempt holds.</span></li>
-        <li><b>Nothing new is needed in the engine.</b> <span>The story files can already do this with flags, <code>requires</code>, and <code>blocks</code>. It is mostly writing.</span></li>
+        <li><b>What it costs to build.</b> <span>Paths need nothing new in the engine: flags, <code>requires</code>, and <code>blocks</code> already do it. A culture needs one new idea (love and fear tracked across eras, not just right now). The biggest cost is writing: roughly 80 to 100 prayers instead of 48, plus cutscene versions for each path.</span></li>
       </ul>
     </section>
     <section class="block">
@@ -299,9 +302,11 @@ function subToday(n) {
 
 // ------------------------------------------------------------------ the proposal: a story with paths
 const P = (() => {
+  // Columns are eras of 6 generations. Rows: 0 turning point, 1-5 paths and story beats,
+  // 6 what your people become (your love and fear, compounded), 7 how Time and Memory respond.
   const N = [
-    // Act I
-    { id: 'tp1', c: 0, r: 0, kind: 'turn', old: true, title: 'Do you remember anything?', sub: 'Act I turning point · gen 4',
+    // ---- Era 1: Waking (gens 1-6)
+    { id: 'tp1', c: 0, r: 0, kind: 'turn', old: true, title: 'Do you remember anything?', sub: 'turning point · gen 5',
       body: 'The quiet Voice asks what you remember. This is today\'s "the question" prayer, where your answer only changes a note or hides a door. Here it sets your stance toward the two Voices for the rest of the game.' },
     { id: 'p1a', c: 0, r: 1, kind: 'path', title: 'Trust them', sub: 'tell them about the small room',
       body: 'They become patient teachers and visit often. Their interference looks like kindness: good harvests, comfort in bad years, and small things quietly forgotten. The old book is "borrowed" and comes back with pages missing.',
@@ -310,82 +315,118 @@ const P = (() => {
       body: 'Closest to the game today. They start searching: doors vanish, names are forgotten, the woman in the reeds is scrubbed from memory. The god with golden eyes notices, and quietly starts to help.',
       scenes: 'The book scenes happen at night, in secret. Golden eyes appears more often.' },
     { id: 'p1c', c: 0, r: 3, kind: 'path', title: 'Defy them', sub: 'demand what came before',
-      body: 'They stop pretending. Interference comes early and hard: a lost spring, the fog, a skipped generation. You learn their names by generation 5, and your people pay for your defiance.',
+      body: 'They stop pretending. Interference comes early and hard: a lost spring, the fog, a skipped generation. You learn their names early, and your people pay for your defiance.',
       scenes: 'The Voices appear in more cutscenes, colder each time.' },
-    { id: 'v1', c: 0, r: 6, kind: 'voices', title: 'How the Voices respond', sub: 'Act I',
+    { id: 'c1', c: 0, r: 6, kind: 'culture', old: true, title: 'First habits', sub: 'your love and fear, gens 1–6',
+      body: 'The first generations set your people\'s habits. This is not a choice on a menu: it builds up from how you answered their prayers, how often you were silent, and what you let them fear.' },
+    { id: 'v1', c: 0, r: 7, kind: 'voices', title: 'How the Voices respond', sub: 'era 1',
       body: 'Trust: they herd you, gently. Hide: they hunt for what you know. Defy: they strike at your people.' },
-    // Act II
-    { id: 'tp2', c: 1, r: 0, kind: 'turn', old: true, title: 'Why must you find her?', sub: 'Act II turning point · gen 6–8',
-      body: 'After the dream, you choose what you believe she is. These are the wrong theories from the story bible (sacrifice, prophecy, acolyte), made into paths the player commits to. Each changes your people, the dream itself, and how she is born.' },
-    { id: 'p2a', c: 1, r: 1, kind: 'path', old: true, title: 'A sacrifice', sub: 'she is the price of your power',
+    // ---- Era 2: Roots (gens 7-12)
+    { id: 'c2a', c: 1, r: 1, kind: 'culture', title: 'A singing people', sub: 'if love led',
+      body: 'Song, festivals, a flat rock heaped with flowers. Faith grows slowly but steadily, and their love outlasts hard years. Later: prophecy comes naturally to them, and their love can stand against the Voices.' },
+    { id: 'c2b', c: 1, r: 2, kind: 'culture', title: 'A people of the knife', sub: 'if fear led',
+      body: 'Priests, offerings, punishments in your name. Faith flows fast, but terror drives families away, and the ones who flee do not forget. Later: the sacrifice path is waiting for you, and the exiles come back as enemies.' },
+    { id: 'c2c', c: 1, r: 3, kind: 'culture', title: 'A people who doubt', sub: 'if you were silent, or neither',
+      body: 'Rival altars, Haro\'s heirs, a god people can live without. Little faith, but a free people. Later: the hardest road, with the fewest options at the end.' },
+    { id: 'tp2', c: 1, r: 0, kind: 'turn', old: true, title: 'Why must you find her?', sub: 'turning point · gen 12',
+      body: 'The dream comes at the end of this era. You choose what you believe she is. These are the wrong theories from the story bible (sacrifice, prophecy, acolyte), made into paths the player commits to. Your culture makes one of them easier, but you can choose against it.' },
+    { id: 'c2', c: 1, r: 6, kind: 'culture', title: 'Habits become a culture', sub: 'gens 7–12',
+      body: 'Six generations of your choices settle into who your people are. The era opens with the culture they have become, and its own kinds of prayers: festivals and weddings for a singing people, punishments and offerings for a people of the knife, doubters for a people who doubt.' },
+    { id: 'v2', c: 1, r: 7, kind: 'voices', title: 'How the Voices respond', sub: 'era 2',
+      body: 'They watch what kind of people you are building. A loving people make a richer harvest, so they leave them alone. A fearful or doubting people get fog and forgetting.' },
+    // ---- Era 3: Seeking (gens 13-18)
+    { id: 'p2a', c: 2, r: 1, kind: 'path', old: true, title: 'A sacrifice', sub: 'she is the price of your power',
       body: 'Ina preaches a blade. Your people grow feared and strong, and start looking for a girl to give you. The girl on the rocks becomes the climax of this path: stop the knife, or let it fall.',
       scenes: 'The dream turns cold: a river at dusk, and something glinting in the reeds.' },
-    { id: 'p2b', c: 1, r: 2, kind: 'path', title: 'A prophecy', sub: 'she was foretold',
+    { id: 'p2b', c: 2, r: 2, kind: 'path', title: 'A prophecy', sub: 'she was foretold',
       body: 'Your people become seekers. The woman in the reeds grows into a goddess of their own, and every girl born by the river is watched. The risk: by the time she comes, they love her more than you.',
       scenes: 'The dream is crowded: the riverbank lined with watchers, all facing the water.' },
-    { id: 'p2c', c: 1, r: 3, kind: 'path', title: 'An acolyte', sub: 'she will serve you',
-      body: 'You raise Ina as your voice and see the world up close through her eyes. Ina wants to be the one you are searching for. When the girl is born, Ina must choose whether to teach her or hide her.',
+    { id: 'p2c', c: 2, r: 3, kind: 'path', title: 'An acolyte', sub: 'she will serve you',
+      body: 'You raise Ina as your voice and see the world up close through her eyes. Ina wants to be the one you are searching for. When the girl is born, Ina\'s line must choose whether to teach her or hide her.',
       scenes: 'The dream is quiet: two women at a fire, and one of them is Ina.' },
-    { id: 'v2', c: 1, r: 6, kind: 'voices', title: 'How the Voices respond', sub: 'Act II',
+    { id: 'c3', c: 2, r: 6, kind: 'culture', title: 'Your culture shapes the path', sub: 'gens 13–18',
+      body: 'A people of the knife take to the sacrifice path easily, a singing people to prophecy. Going against your culture is possible, but it costs faith and brings unrest for a generation or two.' },
+    { id: 'v3', c: 2, r: 7, kind: 'voices', title: 'How the Voices respond', sub: 'era 3',
       body: 'They need the love to happen, so they push every path toward her. They turn the blade into a test, feed the seekers false signs, and plant jealousy in Ina.' },
-    // Act III
-    { id: 'tp3', c: 2, r: 0, kind: 'turn', old: true, title: 'What do you do with the truth?', sub: 'Act III turning point · gen 9–12',
-      body: 'The harvest reveal, which today is one fixed cutscene. Here it plays three ways, depending on Act I: a confession if you trusted them, an accusation if you defied them, a discovery you make alone in the small room if you hid. Then you decide what to do with what you know.' },
-    { id: 'p3a', c: 2, r: 1, kind: 'path', title: 'Tell your people', sub: 'their love was borrowed',
-      body: 'Faith crashes and some of your people leave. What remains is truly theirs, and only that love can break the cycle.' },
-    { id: 'p3b', c: 2, r: 2, kind: 'path', title: 'Keep it from them', sub: 'use the borrowed love',
-      body: 'You let them keep the borrowed love and use its power. The years ahead are easier. In the end, love that isn\'t theirs is hard to stand on.' },
-    { id: 'p3c', c: 2, r: 3, kind: 'path', title: 'Bargain', sub: 'ask the Voices for another deal',
+    // ---- Era 4: The book (gens 19-24)
+    { id: 'b1', c: 3, r: 1, kind: 'beat', old: true, title: 'Three inks', sub: 'story beat · gens 19–21',
+      body: 'The book is in three inks, the same words written as if for the first time. Today this happens around generation 9 to 11. Spread over a longer game, there is time for the realization to sink in before the next beat.' },
+    { id: 'b2', c: 3, r: 2, kind: 'beat', old: true, title: 'The hand', sub: 'story beat · gens 21–23',
+      body: 'The handwriting is yours. How it plays depends on your era 1 stance: alone in the small room, or with a Voice watching from the doorway.' },
+    { id: 'b3', c: 3, r: 3, kind: 'beat', old: true, title: 'Their names', sub: 'story beat · when depends on era 1',
+      body: 'Time and Memory. If you trusted them, they tell you themselves. If you hid, the god with golden eyes tells you. If you defied them, you learned it back in era 1.' },
+    { id: 'tp3', c: 3, r: 0, kind: 'turn', old: true, title: 'What do you do with the truth?', sub: 'turning point · gen 24',
+      body: 'The harvest reveal, which today is one fixed cutscene. Here it plays three ways, depending on era 1: a confession if you trusted them, an accusation if you defied them, a discovery you make alone if you hid. Then you decide what to do with what you know.' },
+    { id: 'c4', c: 3, r: 6, kind: 'culture', title: 'What you built acts on its own', sub: 'gens 19–24',
+      body: 'Temples, priesthoods, and festivals from earlier eras now act without you. A priesthood may offer sacrifices you never asked for. A song may carry words from the old book.' },
+    { id: 'v4', c: 3, r: 7, kind: 'voices', title: 'How the Voices respond', sub: 'era 4',
+      body: 'They try to stop the book: doors vanish, words go dark, and Time offers its gift to make you forget.' },
+    // ---- Era 5: The truth (gens 25-30)
+    { id: 'p3a', c: 4, r: 1, kind: 'path', title: 'Tell your people', sub: 'their love was borrowed',
+      body: 'Faith crashes and some of your people leave. Over the next generations, what remains is truly theirs, and only that love can break the cycle.' },
+    { id: 'p3b', c: 4, r: 2, kind: 'path', title: 'Keep it from them', sub: 'use the borrowed love',
+      body: 'You let them keep the borrowed love and use its power. The generations ahead are easier. In the end, love that isn\'t theirs is hard to stand on.' },
+    { id: 'p3c', c: 4, r: 3, kind: 'path', title: 'Bargain', sub: 'ask the Voices for another deal',
       body: 'Time and Memory offer one: keep your memory but give her up, or let them harvest another god\'s love in your place.' },
-    { id: 'p3d', c: 2, r: 4, kind: 'path', title: 'Wake another god', sub: 'the god with golden eyes',
+    { id: 'p3d', c: 4, r: 4, kind: 'path', title: 'Wake another god', sub: 'the god with golden eyes',
       body: 'She remembers her own loops. Together you can wake the others, and risk the whole Pantheon.' },
-    { id: 'v3', c: 2, r: 6, kind: 'voices', title: 'How the Voices respond', sub: 'Act III',
-      body: 'Once you know, they negotiate instead of hiding. The more you trusted them in Act I, the more they know about you, and the better their offers sound.' },
-    // Finale
-    { id: 'tp4', c: 3, r: 0, kind: 'turn', old: true, title: 'She is grown. The Voices come.', sub: 'Finale · gen 13–15',
-      body: 'Today\'s final choice. Which options appear now depends on your paths, and the shooting-star cast decides whether the attempt holds.' },
-    { id: 'f1', c: 3, r: 1, kind: 'final', old: true, title: "Stand with your people's love", sub: 'needs: told the truth, or the acolyte path',
-      body: 'Appears if she was born and your people love you knowingly: you told them the truth, or Ina raised her.' },
-    { id: 'f2', c: 3, r: 2, kind: 'final', old: true, title: "Stand with your people's fear", sub: 'needs: the sacrifice path',
-      body: 'Appears on the sacrifice path, or when your people live in terror of you.' },
-    { id: 'f3', c: 3, r: 3, kind: 'final', title: 'Accept their bargain', sub: 'needs: the bargain path',
-      body: 'Appears only if you bargained in Act III.' },
-    { id: 'f4', c: 3, r: 4, kind: 'final', title: 'Wake the Pantheon', sub: 'needs: golden eyes as an ally',
-      body: 'Appears only if you woke the god with golden eyes in Act III.' },
-    { id: 'f5', c: 3, r: 5, kind: 'final', old: true, title: 'Let it happen again', sub: 'always possible',
+    { id: 'c5', c: 4, r: 6, kind: 'culture', title: 'She is born into what you made', sub: 'around gen 28',
+      body: 'She is born, and grows up over several generations of play instead of one. A singing people welcome her. A people of the knife hide her, or offer her to you. A people who doubt barely notice her.' },
+    { id: 'v5', c: 4, r: 7, kind: 'voices', title: 'How the Voices respond', sub: 'era 5',
+      body: 'Once you know, they negotiate instead of hiding. The more you trusted them in era 1, the more they know about you, and the better their offers sound.' },
+    // ---- Era 6: The harvest (gens 31-36)
+    { id: 'tp4', c: 5, r: 0, kind: 'turn', old: true, title: 'She is grown. The Voices come.', sub: 'finale · gens 34–36',
+      body: 'Today\'s final choice. Which options appear now depends on your paths and your culture, and the shooting-star cast decides whether the attempt holds.' },
+    { id: 'f1', c: 5, r: 1, kind: 'final', old: true, title: "Stand with your people's love", sub: 'needs: a people who love you knowingly',
+      body: 'Appears if she was born and your people love you knowingly: you told them the truth, or Ina\'s line raised her, and love led for most of the game.' },
+    { id: 'f2', c: 5, r: 2, kind: 'final', old: true, title: "Stand with your people's fear", sub: 'needs: a people of the knife',
+      body: 'Appears for a people of the knife, or on the sacrifice path.' },
+    { id: 'f3', c: 5, r: 3, kind: 'final', title: 'Accept their bargain', sub: 'needs: the bargain path',
+      body: 'Appears only if you bargained in era 5.' },
+    { id: 'f4', c: 5, r: 4, kind: 'final', title: 'Wake the Pantheon', sub: 'needs: golden eyes as an ally',
+      body: 'Appears only if you woke the god with golden eyes in era 5.' },
+    { id: 'f5', c: 5, r: 5, kind: 'final', old: true, title: 'Let it happen again', sub: 'always possible',
       body: 'Always on offer. The Voices make it sound kind.' },
-    { id: 'v4', c: 3, r: 6, kind: 'voices', title: 'How the Voices respond', sub: 'Finale',
+    { id: 'c6', c: 5, r: 6, kind: 'culture', title: 'Your people stand with you', sub: 'gens 31–36',
+      body: 'The final cast draws on generations of love or fear, not just the last few prayers. A people you loved for thirty generations are a strong bond. A people who were afraid of you for thirty are a strong bond of a different kind.' },
+    { id: 'v6', c: 5, r: 7, kind: 'voices', title: 'How the Voices respond', sub: 'era 6',
       body: 'The stronger their hold (how much you trusted them, how much your people forgot), the harder the final cast.' },
-    // Endings
-    { id: 'e1', c: 4, r: 1, kind: 'ending', old: true, title: 'The first spring', sub: 'ending', body: 'You walk down to the river, and this time you remember.' },
-    { id: 'e2', c: 4, r: 2, kind: 'ending', old: true, title: 'A god who cannot be harvested', sub: 'ending', body: 'You go to her held together by terror, too strong to be taken apart.' },
-    { id: 'e3', c: 4, r: 3, kind: 'ending', title: 'The Keeper', sub: 'new ending', body: 'You take Memory\'s place. She lives a whole mortal life, happy, and never knows you. You remember everything, for everyone.' },
-    { id: 'e4', c: 4, r: 4, kind: 'ending', title: 'The Waking', sub: 'new ending', body: 'Every god remembers. The harvest ends in every world at once. Nobody knows what comes next, and the epilogue doesn\'t pretend to.' },
-    { id: 'e5', c: 4, r: 5, kind: 'ending', old: true, title: 'Again', sub: 'ending', body: 'Light. Then more light. Somewhere, a book is a little thicker than it was.' },
-    { id: 'e6', c: 4, r: 6, kind: 'ending', old: true, title: 'Nothing taken / Silence', sub: 'if she is never born', body: 'If the knife fell, or her world was never rebuilt, she is not born, and the ending is one of today\'s: a god with nothing taken, or silence.' },
+    // ---- Endings
+    { id: 'e1', c: 6, r: 1, kind: 'ending', old: true, title: 'The first spring', sub: 'ending', body: 'You walk down to the river, and this time you remember.' },
+    { id: 'e2', c: 6, r: 2, kind: 'ending', old: true, title: 'A god who cannot be harvested', sub: 'ending', body: 'You go to her held together by terror, too strong to be taken apart.' },
+    { id: 'e3', c: 6, r: 3, kind: 'ending', title: 'The Keeper', sub: 'new ending', body: 'You take Memory\'s place. She lives a whole mortal life, happy, and never knows you. You remember everything, for everyone.' },
+    { id: 'e4', c: 6, r: 4, kind: 'ending', title: 'The Waking', sub: 'new ending', body: 'Every god remembers. The harvest ends in every world at once. Nobody knows what comes next, and the epilogue doesn\'t pretend to.' },
+    { id: 'e5', c: 6, r: 5, kind: 'ending', old: true, title: 'Again', sub: 'ending', body: 'Light. Then more light. Somewhere, a book is a little thicker than it was.' },
+    { id: 'e6', c: 6, r: 6, kind: 'ending', old: true, title: 'Nothing taken / Silence', sub: 'if she is never born', body: 'If the knife fell, or her world was never rebuilt, she is not born, and the ending is one of today\'s: a god with nothing taken, or silence.' },
   ];
   const E = [];
   const flow = (a, b) => E.push({ from: a, to: b, type: 'flow' });
   const unlock = (a, b, t) => E.push({ from: a, to: b, type: t || 'unlock' });
+  const grows = (a, b) => E.push({ from: a, to: b, type: 'grows' });
   ['p1a', 'p1b', 'p1c'].forEach(p => { flow('tp1', p); flow(p, 'tp2'); });
-  ['p2a', 'p2b', 'p2c'].forEach(p => { flow('tp2', p); flow(p, 'tp3'); });
+  ['c2a', 'c2b', 'c2c'].forEach(c => grows('c1', c));
+  ['p2a', 'p2b', 'p2c'].forEach(p => { flow('tp2', p); flow(p, 'b1'); });
+  flow('b1', 'b2'); flow('b2', 'tp3'); flow('b3', 'tp3');
   ['p3a', 'p3b', 'p3c', 'p3d'].forEach(p => { flow('tp3', p); flow(p, 'tp4'); });
   ['f1', 'f2', 'f3', 'f4', 'f5'].forEach(f => flow('tp4', f));
+  grows('c2b', 'p2a'); grows('c2a', 'p2b'); grows('c2a', 'f1'); grows('c2b', 'f2'); grows('c2c', 'e6');
   unlock('p3a', 'f1'); unlock('p2c', 'f1'); unlock('p2a', 'f2'); unlock('p3c', 'f3'); unlock('p3d', 'f4');
   unlock('p2a', 'e6', 'blocks');
   flow('f1', 'e1'); flow('f2', 'e2'); flow('f3', 'e3'); flow('f4', 'e4'); flow('f5', 'e5');
   return { N, E };
 })();
-const PCOLW = 290, PNW = 236, PNH = 50, PROWH = 74, PLEFT = 170, PTOP = 44;
+const PCOLW = 280, PNW = 232, PNH = 50, PROWH = 70, PLEFT = 170, PTOP = 44;
 function layoutPaths() {
   const nodes = P.N.map(n => ({ ...n, type: n.kind, x: PLEFT + n.c * PCOLW, y: PTOP + 34 + n.r * PROWH, w: PNW, h: PNH }));
   const bands = [
     { y: PTOP, h: 34 + PROWH, label: 'Turning points', sub: 'the player commits' },
-    { y: PTOP + 34 + PROWH, h: PROWH * 5, label: 'Paths', sub: 'what each choice becomes' },
-    { y: PTOP + 34 + PROWH * 6, h: PROWH + 12, label: 'Time and Memory', sub: 'how they respond' },
+    { y: PTOP + 34 + PROWH, h: PROWH * 5, label: 'Paths and beats', sub: 'what each choice becomes' },
+    { y: PTOP + 34 + PROWH * 6, h: PROWH, label: 'Your people become', sub: 'love and fear, compounded' },
+    { y: PTOP + 34 + PROWH * 7, h: PROWH + 12, label: 'Time and Memory', sub: 'how they respond' },
   ];
-  const cols = ['Act I · gens 1–5', 'Act II · gens 6–8', 'Act III · gens 9–12', 'Finale · gens 13–15', 'Endings'].map((label, i) => ({ x: PLEFT + i * PCOLW, label }));
-  return { nodes, edges: P.E, bands, cols, width: PLEFT + 5 * PCOLW, height: PTOP + 34 + PROWH * 7 + 30 };
+  const cols = ['Era 1 · Waking · gens 1–6', 'Era 2 · Roots · gens 7–12', 'Era 3 · Seeking · gens 13–18', 'Era 4 · The book · gens 19–24',
+    'Era 5 · The truth · gens 25–30', 'Era 6 · The harvest · gens 31–36', 'Endings'].map((label, i) => ({ x: PLEFT + i * PCOLW, label }));
+  return { nodes, edges: P.E, bands, cols, width: PLEFT + 7 * PCOLW, height: PTOP + 34 + PROWH * 8 + 30 };
 }
 
 // ------------------------------------------------------------------ drawing the map
@@ -399,6 +440,8 @@ const STYLE = {
   turn: { fill: '#2e220c', stroke: '#e8bf6c', text: '#f5e6c4' },
   path: { fill: '#1b2a5c', stroke: '#8fb0ff', text: '#e9eefb' },
   voices: { fill: '#0d2433', stroke: '#7fd0e0', text: '#d6f2f7' },
+  culture: { fill: '#14261c', stroke: '#8fd6a8', text: '#e2f4e8' },
+  beat: { fill: '#121a38', stroke: '#8fb0ff', text: '#d9deef' },
 };
 const svg = $('svg'), vp = $('vp');
 let mode = 'today', model = null, selected = null, view = { s: 1, x: 0, y: 0 };
@@ -425,9 +468,9 @@ function draw() {
     const x1 = a.x + a.w, y1 = a.y + a.h / 2, x2 = b.x, y2 = b.y + b.h / 2;
     const dx = Math.max(50, Math.abs(x2 - x1) * 0.45);
     const d = x2 > x1 + 10 ? `M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}` : `M${x1},${y1} C${x1 + 90},${y1} ${x2 - 90},${y2} ${x2},${y2}`;
-    const col = e.type === 'blocks' ? '#e8848a' : e.type === 'unlock' ? '#e8bf6c' : mode === 'today' ? '#8fb0ff' : '#5f74b4';
+    const col = e.type === 'blocks' ? '#e8848a' : e.type === 'unlock' ? '#e8bf6c' : e.type === 'grows' ? '#8fd6a8' : mode === 'today' ? '#8fb0ff' : '#5f74b4';
     const on = !selected || (rel.edges.has(e));
-    const dash = e.type === 'blocks' ? '5 5' : e.type === 'unlock' ? '2 5' : '';
+    const dash = e.type === 'blocks' ? '5 5' : e.type === 'unlock' ? '2 5' : e.type === 'grows' ? '7 4' : '';
     h += `<path d="${d}" fill="none" stroke="${col}" stroke-width="${on && selected ? 2.4 : 1.4}" stroke-opacity="${on ? (selected ? 0.95 : 0.5) : 0.07}" ${dash ? `stroke-dasharray="${dash}"` : ''}>${e.flag ? `<title>${esc(e.flag.replace(/_/g, ' '))}</title>` : ''}</path>`;
   }
   for (const n of m.nodes) {
@@ -541,7 +584,7 @@ function detail() {
   if (!selected) { el.innerHTML = mode === 'today' ? introToday() : introPaths(); return; }
   if (mode === 'paths') {
     const n = P.N.find(x => x.id === selected);
-    const kinds = { turn: 'Turning point', path: 'Path', voices: 'Time and Memory', final: 'Final option', ending: 'Ending' };
+    const kinds = { turn: 'Turning point', path: 'Path', voices: 'Time and Memory', final: 'Final option', ending: 'Ending', culture: 'What your people become', beat: 'Story beat' };
     el.innerHTML = `<p class="kind">${kinds[n.kind]}</p><h2>${esc(n.title)}</h2><p class="where">${esc(n.sub)}</p>
       <p>${n.kind === 'voices' ? '' : n.old ? '<span class="pill old">builds on today\'s game</span>' : '<span class="pill new">new</span>'}</p>
       <p class="body">${esc(n.body)}</p>${n.scenes ? `<h3>How the cutscenes change</h3><p class="body">${esc(n.scenes)}</p>` : ''}
@@ -598,7 +641,8 @@ function introToday() {
 }
 function introPaths() {
   return `<p class="kind">Proposal</p><h2>A story the player steers</h2>
-  <p class="body">Four turning points, one per act. At each, the player commits to a direction, and the next act plays differently because of it: different cutscenes, different interference from Time and Memory, and different options at the end.</p>
+  <p class="body">Thirty-six generations in six eras, about twice as long as today. Four turning points let the player commit to a direction, and the eras in between give your love and fear time to grow into a culture: a singing people, a people of the knife, or a people who doubt you.</p>
+  <p class="body">That culture is not picked from a menu. It builds up from how you answered prayers, and it opens or closes paths and final options (green dashed lines).</p>
   <p class="body">Gold dotted lines show which paths unlock which final options. A gold dot on a box means the idea is new; a blue dot means it builds on something already in the game.</p>
   <p class="body">Everything here is a draft for you to change: rename paths, cut some, or add your own.</p>`;
 }
@@ -619,7 +663,7 @@ function renderLegend() {
   const ln = (c, label, dash) => `<span><i class="ln" style="border-top-color:${c};${dash ? 'border-top-style:dashed' : ''}"></i>${label}</span>`;
   $('legend').innerHTML = mode === 'today'
     ? sw(STYLE.cutscene, 'Cutscene') + sw(STYLE.prayer, 'Prayer') + sw(STYLE.villain, 'Time and Memory') + sw(STYLE.final, 'Final prayer') + sw(STYLE.ending, 'Ending') + sw(STYLE.epilogue, 'Epilogue line') + ln('#8fb0ff', 'happens after') + ln('#e8848a', 'stops it from happening', true)
-    : sw(STYLE.turn, 'Turning point') + sw(STYLE.path, 'Path') + sw(STYLE.voices, 'Time and Memory') + sw(STYLE.ending, 'Ending') + ln('#5f74b4', 'leads on') + ln('#e8bf6c', 'unlocks a final option', true) + ln('#e8848a', 'rules it out', true);
+    : sw(STYLE.turn, 'Turning point') + sw(STYLE.path, 'Path') + sw(STYLE.beat, 'Story beat') + sw(STYLE.culture, 'What your people become') + sw(STYLE.voices, 'Time and Memory') + sw(STYLE.ending, 'Ending') + ln('#5f74b4', 'leads on') + ln('#8fd6a8', 'your culture makes it possible', true) + ln('#e8bf6c', 'unlocks a final option', true) + ln('#e8848a', 'rules it out', true);
 }
 function setMode(m) {
   mode = m; selected = null;
