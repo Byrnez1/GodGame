@@ -272,3 +272,15 @@ User idea: the god sends a shooting star across the night sky, and the harder th
 - New idea from the mock-ups: a third outcome, **Misread**, between success and failure, where the people act on the wrong message.
 - ✅ **Decided (user, 2026-10-12):** **The Throw** replaces casting the bones for prayers. **The Reading** is used for revelations (granting a discovery: draw its rune, and the priest must read it).
 - User note: it must be very clear when a person understands. The mock-up now shows three stages for each person: nothing yet; glimpsed (pointing, with a "?"); understood (arms raised in a column of light, calling out the meaning, e.g. "Fire!"). A counter shows how many understood against how many are needed. In The Reading, the result shows the rune you meant beside the rune the priest read.
+
+### 💡 Proposal: a story the player steers (story map, 2026-10-13)
+User feedback: "It feels like we're playing a game and getting told a story. I want the player to control the story down one of many paths."
+Story map: `docs/mockups/story-web.html` (also https://claude.ai/artifact/QwqeAapGra6e8tnaxSxrBh). The "story today" view is built from the content files by `game/tests/story_dump.gd`.
+- **Today:** 12 story beats play in every game in the same order; most prayers lead to no later scene; most story flags are never checked again. The player steers only whether she's born (through the tech tree), Ina's knife, how late the book reveals itself, and the final choice.
+- **Proposal:** four turning points, one per act, each setting a path that later cutscenes, prayers, and Time and Memory's interference check:
+  1. Act I, the Voices: **trust them / hide from them / defy them**
+  2. Act II, what she is: **a sacrifice / a prophecy / an acolyte** (the story bible's wrong theories, made into paths)
+  3. Act III, the truth: **tell your people / keep it from them / bargain / wake another god**
+  4. Finale: options depend on the path; two new endings (**The Keeper**, **The Waking**)
+- Small choices that should come back: the woman in the reeds, Sana's burial, Oren, Time's gift, the strangers, the truer verse, Haro.
+- ❓ For the user: keep, cut, rename, or add paths before any of it is written into the game.
